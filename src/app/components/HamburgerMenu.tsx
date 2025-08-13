@@ -23,6 +23,7 @@ export function HamburgerMenu() {
     { label: "Servicios", section: "servicios" },
     { label: "Nosotros", section: "nosotros" },
     { label: "Testimonios", section: "testimonios" },
+    { label: "FAQ", section: "faq" },
     { label: "Contacto", section: "contacto" },
   ];
 

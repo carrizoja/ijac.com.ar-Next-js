@@ -62,6 +62,10 @@ function Navbar({ className }: { className?: string }) {
               onClick={() => scrollToSection("testimonios")}
             />
             <MenuItem
+              item="FAQ"
+              onClick={() => scrollToSection("faq")}
+            />
+            <MenuItem
               item="Contacto"
               onClick={() => scrollToSection("contacto")}
             />

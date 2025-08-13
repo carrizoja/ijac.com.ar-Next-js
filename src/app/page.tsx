@@ -3,10 +3,13 @@ import Testimonials from "./components/Testimonials";
 import { Services } from "./components/Services";
 import { Contact } from "./components/Contact";
 import { About } from "./components/About";
+import { StructuredData } from "./components/StructuredData";
+import { FAQ } from "./components/FAQ";
 
 export default function Home() {
   return (
     <>
+      <StructuredData />
       <section id="home">
         <Hero />
       </section>
@@ -18,6 +21,9 @@ export default function Home() {
       </section>
       <section id="testimonios">
         <Testimonials />
+      </section>
+      <section id="faq">
+        <FAQ />
       </section>
       <section id="contacto">
         <Contact />
