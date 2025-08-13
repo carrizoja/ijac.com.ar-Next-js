@@ -18,10 +18,11 @@ const Footer = () => {
           <div className="flex flex-col items-center space-y-8">
             <div className="flex items-center space-x-3">
               <Image
-                src="https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png"
+                src="/ijac-logo.png"
                 alt="IJAC Logo"
                 width={50}
                 height={50}
+                priority
               />
             </div>
              {/* Social Media Links */}

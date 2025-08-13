@@ -145,11 +145,12 @@ export function HamburgerMenu() {
                 {/* Logo */}
                 <div className="flex justify-center mb-6">
                   <Image
-                    src="https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png"
+                    src="/ijac-logo.png"
                     alt="IJAC Logo"
                     width={60}
                     height={60}
                     className="hover:scale-110 transition-transform duration-300"
+                    priority
                   />
                 </div>
 

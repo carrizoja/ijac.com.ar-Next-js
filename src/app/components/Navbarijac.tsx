@@ -33,22 +33,23 @@ function Navbar({ className }: { className?: string }) {
       )}
     >
       <Menu>
-        <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-row items-center gap-2">
           {/* Logo */}
           <div className="flex justify-center">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center mr-4">
               <Image
-                src="https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png"
+                src="/ijac-logo.png"
                 alt="IJAC Logo"
                 width={40}
                 height={40}
                 className="hover:scale-110 transition-transform duration-300"
+                priority
               />
             </Link>
           </div>
           
           {/* Navigation Links */}
-          <div className="flex flex-row gap-4 justify-center items-center">
+          <div className="flex flex-row gap-x-2 justify-center items-center">
             <MenuItem
               item="Servicios"
               onClick={() => scrollToSection("servicios")}
