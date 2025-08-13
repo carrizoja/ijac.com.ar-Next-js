@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { NavbarIjac } from "./components/Navbarijac";
+import Footer from "./components/Footer";
+import WhatsApp from "./components/WhatsApp";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+import { HamburgerMenu } from "./components/HamburgerMenu";
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -23,11 +30,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html className="dark" lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}
       >
+       <div className="hidden md:block">
+         <NavbarIjac />
+       </div>
+       <div className="block md:hidden">
+         <HamburgerMenu />
+       </div>
         {children}
+        <WhatsApp />
+        <Footer />
       </body>
     </html>
   );
