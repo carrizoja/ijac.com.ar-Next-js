@@ -67,7 +67,7 @@ export default () => {
       >
         {testimonials.map((testimonial) => (
           <SwiperSlide key={testimonial.id}>
-            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-6 mx-2 h-80 w-[80%] md:w-[80%] mx-auto border border-gray-700/50">
+            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-6 mx-2 h-80 h-[360px] w-[80%] md:w-[80%] mx-auto border border-gray-700/50">
               <div className="flex flex-col items-center text-center h-full">
                 {/* Avatar */}
                 <div className="relative mb-4">
@@ -82,16 +82,16 @@ export default () => {
                 </div>
 
                 {/* Stars */}
-                <div className="flex justify-center mb-3">
+                <div className="flex justify-center mb-2 md:mb-3">
                   {renderStars(testimonial.rating)}
                 </div>
 
                 {/* Comment */}
-                <blockquote className="text-gray-300 italic mb-4 text-sm leading-relaxed flex-1">
+                <blockquote className="text-gray-300 italic mb-2 md:mb-4 text-sm leading-relaxed flex-1">
                   "{testimonial.comment}"
 
                 {/* Name and Company */}
-                  <div className="flex flex-col items-center justify-center mt-8">
+                  <div className="flex flex-col items-center justify-center mt-4 md:mt-6">
                     <h4 className="font-semibold text-white text-base">
                       {testimonial.name}
                     </h4>
