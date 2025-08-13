@@ -14,6 +14,7 @@ export const Card = React.memo(
     card: {
       title: string;
       src: string;
+      desc: string;
     };
     index: number;
     hovered: number | null;
@@ -40,9 +41,12 @@ export const Card = React.memo(
         )}
       >
         <div className="text-white">
-          <div className="text-xl md:text-2xl font-medium bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-200">
+          <div className="text-xl md:text-2xl font-medium bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-200 mb-2">
             {card.title}
           </div>
+          <p className="text-sm md:text-base text-neutral-200 leading-relaxed">
+            {card.desc}
+          </p>
         </div>
       </div>
     </div>
