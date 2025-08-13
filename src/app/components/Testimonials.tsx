@@ -10,6 +10,7 @@ import {
 } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
+import Image from "next/image";
 
 // Import Swiper styles
 import "swiper/css";
@@ -30,7 +31,7 @@ interface Testimonial {
   avatar: string;
 }
 
-export default () => {
+const TestimonialsSection = () => {
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => (
       <span
@@ -65,15 +66,17 @@ export default () => {
         onSwiper={(swiper) => console.log(swiper)}
         onSlideChange={() => console.log("slide change")}
       >
-        {testimonials.map((testimonial) => (
+                {testimonials.map((testimonial: Testimonial) => (
           <SwiperSlide key={testimonial.id}>
-            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-6 mx-2 h-80 h-[360px] w-[80%] md:w-[80%] mx-auto border border-gray-700/50">
+            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-6 mx-2 min-h-[360px] w-[80%] md:w-[80%] mx-auto border border-gray-700/50">
               <div className="flex flex-col items-center text-center h-full">
                 {/* Avatar */}
                 <div className="relative mb-4">
-                  <img
+                  <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}
+                    width={64}
+                    height={64}
                     className="w-16 h-16 rounded-full object-cover border-3 border-blue-400 shadow-md"
                   />
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
@@ -88,7 +91,7 @@ export default () => {
 
                 {/* Comment */}
                 <blockquote className="text-gray-300 italic mb-2 md:mb-4 text-sm leading-relaxed flex-1">
-                  "{testimonial.comment}"
+                  &ldquo;{testimonial.comment}&rdquo;
 
                 {/* Name and Company */}
                   <div className="flex flex-col items-center justify-center mt-4 md:mt-6">
@@ -110,3 +113,7 @@ export default () => {
     </div>
   );
 };
+
+TestimonialsSection.displayName = "TestimonialsSection";
+
+export default TestimonialsSection;

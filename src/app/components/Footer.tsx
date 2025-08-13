@@ -6,14 +6,6 @@ import Image from "next/image";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/nosotros", label: "Nosotros" },
-    { href: "/servicios", label: "Servicios" },
-    { href: "/testimonios", label: "Testimonios" },
-    { href: "/contact", label: "Contacto" },
-  ];
-
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
       {/* Gradient overlay for extra depth */}

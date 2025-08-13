@@ -2,15 +2,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const transition = {
-  type: "spring" as const,
-  mass: 0.5,
-  damping: 11.5,
-  stiffness: 100,
-  restDelta: 0.001,
-  restSpeed: 0.001,
-};
-
 export const MenuItem = ({
   item,
   onClick,
@@ -87,11 +78,22 @@ export const ProductItem = ({
   );
 };
 
-export const HoveredLink = ({ children, ...rest }: any) => {
+export const HoveredLink = ({ 
+  children, 
+  href,
+  className,
+  ...rest 
+}: {
+  children: React.ReactNode;
+  href?: string;
+  className?: string;
+  [key: string]: unknown;
+}) => {
   return (
     <a
+      href={href}
+      className={`text-neutral-700 dark:text-neutral-200 hover:text-black ${className || ''}`}
       {...rest}
-      className="text-neutral-700 dark:text-neutral-200 hover:text-black "
     >
       {children}
     </a>

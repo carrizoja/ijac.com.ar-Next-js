@@ -1,43 +1,36 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { PrimaryButton } from "./ui/PrimaryButton";
+import { motion } from "framer-motion";
+import { HeroHighlight, Highlight } from "./ui/hero-highlight";
 
-// Custom hook for number animation
-const useCountAnimation = (targetValue: number, isVisible: boolean, delay: number = 0) => {
-  const [currentValue, setCurrentValue] = useState(0);
+// Move the hook outside the component
+function useCountAnimation(target: number, duration: number = 2000) {
+  const [count, setCount] = React.useState(0);
 
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const timer = setTimeout(() => {
-      let startTime: number;
-      const duration = 2000; // 2 seconds animation
+  React.useEffect(() => {
+    let startTime: number;
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      const currentCount = Math.floor(progress * target);
+      setCount(currentCount);
       
-      const animate = (timestamp: number) => {
-        if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        
-        // Easing function for smooth animation
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-        const value = Math.floor(easeOutQuart * targetValue);
-        
-        setCurrentValue(value);
-        
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          setCurrentValue(targetValue);
-        }
-      };
-      
-      requestAnimationFrame(animate);
-    }, delay);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, [target, duration]);
 
-    return () => clearTimeout(timer);
-  }, [targetValue, isVisible, delay]);
+  return count;
+}
 
-  return currentValue;
-};
+// Create a separate component for the counter
+function CounterDisplay({ target, suffix = "" }: { target: number; suffix?: string }) {
+  const count = useCountAnimation(target);
+  return <>{count}{suffix}</>;
+}
 
 // Custom hook for scroll-triggered fade-in effect
 const useScrollFadeIn = () => {
@@ -52,191 +45,119 @@ const useScrollFadeIn = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          // Once visible, we don't need to observe anymore
-          observer.unobserve(element);
         }
       },
-      {
-        threshold: 0.1, // Trigger when 10% of the component is visible
-        rootMargin: '50px 0px -50px 0px' // Start animation 50px before it's fully in view
-      }
+      { threshold: 0.2 }
     );
 
     observer.observe(element);
 
     return () => {
-      if (element) {
-        observer.unobserve(element);
-      }
+      observer.unobserve(element);
     };
   }, []);
 
-  return { isVisible, ref };
+  return { ref, isVisible };
 };
 
 export function About() {
-  const { isVisible, ref } = useScrollFadeIn();
+  const { ref } = useScrollFadeIn();
 
   const stats = [
     {
-      number: "150+",
       numericValue: 150,
-      title: "Clientes Satisfechos",
-      description: "Más de 150 clientes confiando en nuestros servicios",
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-      gradient: "from-blue-500 to-cyan-500",
-      delay: 0
+      suffix: "+",
+      label: "Proyectos Completados",
+      color: "text-blue-600"
     },
     {
-      number: "15+",
-      numericValue: 15,
-      title: "Años de Experiencia",
-      description: "Más de 15 años de experiencia en el mercado",
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      gradient: "from-purple-500 to-pink-500",
-      delay: 200
-    },
-    {
-      number: "1000+",
-      numericValue: 1000,
-      title: "Proyectos Completados",
-      description: "Más de 1000 trabajos y proyectos realizados",
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-        </svg>
-      ),
-      gradient: "from-emerald-500 to-teal-500",
-      delay: 400
+      numericValue: 98,
+      suffix: "%",
+      label: "Satisfacción del Cliente",
+      color: "text-purple-600"
     }
   ];
 
   return (
-    <section 
-      ref={ref}
-      className={`relative py-20 overflow-hidden mt-10 mb-10 transition-all duration-1000 ease-out ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-      }`}
-    >
-      {/* Dark Background with Tech Pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-slate-900 to-black"></div>
-      
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px'
-        }}></div>
-      </div>
-
-      {/* Floating Tech Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
-        <div className="absolute top-40 right-20 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-32 left-1/4 w-4 h-4 bg-cyan-400 rounded-full animate-bounce"></div>
-        <div className="absolute bottom-20 right-1/3 w-2 h-2 bg-pink-400 rounded-full animate-ping"></div>
-      </div>
-
-      {/* Glowing Orbs */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-10 right-10 w-40 h-40 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-10 left-10 w-32 h-32 bg-purple-500 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-cyan-500 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className={`text-center mb-16 transition-all duration-1000 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`} style={{ transitionDelay: '200ms' }}>
-          <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-blue-200 to-cyan-200 bg-clip-text text-transparent mb-6">
-            Nosotros
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto mb-6"></div>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Somos una empresa líder en soluciones tecnológicas, comprometida con la excelencia 
-            y la innovación en cada proyecto que realizamos.
-          </p>
+    <section id="nosotros" className="py-20 bg-neutral-50 dark:bg-neutral-900" ref={ref}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent font-heading"
+          >
+            Sobre Nosotros
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
+          >
+            Somos expertos en transformación digital con más de una década de experiencia
+          </motion.p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {stats.map((stat, index) => {
-            const animatedNumber = useCountAnimation(stat.numericValue, isVisible, stat.delay);
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-6"
+          >
+            <HeroHighlight>
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                En <Highlight className="text-black dark:text-white">iJac IT Solutions</Highlight>, 
+                nos especializamos en brindar soluciones tecnológicas innovadoras que impulsan 
+                el crecimiento de tu negocio.
+              </p>
+            </HeroHighlight>
             
-            return (
-              <div
-                key={index}
-                className={`group relative transform transition-all duration-1000 ease-out ${
-                  isVisible ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'
-                }`}
-                style={{ transitionDelay: `${400 + stat.delay}ms` }}
-              >
-                {/* Card Background */}
-                <div className="relative p-8 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-700/50 hover:border-gray-600/50 transition-all duration-500 group">
-                  
-                  {/* Gradient Overlay on Hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-500`}></div>
-                  
-                  {/* Glowing Border Effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-30 rounded-2xl blur-xl transition-opacity duration-500`}></div>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+              Nuestro equipo de profesionales altamente calificados trabaja incansablemente 
+              para ofrecer servicios de calidad mundial, desde desarrollo web hasta consultoría 
+              empresarial, siempre adaptándonos a las necesidades específicas de cada cliente.
+            </p>
 
-                  {/* Content */}
-                  <div className="relative z-10">
-                    {/* Icon */}
-                    <div className={`w-16 h-16 bg-gradient-to-br ${stat.gradient} rounded-2xl flex items-center justify-center text-white mb-6 transition-transform duration-300 shadow-lg`}>
-                      {stat.icon}
-                    </div>
-
-                    {/* Animated Number */}
-                    <div className={`text-5xl md:text-6xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-4 transition-transform duration-300`}>
-                      {animatedNumber}{stat.number.includes('+') ? '+' : ''}
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-2xl font-semibold text-white mb-3 group-hover:text-blue-200 transition-colors duration-300">
-                      {stat.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-gray-400 text-lg leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
-                      {stat.description}
-                    </p>
+            <div className="grid grid-cols-2 gap-6 mt-8">
+              {stats.map((stat, index) => (
+                <div key={index} className="text-center p-6 bg-white dark:bg-neutral-800 rounded-xl shadow-lg">
+                  <div className={`text-3xl font-bold ${stat.color} mb-2`}>
+                    <CounterDisplay target={stat.numericValue} suffix={stat.suffix} />
                   </div>
+                  <p className="text-gray-600 dark:text-gray-400">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
 
-                  {/* Tech Lines Decoration */}
-                  <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-40 transition-opacity duration-300">
-                    <div className="w-8 h-px bg-gradient-to-r from-transparent to-blue-400"></div>
-                    <div className="w-6 h-px bg-gradient-to-r from-transparent to-blue-400 mt-1"></div>
-                    <div className="w-4 h-px bg-gradient-to-r from-transparent to-blue-400 mt-1"></div>
-                  </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative"
+          >
+            <div className="relative z-10 bg-gradient-to-br from-blue-500 to-purple-600 p-8 rounded-2xl text-white">
+              <h3 className="text-2xl font-bold mb-4 font-heading">Nuestra Misión</h3>
+              <p className="text-blue-100 leading-relaxed mb-6">
+                Democratizar la tecnología para que todas las empresas, sin importar su tamaño, 
+                puedan acceder a soluciones de clase mundial que impulsen su competitividad 
+                en el mercado digital.
+              </p>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-2xl">🚀</span>
+                </div>
+                <div>
+                  <p className="font-semibold">Innovación Constante</p>
+                  <p className="text-blue-200 text-sm">Siempre a la vanguardia tecnológica</p>
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom CTA */}
-        <div className={`text-center mt-16 transition-all duration-1000 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`} style={{ transitionDelay: '1000ms' }}>
-          <PrimaryButton 
-            text="Únete a nuestros clientes satisfechos" 
-            variant="large" 
-            colorVariant="blue"
-            onClick={() => window.open('https://wa.me/5411123456789?text=Hola%2C%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios', '_blank')}
-          />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl transform rotate-3 -z-10"></div>
+          </motion.div>
         </div>
       </div>
     </section>
