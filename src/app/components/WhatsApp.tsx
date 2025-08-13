@@ -13,7 +13,7 @@ const WhatsApp = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
       {/* Tooltip */}
       <div className={`absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg transition-all duration-300 whitespace-nowrap ${
         isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
@@ -27,8 +27,14 @@ const WhatsApp = () => {
         onClick={handleWhatsAppClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="group relative w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-out transform hover:scale-110 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-50"
+        className="group relative w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-out transform hover:scale-110 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-50"
         aria-label="Contactar por WhatsApp"
+        style={{ 
+          position: 'fixed',
+          bottom: '1rem',
+          right: '1rem',
+          zIndex: 9999
+        }}
       >
         {/* Animated ring */}
         <div className="absolute inset-0 rounded-full bg-green-400 opacity-20 animate-[ping_18s_ease-in-out_infinite]"></div>
@@ -39,7 +45,7 @@ const WhatsApp = () => {
         {/* WhatsApp Icon */}
         <div className="relative flex items-center justify-center w-full h-full">
           <svg
-            className="w-7 h-7 md:w-8 md:h-8 text-white transition-transform duration-300 group-hover:scale-110"
+            className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white transition-transform duration-300 group-hover:scale-110"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -48,20 +54,10 @@ const WhatsApp = () => {
         </div>
 
         {/* Pulse effect for new messages indicator */}
-        <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-          <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+        <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full flex items-center justify-center">
+          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full animate-pulse"></div>
         </div>
       </button>
-
-      {/* Mobile-specific adjustments */}
-      <style jsx>{`
-        @media (max-width: 640px) {
-          .fixed {
-            bottom: 1rem;
-            right: 1rem;
-          }
-        }
-      `}</style>
     </div>
   );
 };

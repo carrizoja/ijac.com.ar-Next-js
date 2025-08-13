@@ -45,7 +45,7 @@ const TestimonialsSection = () => {
     ));
   };
   return (
-    <div className="my-8 w-[95%] md:w-2/3 mx-auto">
+    <div className="my-8 w-full max-w-4xl mx-auto px-4">
       <Swiper
         // install Swiper modules
         modules={[Navigation, Pagination, A11y, EffectFlip, Autoplay]}
@@ -68,7 +68,7 @@ const TestimonialsSection = () => {
       >
                 {testimonials.map((testimonial: Testimonial) => (
           <SwiperSlide key={testimonial.id}>
-            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-6 mx-2 min-h-[360px] w-[80%] md:w-[80%] mx-auto border border-gray-700/50">
+            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-4 sm:p-6 min-h-[360px] w-full max-w-md mx-auto border border-gray-700/50">
               <div className="flex flex-col items-center text-center h-full">
                 {/* Avatar */}
                 <div className="relative mb-4">

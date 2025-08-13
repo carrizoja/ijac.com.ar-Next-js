@@ -107,9 +107,9 @@ export function About() {
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            <HeroHighlight>
-              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                En <Highlight className="text-black dark:text-white">iJac IT Solutions</Highlight>, 
+            <HeroHighlight containerClassName=" w-full md:w-[100%] h-48 rounded-2xl border border-gray-200 dark:border-gray-700">
+              <p className="text-lg text-center text-gray-700 dark:text-gray-300 leading-relaxed">
+                En <Highlight className="text-black dark:text-white p-1 md:p-2">iJac IT Solutions</Highlight>, 
                 nos especializamos en brindar soluciones tecnológicas innovadoras que impulsan 
                 el crecimiento de tu negocio.
               </p>

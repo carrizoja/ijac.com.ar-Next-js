@@ -82,7 +82,7 @@ export function HamburgerMenu() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed top-0 right-0 h-full w-80 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 border-l border-gray-200 dark:border-gray-700/50 z-[95] shadow-2xl"
+            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 border-l border-gray-200 dark:border-gray-700/50 z-[95] shadow-2xl"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}

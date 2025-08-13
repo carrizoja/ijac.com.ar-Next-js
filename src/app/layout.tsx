@@ -107,18 +107,20 @@ export default function RootLayout({
         <meta name="theme-color" content="#1f2937" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased overflow-x-hidden`}>
         <GoogleAnalytics />
         <PerformanceMonitor />
-        <div className="hidden min-[700px]:block">
-          <NavbarIjac />
+        <div className="min-h-screen overflow-x-hidden">
+          <div className="hidden min-[700px]:block">
+            <NavbarIjac />
+          </div>
+          <div className="block min-[700px]:hidden">
+            <HamburgerMenu />
+          </div>
+          {children}
+          <WhatsApp />
+          <Footer />
         </div>
-        <div className="block min-[700px]:hidden">
-          <HamburgerMenu />
-        </div>
-        {children}
-        <WhatsApp />
-        <Footer />
       </body>
     </html>
   );

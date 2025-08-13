@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { FloatingDock } from "./ui/floatingDock";
 import {
   IconBrandGithub,
@@ -36,7 +37,7 @@ export function MobileNav() {
     {
       title: "Aceternity UI",
       icon: (
-        <img
+        <Image
           src="https://assets.aceternity.com/logo-dark.png"
           width={20}
           height={20}

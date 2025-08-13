@@ -156,9 +156,11 @@ export const TypewriterEffectSmooth = ({
         }}
       >
         <div
-          className="text-sm sm:text-lg md:text-3xl lg:text-4xl xl:text-4xl 2xl:text-4xl font-heading font-bold"
+          className="text-sm sm:text-lg md:text-3xl lg:text-4xl xl:text-4xl 2xl:text-4xl font-heading font-bold px-2"
           style={{
             whiteSpace: "nowrap",
+            maxWidth: "90vw",
+            overflow: "hidden",
           }}
         >
           {renderWords()}{" "}
