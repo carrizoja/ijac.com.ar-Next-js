@@ -6,11 +6,11 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: "¿Qué servicios de IT ofrece iJac?",
-    answer: "iJac IT Solutions ofrece servicios completos de consultoría IT, soporte técnico, desarrollo de software, gestión de infraestructura, y soluciones tecnológicas personalizadas para empresas en Argentina y a nivel global."
+    answer: "iJac IT Solutions ofrece servicios completos de consultoría IT, soporte técnico, asistencias remotas, desarrollo de software, gestión de infraestructura, y soluciones tecnológicas personalizadas para empresas en Argentina y a nivel global."
   },
   {
-    question: "¿Atienden empresas de todos los tamaños?",
-    answer: "Sí, trabajamos con empresas de todos los tamaños, desde startups hasta grandes corporaciones, adaptando nuestras soluciones tecnológicas a las necesidades específicas de cada cliente."
+    question: "¿Cualquier tipo de empresa puede contactar a iJac?",
+    answer: "Sí, trabajamos con empresas de todos los tamaños, desde startups hasta grandes corporaciones o, también, emprendedores o particulares adaptando nuestras soluciones tecnológicas a las necesidades específicas de cada cliente."
   },
   {
     question: "¿Cuál es el horario de atención?",

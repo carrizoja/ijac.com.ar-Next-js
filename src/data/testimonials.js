@@ -28,13 +28,13 @@ export const testimonials = [
     name: "Sofia Ceria",
     company: "Sweet Design Pastelería",
     comment: "Son cordiales y siempre predispuestos a la resolución de los problemas. ¡Muy pacientes!",
-    rating: 4,
+    rating: 5,
     avatar: "https://res.cloudinary.com/ijac-it-solutions/image/upload/v1664910085/portfolio/sofiAvatar_qzwgml.png"
   },
   {
     id: 5,
     name: "Laura Bondoni",
-    company: "EcoTech Argentina",
+    company: "Diseñadora Freelancer",
     comment: "Puedo recomendarlos por su capacidad profesional, su servicio y compromiso responsable y su calidez humana. Para una diseñadora gráfica es fundamental contar con personas de plena confianza.",
     rating: 5,
     avatar: "https://res.cloudinary.com/ijac-it-solutions/image/upload/v1679274389/img/laura_bondoni_pbma05.jpg"

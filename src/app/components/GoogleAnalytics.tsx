@@ -2,22 +2,19 @@
 
 import Script from 'next/script'
 
-export function GoogleAnalytics({ ga_id = 'GA_MEASUREMENT_ID' }: { ga_id?: string } = {}) {
+export function GoogleAnalytics({ ga_id = 'G-8NYPRQK16F' }: { ga_id?: string } = {}) {
   return (
     <>
       <Script
-        strategy="lazyOnload"
+        strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${ga_id}`}
       />
-      <Script id="google-analytics" strategy="lazyOnload">
+      <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${ga_id}', {
-            page_title: document.title,
-            page_location: window.location.href,
-          });
+          gtag('config', '${ga_id}');
         `}
       </Script>
     </>

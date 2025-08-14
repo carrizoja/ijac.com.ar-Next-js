@@ -93,7 +93,7 @@ export function Contact() {
             Contactanos
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Estamos acá para ayudarte con todas tus necesidades tecnológicas. 
+            Estamos acá para ayudarte con tus necesidades tecnológicas. 
             No dudes en contactarnos por cualquiera de estos medios.
           </p>
         </div>

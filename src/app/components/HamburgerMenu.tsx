@@ -180,7 +180,7 @@ export function HamburgerMenu() {
 
                 {/* Company Info */}
                 <div className="text-center text-gray-400 text-sm">
-                  <p className="mb-1">iJAC Soluciones IT</p>
+                  <p className="mb-1">iJAC IT Solutions</p>
                   <p>Almagro, Buenos Aires</p>
                 </div>
               </motion.div>

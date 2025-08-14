@@ -108,7 +108,7 @@ export function About() {
             className="space-y-6"
           >
             <HeroHighlight containerClassName=" w-full md:w-[100%] h-48 rounded-2xl border border-gray-200 dark:border-gray-700">
-              <p className="text-lg text-center text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p className=" w-[90%] mx-auto text-start text-lg text-center text-gray-700 dark:text-gray-300 leading-relaxed">
                 En <Highlight className="text-black dark:text-white p-1 md:p-2">iJac IT Solutions</Highlight>, 
                 nos especializamos en brindar soluciones tecnológicas innovadoras que impulsan 
                 el crecimiento de tu negocio.
@@ -116,9 +116,8 @@ export function About() {
             </HeroHighlight>
             
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-              Nuestro equipo de profesionales altamente calificados trabaja incansablemente 
-              para ofrecer servicios de calidad mundial, desde desarrollo web hasta consultoría 
-              empresarial, siempre adaptándonos a las necesidades específicas de cada cliente.
+              Nuestro equipo de profesionales altamente calificados trabajan incansablemente 
+              para ofrecer servicios de calidad, desde desarrollo web hasta consultoría IT, siempre adaptándonos a las necesidades específicas de cada cliente.
             </p>
 
             <div className="grid grid-cols-2 gap-6 mt-8">
@@ -142,8 +141,8 @@ export function About() {
             <div className="relative z-10 bg-gradient-to-br from-blue-500 to-purple-600 p-8 rounded-2xl text-white">
               <h3 className="text-2xl font-bold mb-4 font-heading">Nuestra Misión</h3>
               <p className="text-blue-100 leading-relaxed mb-6">
-                Democratizar la tecnología para que todas las empresas, sin importar su tamaño, 
-                puedan acceder a soluciones de clase mundial que impulsen su competitividad 
+                Democratizar la tecnología para que todas las empresas, pymes, emprendedores y particulares 
+                puedan acceder a soluciones de calidad que impulsen su competitividad 
                 en el mercado digital.
               </p>
               <div className="flex items-center space-x-4">
