@@ -2,12 +2,12 @@
 import { TypewriterEffectSmooth } from "../components/ui/TypewriterEffect";
 export function TypewriterEffectSmoothDemo() {
   const words = [
-    {
+  /*   {
       text: "Hacemos",
     },
     {
       text: "ingeniería",
-    },
+    }, */
     {
       text: "para",
     },

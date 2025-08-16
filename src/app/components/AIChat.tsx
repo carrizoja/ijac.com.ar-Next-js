@@ -102,7 +102,7 @@ export function AIChat() {
     }
 
     // Ubicación
-    if (message.includes('ubicación') || message.includes('dónde están')) {
+    if (message.includes('ubicación') || message.includes('dónde están') || message.includes('dónde se encuentran')) {
       return '📍 **Ubicación**:\n\nEstamos ubicados en:\n**Almagro, Ciudad de Buenos Aires**';
     }
 
@@ -219,11 +219,10 @@ export function AIChat() {
               animate={{ opacity: 1, rotate: 0 }}
               exit={{ opacity: 0, rotate: 90 }}
               className="w-6 h-6 sm:w-7 sm:h-7 text-white"
-              fill="none"
-              stroke="currentColor"
+              fill="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a9.93 9.93 0 01-4.95-1.33L3 20l1.33-5.05A9.93 9.93 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
+              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
             </motion.svg>
           )}
         </AnimatePresence>

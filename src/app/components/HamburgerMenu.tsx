@@ -99,7 +99,7 @@ export function HamburgerMenu() {
 
               {/* Navigation Links */}
               <nav className="flex-1">
-                <ul className="space-y-6">
+                <ul className="space-y-4">
                   {menuItems.map((item, index) => (
                     <motion.li
                       key={item.section}
@@ -109,7 +109,7 @@ export function HamburgerMenu() {
                     >
                       <button
                         onClick={() => scrollToSection(item.section)}
-                        className="group relative w-full text-left py-4 px-6 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-white/80 dark:hover:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/30 hover:border-gray-400 dark:hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
+                        className="group relative w-full text-left py-3 px-6 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-white/80 dark:hover:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/30 hover:border-gray-400 dark:hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
                       >
                         {/* Glow Effect */}
                         <div className="absolute inset-0 bg-gradient-to-r from-gray-300/0 via-gray-400/10 to-gray-300/0 dark:from-blue-400/0 dark:via-cyan-400/5 dark:to-blue-400/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -147,8 +147,8 @@ export function HamburgerMenu() {
                   <Image
                     src="/ijac-logo.png"
                     alt="IJAC Logo"
-                    width={60}
-                    height={60}
+                    width={50}
+                    height={50}
                     className="hover:scale-110 transition-transform duration-300"
                     priority
                   />

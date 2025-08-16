@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { HeroHighlight, Highlight } from "./ui/hero-highlight";
+import { OurStaff } from "./OurStaff";
 
 // Move the hook outside the component
 function useCountAnimation(target: number, duration: number = 2000) {
@@ -108,14 +109,14 @@ export function About() {
             className="space-y-6"
           >
             <HeroHighlight containerClassName=" w-full md:w-[100%] h-48 rounded-2xl border border-gray-200 dark:border-gray-700">
-              <p className=" w-[90%] mx-auto text-start text-lg text-center text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p className=" w-[90%] mx-auto text-center text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
                 En <Highlight className="text-black dark:text-white p-1 md:p-2">iJac IT Solutions</Highlight>, 
                 nos especializamos en brindar soluciones tecnológicas innovadoras que impulsan 
                 el crecimiento de tu negocio.
               </p>
             </HeroHighlight>
             
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-center">
               Nuestro equipo de profesionales altamente calificados trabajan incansablemente 
               para ofrecer servicios de calidad, desde desarrollo web hasta consultoría IT, siempre adaptándonos a las necesidades específicas de cada cliente.
             </p>
@@ -158,7 +159,9 @@ export function About() {
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl transform rotate-3 -z-10"></div>
           </motion.div>
         </div>
+          <OurStaff />
       </div>
+    
     </section>
   );
 }
