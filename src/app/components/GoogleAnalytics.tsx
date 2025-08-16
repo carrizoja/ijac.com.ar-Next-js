@@ -13,6 +13,12 @@ export function GoogleAnalytics({ ga_id = 'G-8NYPRQK16F' }: { ga_id?: string } =
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
+          
+          // Set default consent to 'denied' as a placeholder
+          gtag('consent', 'default', {
+            'analytics_storage': 'denied'
+          });
+          
           gtag('js', new Date());
           gtag('config', '${ga_id}');
         `}

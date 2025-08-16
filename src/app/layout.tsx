@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import WhatsApp from "./components/WhatsApp";
 import { GoogleAnalytics } from "./components/GoogleAnalytics";
 import { PerformanceMonitor } from "./components/PerformanceMonitor";
+import { CookieConsent } from "./components/CookieConsent";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -121,6 +122,7 @@ export default function RootLayout({
           <WhatsApp />
           <Footer />
         </div>
+        <CookieConsent />
       </body>
     </html>
   );
