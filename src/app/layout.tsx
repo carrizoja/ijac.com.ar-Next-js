@@ -4,7 +4,7 @@ import "./globals.css";
 import { NavbarIjac } from "./components/Navbarijac";
 import { HamburgerMenu } from "./components/HamburgerMenu";
 import Footer from "./components/Footer";
-import WhatsApp from "./components/WhatsApp";
+import { AIChat } from "./components/AIChat";
 import { GoogleAnalytics } from "./components/GoogleAnalytics";
 import { PerformanceMonitor } from "./components/PerformanceMonitor";
 import { CookieConsent } from "./components/CookieConsent";
@@ -119,7 +119,7 @@ export default function RootLayout({
             <HamburgerMenu />
           </div>
           {children}
-          <WhatsApp />
+          <AIChat />
           <Footer />
         </div>
         <CookieConsent />
