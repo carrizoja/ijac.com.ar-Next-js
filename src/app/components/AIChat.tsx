@@ -176,7 +176,7 @@ export function AIChat() {
 
   const quickQuestions = [
     "¿Qué servicios ofrecen?",
-    "¿Cuánto cuesta un sitio web?",
+    "¿Dónde se encuentran?",
     "¿Hacen servicio técnico de productos Apple?",
     "¿Cuál es el horario de atención?",
     "¿Cómo los contacto?"
@@ -261,7 +261,7 @@ export function AIChat() {
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full"></div>
                 </div>
                 <div>
-                  <h3 className="font-semibold">iJAC AI Assistant</h3>
+                  <h3 className="font-semibold">iJAC Ai Assistant</h3>
                   <p className="text-sm opacity-90">Asistente Inteligente</p>
                 </div>
               </div>
