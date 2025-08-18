@@ -1,17 +1,10 @@
 'use client'
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { staffMembers } from '../../data/staff.js';
 
-interface StaffMember {
-  id: number;
-  name: string;
-  position: string;
-  initials: string;
-  color: string;
-  avatar: string;
-}
 
 export function OurStaff() {
   const containerVariants = {
@@ -101,9 +94,11 @@ export function OurStaff() {
                 {/* Avatar */}
                 <div className="flex justify-center mb-4">
                   <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 ring-2 ring-white dark:ring-neutral-700">
-                    <img 
+                    <Image 
                       src={member.avatar} 
                       alt={member.name}
+                      width={80}
+                      height={80}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         // Fallback to initials if image fails to load

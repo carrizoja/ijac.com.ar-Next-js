@@ -14,6 +14,14 @@ export const testimonials = [
     comment: "He confiado en iJac IT Solutions desde hace casi 17 años y siempre con los mejores resultados. ¡Recomendable!",
     rating: 5,
     avatar: "https://res.cloudinary.com/dovghglgj/image/upload/v1755097934/ijac/testimonials/Screenshot_from_2025-08-13_12-03-33_l4eubp.png"
+  },
+   {
+    id: 3,
+    name: "Eva",
+    company: "Administrativa PHMC",
+    comment: "Recomiendo a iJac IT Solutions por el excelente trato y resolución con un aporte ágil, profesional y de alta calidad.",
+    rating: 5,
+    avatar: "https://res.cloudinary.com/dovghglgj/image/upload/v1755386086/ijac/testimonials/eva_zrbysp.jpg"
   }
 
 

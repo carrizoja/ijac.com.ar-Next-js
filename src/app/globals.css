@@ -1,6 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* SphereFez Font */
+@font-face {
+  font-family: 'SphereFez';
+  src: url('/fonts/SphereFez-8MAzJ.ttf') format('truetype'),
+       url('/fonts/SphereFez-Yz5g4.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
