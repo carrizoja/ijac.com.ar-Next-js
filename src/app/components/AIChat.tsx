@@ -214,15 +214,22 @@ export function AIChat() {
             </motion.svg>
           ) : (
             <motion.svg
-              key="chat"
+              key="chatbot"
               initial={{ opacity: 0, rotate: -90 }}
               animate={{ opacity: 1, rotate: 0 }}
               exit={{ opacity: 0, rotate: 90 }}
-              className="w-6 h-6 sm:w-7 sm:h-7 text-white"
+              className="w-10 h-10 sm:w-11 sm:h-11 text-white"
+              viewBox="-1.6 -1.6 19.20 19.20"
+              xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
-              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="0.00016"
             >
-              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#CCCCCC" strokeWidth="0.032"></g>
+              <g id="SVGRepo_iconCarrier">
+                <path fillRule="evenodd" clipRule="evenodd" d="M8.48 4h4l.5.5v2.03h.52l.5.5V8l-.5.5h-.52v3l-.5.5H9.36l-2.5 2.76L6 14.4V12H3.5l-.5-.64V8.5h-.5L2 8v-.97l.5-.5H3V4.36L3.53 4h4V2.86A1 1 0 0 1 7 2a1 1 0 0 1 2 0 1 1 0 0 1-.52.83V4zM12 8V5H4v5.86l2.5.14H7v2.19l1.8-2.04.35-.15H12V8zm-2.12.51a2.71 2.71 0 0 1-1.37.74v-.01a2.71 2.71 0 0 1-2.42-.74l-.7.71c.34.34.745.608 1.19.79.45.188.932.286 1.42.29a3.7 3.7 0 0 0 2.58-1.07l-.7-.71zM6.49 6.5h-1v1h1v-1zm3 0h1v1h-1v-1z"></path>
+              </g>
             </motion.svg>
           )}
         </AnimatePresence>
