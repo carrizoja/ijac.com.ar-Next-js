@@ -93,7 +93,7 @@ export function OurStaff() {
                 
                 {/* Avatar */}
                 <div className="flex justify-center mb-4">
-                  <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 ring-2 ring-white dark:ring-neutral-700">
+                  <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 ring-2 ring-white dark:ring-neutral-700">
                     <Image 
                       src={member.avatar} 
                       alt={member.name}

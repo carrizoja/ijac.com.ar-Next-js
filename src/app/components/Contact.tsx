@@ -106,7 +106,7 @@ export function Contact() {
               href={contact.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-500 hover:scale-105 hover:shadow-2xl"
+              className="group relative p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-500 hover:shadow-2xl"
             >
               {/* Gradient Background on Hover */}
               <div className={`absolute inset-0 bg-gradient-to-br ${contact.bgGradient} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-500`}></div>

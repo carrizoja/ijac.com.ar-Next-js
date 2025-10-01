@@ -2,18 +2,18 @@ import { Metadata } from 'next'
 import { Breadcrumbs } from '../components/Breadcrumbs'
 
 export const metadata: Metadata = {
-  title: 'Contact iJac IT Solutions | IT Consulting & Support in Buenos Aires',
-  description: 'Contact iJac IT Solutions for professional IT consulting, technical support, and business solutions in Buenos Aires, Argentina. Get expert assistance today.',
-  keywords: 'contact iJac, IT support Buenos Aires, technical consulting contact, IT services Argentina, business technology support',
+  title: 'Contacto iJac IT Solutions | IT Consulting & Support en Buenos Aires',
+  description: 'Contactá a iJac IT Solutions para obtener servicios profesionales de consultoría y soporte IT en Buenos Aires, Argentina. Obtén asistencia experta hoy.',
+  keywords: 'contacto iJac, soporte IT Buenos Aires, contacto consultoría técnica, servicios IT Argentina, soporte tecnológico empresarial',
   openGraph: {
-    title: 'Contact iJac IT Solutions | Expert IT Support',
-    description: 'Get in touch with iJac IT Solutions for professional IT consulting and support services in Buenos Aires.',
+    title: 'Contacto iJac IT Solutions | Soporte IT Experto',
+    description: 'Ponete en contacto con iJac IT Solutions para obtener servicios profesionales de consultoría y soporte IT en Buenos Aires.',
     url: 'https://ijac.com.ar/contact',
     type: 'website',
   },
   twitter: {
-    title: 'Contact iJac IT Solutions | Expert IT Support',
-    description: 'Get in touch with iJac IT Solutions for professional IT consulting and support services in Buenos Aires.',
+    title: 'Contactá a iJac IT Solutions | Expertos en Soluciones IT',
+    description: 'Ponete en contacto con iJac IT Solutions para obtener servicios profesionales de consultoría y soporte IT en Buenos Aires.',
   },
   alternates: {
     canonical: 'https://ijac.com.ar/contact'
@@ -52,25 +52,23 @@ export default function ContactPage() {
         <Breadcrumbs items={breadcrumbItems} />
         
         <div className="flex flex-col items-center justify-center min-h-screen p-8">
-          <h1 className="text-4xl font-bold mb-8 font-heading">Contact Us</h1>
-          <p className="text-lg mb-8">Get in touch with our team</p>
-          
+          <h1 className="text-4xl font-bold mb-8 font-heading">Contactanos</h1>
+          <p className="text-lg mb-8">Ponete en contacto con nuestro equipo</p>
+
           <div className="max-w-md w-full space-y-4">
             <div className="p-6 border rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 font-heading">Contact Information</h2>
+              <h2 className="text-xl font-semibold mb-4 font-heading">Información de Contacto</h2>
               <div className="space-y-2">
-                <p><strong>Email:</strong> <a href="mailto:info@ijac.com.ar" className="text-blue-600 hover:text-blue-800">info@ijac.com.ar</a></p>
-                <p><strong>Phone:</strong> <a href="tel:+541112345678" className="text-blue-600 hover:text-blue-800">+54 11 1234-5678</a></p>
-                <p><strong>Address:</strong> Buenos Aires, Argentina</p>
+                <p><strong>Email:</strong> <a href="mailto:jose.carrizo@ijac.com.ar" className="text-blue-600 hover:text-blue-800">jose.carrizo@ijac.com.ar</a></p>
+                <p><strong>Teléfono:</strong> <a href="tel:+541130862409" className="text-blue-600 hover:text-blue-800">+54 11 30862409</a></p>
+                <p><strong>Dirección:</strong> Buenos Aires, Argentina</p>
               </div>
             </div>
             
             <div className="p-6 border rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 font-heading">Business Hours</h2>
+              <h2 className="text-xl font-semibold mb-4 font-heading">Horario de Atención</h2>
               <div className="space-y-1">
-                <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
-                <p>Saturday: 10:00 AM - 2:00 PM</p>
-                <p>Sunday: Closed</p>
+                <p>Lunes - Viernes: 9:00 AM - 6:00 PM</p>
               </div>
             </div>
           </div>

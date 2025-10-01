@@ -63,8 +63,6 @@ const TestimonialsSection = () => {
         }}
         pagination={{ clickable: true }}
         scrollbar={{ draggable: true }}
-        onSwiper={(swiper) => console.log(swiper)}
-        onSlideChange={() => console.log("slide change")}
       >
                 {testimonials.map((testimonial: Testimonial) => (
           <SwiperSlide key={testimonial.id}>

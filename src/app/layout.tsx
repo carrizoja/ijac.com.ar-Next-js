@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { NavbarIjac } from "./components/Navbarijac";
 import { HamburgerMenu } from "./components/HamburgerMenu";
 import Footer from "./components/Footer";
 import { AIChat } from "./components/AIChat";
-import { GoogleAnalytics } from "./components/GoogleAnalytics";
 import { PerformanceMonitor } from "./components/PerformanceMonitor";
 import { CookieConsent } from "./components/CookieConsent";
+import { ClientRedirect } from "./components/ClientRedirect";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,8 +33,8 @@ export const metadata: Metadata = {
     "desarrollo web",
     "computación", 
     "consultoría IT",
-    "soporte técnico",
-    "servicio técnico",
+    "soporte técnico almagro",
+    "servicio técnico almagro",
     "pc",
     "mac",
     "apple",
@@ -68,7 +69,7 @@ export const metadata: Metadata = {
     siteName: 'iJac IT Solutions',
     images: [
       {
-        url: 'https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png',
+        url: 'https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_pos.png',
         width: 1200,
         height: 630,
         alt: 'iJac IT Solutions',
@@ -81,7 +82,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "iJac IT Solutions",
     description: "Hacemos ingeniería para un mundo más inteligente. Desarrollo web, sistemas empresariales y consultoría IT.",
-    images: ['https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png'],
+    images: ['https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_pos.png'],
   },
   robots: {
     index: true,
@@ -97,6 +98,10 @@ export const metadata: Metadata = {
   verification: {
     google: 'your-google-verification-code', // Add your verification code
   },
+  other: {
+    'google-site-verification': 'your-google-verification-code', // Backup verification
+    'msvalidate.01': 'your-bing-verification-code', // Bing verification
+  },
 };
 
 export default function RootLayout({
@@ -107,17 +112,30 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark">
       <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <meta name="theme-color" content="#1f2937" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased overflow-x-hidden`}>
-        <GoogleAnalytics />
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-8NYPRQK16F"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-8NYPRQK16F', {
+              page_title: document.title,
+              page_location: window.location.href,
+            });
+          `}
+        </Script>
         <PerformanceMonitor />
+        <ClientRedirect />
         <div className="min-h-screen overflow-x-hidden">
           <div className="hidden min-[700px]:block">
             <NavbarIjac />
