@@ -52,22 +52,27 @@ function Navbar({ className }: { className?: string }) {
           <div className="flex flex-row gap-x-2 justify-center items-center">
             <MenuItem
               item="Servicios"
+              href="/#servicios"
               onClick={() => scrollToSection("servicios")}
             />
             <MenuItem
               item="Nosotros"
+              href="/#nosotros"
               onClick={() => scrollToSection("nosotros")}
             />
             <MenuItem
               item="Testimonios"
+              href="/#testimonios"
               onClick={() => scrollToSection("testimonios")}
             />
             <MenuItem
               item="FAQ"
+              href="/#faq"
               onClick={() => scrollToSection("faq")}
             />
             <MenuItem
               item="Contacto"
+              href="/#contacto"
               onClick={() => scrollToSection("contacto")}
             />
           </div>

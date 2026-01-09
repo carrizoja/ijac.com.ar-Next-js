@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
+const isFirstCard = (index: number) => index === 0;
+
 export const Card = React.memo(
   ({
     card,
@@ -31,6 +33,7 @@ export const Card = React.memo(
       <Image
         src={card.src}
         alt={card.title}
+        loading={isFirstCard(index) ? "eager" : "lazy"}
         fill
         className="object-cover absolute inset-0"
       />
@@ -41,12 +44,12 @@ export const Card = React.memo(
         )}
       >
         <div className="text-white">
-          <div className="text-xl md:text-2xl font-medium bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-200 mb-2">
+          <h3 className="text-xl md:text-2xl font-medium bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-200 mb-2">
             {card.title}
-          </div>
-          <p className="text-sm md:text-base text-neutral-200 leading-relaxed">
+          </h3>
+          <h4 className="text-sm md:text-base text-neutral-200 leading-relaxed">
             {card.desc}
-          </p>
+          </h4>
         </div>
       </div>
     </div>

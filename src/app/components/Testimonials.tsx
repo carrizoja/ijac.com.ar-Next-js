@@ -46,6 +46,9 @@ const TestimonialsSection = () => {
   };
   return (
     <div className="my-8 w-full max-w-4xl mx-auto px-4">
+      <h2 className="text-lg sm:text-lg lg:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+        Lo que dicen nuestros clientes
+      </h2>
       <Swiper
         // install Swiper modules
         modules={[Navigation, Pagination, A11y, EffectFlip, Autoplay]}

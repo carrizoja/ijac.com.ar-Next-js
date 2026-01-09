@@ -24,10 +24,10 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "iJac IT Solutions | Buenos Aires",
+    default: "Desarrollo Web y Servicio Técnico en Buenos Aires | iJac IT Solutions",
     template: "%s | iJac IT Solutions"
   },
-  description: "iJac IT Solutions ofrece soluciones informáticas profesionales a nivel global. Nuestra empresa se sitúa en Buenos Aires. Desarrollo web, Apps, sistemas empresariales, consultoría IT y soporte técnico especializado para hacer tu mundo más inteligente.",
+  description: "iJac IT Solutions: Expertos en desarrollo web, soporte técnico pc mac y ciberseguridad en Almagro, CABA. Soluciones informáticas a medida para empresas. ¡Contáctanos!",
   keywords: [
     "soluciones informáticas",
     "desarrollo web",

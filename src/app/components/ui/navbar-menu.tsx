@@ -2,22 +2,33 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export const MenuItem = ({
   item,
   onClick,
+  href = "#",
 }: {
   item: string;
   onClick?: () => void;
+  href?: string;
 }) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <motion.div className="relative" whileHover="hover">
-      <p 
+      <Link 
+        href={href}
         className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
-        onClick={onClick}
+        onClick={handleClick}
       >
         {item}
-      </p>
+      </Link>
       <motion.div
         className="absolute -bottom-1 left-0 h-0.5 w-full bg-green-500"
         initial={{ scaleX: 0 }}

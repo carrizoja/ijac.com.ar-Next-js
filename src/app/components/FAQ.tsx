@@ -6,7 +6,7 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: "¿Qué servicios de IT ofrece iJac?",
-    answer: "iJac IT Solutions ofrece servicios completos de consultoría IT, soporte técnico, asistencias remotas, desarrollo de software, gestión de infraestructura, y soluciones tecnológicas personalizadas para empresas en Argentina y a nivel global."
+    answer: "iJac IT Solutions ofrece servicios completos de consultoría IT, soporte técnico de pc y mac, asistencias remotas, desarrollo web, webApps, aplicaciones móviles, gestión de infraestructura y soluciones tecnológicas personalizadas para empresas en Argentina y a nivel global."
   },
   {
     question: "¿Cualquier tipo de empresa puede contactar a iJac?",
@@ -44,7 +44,7 @@ export function FAQ() {
       />
       <section className="py-8 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 font-heading">
+          <h2 className="text-xl md:text-4xl font-bold text-center mb-12 font-heading">
             Preguntas Frecuentes
           </h2>
           <div className="space-y-6">

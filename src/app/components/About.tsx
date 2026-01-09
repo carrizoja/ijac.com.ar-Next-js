@@ -80,16 +80,16 @@ export function About() {
   ];
 
   return (
-    <section id="nosotros" className="py-20 bg-neutral-50 dark:bg-neutral-900" ref={ref}>
+    <section id="nosotros" className="py-16 bg-neutral-50 dark:bg-neutral-900" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent font-heading"
+            className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent font-heading"
           >
-            Sobre Nosotros
+            Expertos en Transformación Digital
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -97,7 +97,7 @@ export function About() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
           >
-            Somos expertos en transformación digital con más de una década de experiencia
+            Somos una empresa líder en desarrollo web y soporte técnico en Argentina
           </motion.p>
         </div>
 
@@ -111,14 +111,12 @@ export function About() {
             <HeroHighlight containerClassName=" w-full md:w-[100%] h-48 rounded-2xl border border-gray-200 dark:border-gray-700">
               <p className=" w-[90%] mx-auto text-center text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
                 En <Highlight className="text-black dark:text-white p-1 md:p-2">iJac IT Solutions</Highlight>, 
-                nos especializamos en brindar soluciones tecnológicas innovadoras que impulsan 
-                el crecimiento de tu negocio.
+                somos una empresa de software en Argentina con sede en Almagro, Buenos Aires,especializada en brindar soluciones informáticas que impulsen el crecimiento de tu negocio.
               </p>
             </HeroHighlight>
             
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-center">
-              Nuestro equipo de profesionales altamente calificados trabajan incansablemente 
-              para ofrecer servicios de calidad, desde desarrollo web hasta consultoría IT, siempre adaptándonos a las necesidades específicas de cada cliente.
+              Nuestro equipo de especialistas trabaja para ofrecer servicios integrales, desde el diseño web hasta el soporte técnico en CABA, garantizando una consultoría IT de primer nivel adaptada al mercado argentino y regional.
             </p>
 
             <div className="grid grid-cols-2 gap-6 mt-8">
@@ -142,9 +140,7 @@ export function About() {
             <div className="relative z-10 bg-gradient-to-br from-blue-500 to-purple-600 p-8 rounded-2xl text-white">
               <h3 className="text-2xl font-bold mb-4 font-heading">Nuestra Misión</h3>
               <p className="text-blue-100 leading-relaxed mb-6">
-                Democratizar la tecnología para que todas las empresas, pymes, emprendedores y particulares 
-                puedan acceder a soluciones de calidad que impulsen su competitividad 
-                en el mercado digital.
+                Democratizar el acceso a la ingeniería de software en Argentina para que pymes, emprendedores y particulares cuenten con herramientas tecnológicas competitivas, seguras y de alta calidad.
               </p>
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">

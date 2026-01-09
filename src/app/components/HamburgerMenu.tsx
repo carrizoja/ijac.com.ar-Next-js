@@ -185,13 +185,6 @@ export function HamburgerMenu() {
                 </div>
               </motion.div>
             </div>
-
-            {/* Floating Tech Elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute top-32 left-4 w-2 h-2 bg-gray-400 dark:bg-blue-400 rounded-full animate-ping opacity-60"></div>
-              <div className="absolute top-1/2 right-8 w-1 h-1 bg-gray-500 dark:bg-cyan-400 rounded-full animate-pulse opacity-40"></div>
-              <div className="absolute bottom-32 left-8 w-1.5 h-1.5 bg-gray-600 dark:bg-purple-400 rounded-full animate-bounce opacity-50"></div>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

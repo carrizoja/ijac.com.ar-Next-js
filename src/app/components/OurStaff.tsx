@@ -58,14 +58,14 @@ export function OurStaff() {
           viewport={{ once: true, margin: "-100px" }}
           variants={titleVariants}
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Nuestro
             <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent ml-3">
               Equipo
             </span>
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Un equipo de profesionales especializados comprometidos con la excelencia 
+            Un staff de profesionales especializados y comprometidos con la excelencia 
             y la innovación tecnológica para hacer realidad tus proyectos.
           </p>
         </motion.div>
