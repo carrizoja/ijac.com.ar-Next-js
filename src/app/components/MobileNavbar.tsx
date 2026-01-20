@@ -42,6 +42,7 @@ export function MobileNav() {
           width={20}
           height={20}
           alt="Aceternity Logo"
+          title="Aceternity Logo"
         />
       ),
       href: "#",

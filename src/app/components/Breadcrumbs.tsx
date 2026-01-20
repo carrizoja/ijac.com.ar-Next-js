@@ -42,6 +42,7 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
               ) : (
                 <a 
                   href={item.href} 
+                  title={`Ir a ${item.name}`}
                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                 >
                   {item.name}

@@ -100,6 +100,7 @@ export function CookieConsent() {
                       analizar el tráfico del sitio y personalizar el contenido. Al continuar navegando, acepta nuestros{' '}
                       <a 
                         href="/terminos-y-condiciones" 
+                        title="Ver Términos y Condiciones"
                         className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline font-medium"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -109,6 +110,7 @@ export function CookieConsent() {
                       y nuestra{' '}
                       <a 
                         href="/politica-de-privacidad" 
+                        title="Ver Política de Privacidad"
                         className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline font-medium"
                         target="_blank"
                         rel="noopener noreferrer"

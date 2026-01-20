@@ -59,8 +59,8 @@ export default function ContactPage() {
             <div className="p-6 border rounded-lg">
               <h2 className="text-xl font-semibold mb-4 font-heading">Información de Contacto</h2>
               <div className="space-y-2">
-                <p><strong>Email:</strong> <a href="mailto:jose.carrizo@ijac.com.ar" className="text-blue-600 hover:text-blue-800">jose.carrizo@ijac.com.ar</a></p>
-                <p><strong>Teléfono:</strong> <a href="tel:+541130862409" className="text-blue-600 hover:text-blue-800">+54 11 30862409</a></p>
+                <p><strong>Email:</strong> <a href="mailto:jose.carrizo@ijac.com.ar" title="Enviar correo electrónico a iJAC" className="text-blue-600 hover:text-blue-800">jose.carrizo@ijac.com.ar</a></p>
+                <p><strong>Teléfono:</strong> <a href="tel:+541130862409" title="Llamar a iJAC" className="text-blue-600 hover:text-blue-800">+54 11 30862409</a></p>
                 <p><strong>Dirección:</strong> Buenos Aires, Argentina</p>
               </div>
             </div>

@@ -36,10 +36,11 @@ function Navbar({ className }: { className?: string }) {
         <div className="flex flex-row items-center gap-2">
           {/* Logo */}
           <div className="flex justify-center">
-            <Link href="/" className="flex items-center mr-4">
+            <Link href="/" title="Ir al inicio" className="flex items-center mr-4">
               <Image
                 src="/ijac-logo.png"
                 alt="IJAC Logo"
+                title="IJAC IT Solutions Logo"
                 width={40}
                 height={40}
                 className="hover:scale-110 transition-transform duration-300"

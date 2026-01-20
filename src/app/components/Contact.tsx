@@ -71,25 +71,10 @@ export function Contact() {
         }}></div>
       </div>
 
-      {/* Floating Tech Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
-        <div className="absolute top-40 right-20 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-32 left-1/4 w-4 h-4 bg-cyan-400 rounded-full animate-bounce"></div>
-        <div className="absolute bottom-20 right-1/3 w-2 h-2 bg-pink-400 rounded-full animate-ping"></div>
-      </div>
-
-      {/* Glowing Orbs */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-10 right-10 w-40 h-40 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-10 left-10 w-32 h-32 bg-purple-500 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-cyan-500 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold font-heading bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
             Contactanos
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
@@ -104,6 +89,7 @@ export function Contact() {
             <a
               key={index}
               href={contact.href}
+              title={contact.title}
               target="_blank"
               rel="noopener noreferrer"
               className="group relative p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-500 hover:shadow-2xl"

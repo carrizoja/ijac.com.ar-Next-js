@@ -147,6 +147,7 @@ export function HamburgerMenu() {
                   <Image
                     src="/ijac-logo.png"
                     alt="IJAC Logo"
+                    title="IJAC IT Solutions Logo"
                     width={50}
                     height={50}
                     className="hover:scale-110 transition-transform duration-300"
@@ -158,6 +159,7 @@ export function HamburgerMenu() {
                 <div className="flex justify-center space-x-4 mb-6">
                   <a
                     href="https://www.instagram.com/ijacsi/"
+                    title="Seguinos en Instagram"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform duration-300"
@@ -168,6 +170,7 @@ export function HamburgerMenu() {
                   </a>
                   <a
                     href="https://www.facebook.com/ijacsolucionesinformaticas"
+                    title="Seguinos en Facebook"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform duration-300"

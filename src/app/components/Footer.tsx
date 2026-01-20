@@ -20,6 +20,7 @@ const Footer = () => {
               <Image
                 src="/ijac-logo.png"
                 alt="IJAC Logo"
+                title="IJAC IT Solutions Logo"
                 width={50}
                 height={50}
                 priority
@@ -29,6 +30,7 @@ const Footer = () => {
             <div className="flex space-x-4">
               <a
                 href="https://www.instagram.com/ijacsi/"
+                title="Seguinos en Instagram"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative w-10 h-10 bg-gray-800/50 hover:bg-pink-600 rounded-full flex items-center justify-center transition-all duration-500 ease-out hover:scale-110 hover:shadow-lg hover:shadow-pink-500/25 hover:-translate-y-1"
@@ -44,6 +46,7 @@ const Footer = () => {
               </a>
               <a
                 href="https://www.facebook.com/ijacsolucionesinformaticas"
+                title="Seguinos en Facebook"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative w-10 h-10 bg-gray-800/50 hover:bg-blue-600 rounded-full flex items-center justify-center transition-all duration-500 ease-out hover:scale-110 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-1"
@@ -73,6 +76,7 @@ const Footer = () => {
                 Powered by{" "}
                 <a
                   href="https://josecarrizo-dev.com"
+                  title="Visitar portafolio de José Carrizo"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-semibold hover:from-purple-400 hover:to-pink-400 transition-all duration-300"

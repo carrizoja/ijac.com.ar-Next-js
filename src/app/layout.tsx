@@ -14,17 +14,21 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Desarrollo Web y Servicio Técnico en Buenos Aires | iJac IT Solutions",
+    default: "Desarrollo Web y Servicio Técnico en CABA | iJac IT Solutions",
     template: "%s | iJac IT Solutions"
   },
   description: "iJac IT Solutions: Expertos en desarrollo web, soporte técnico pc mac y ciberseguridad en Almagro, CABA. Soluciones informáticas a medida para empresas. ¡Contáctanos!",
@@ -58,6 +62,10 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+  },
   metadataBase: new URL('https://ijac.com.ar'),
   alternates: {
     canonical: '/',
@@ -69,7 +77,7 @@ export const metadata: Metadata = {
     siteName: 'iJac IT Solutions',
     images: [
       {
-        url: 'https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_pos.png',
+        url: 'https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto:best,w_1200,h_630/v1755013017/ijac/logo_ijac_pos.png',
         width: 1200,
         height: 630,
         alt: 'iJac IT Solutions',
@@ -82,7 +90,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "iJac IT Solutions",
     description: "Hacemos ingeniería para un mundo más inteligente. Desarrollo web, sistemas empresariales y consultoría IT.",
-    images: ['https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_pos.png'],
+    images: ['https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto:best,w_1200,h_630/v1755013017/ijac/logo_ijac_pos.png'],
   },
   robots: {
     index: true,
@@ -94,13 +102,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  verification: {
-    google: 'your-google-verification-code', // Add your verification code
-  },
-  other: {
-    'google-site-verification': 'your-google-verification-code', // Backup verification
-    'msvalidate.01': 'your-bing-verification-code', // Bing verification
   },
 };
 
@@ -114,16 +115,18 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="preload" as="image" href="/ijac-logo.png" fetchPriority="high" />
         <meta name="theme-color" content="#1f2937" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased overflow-x-hidden`}>
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8NYPRQK16F"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}

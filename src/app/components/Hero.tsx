@@ -45,10 +45,14 @@ export function Hero() {
           <Image
             src="/ijac-logo.png"
             alt="iJAC IT Solutions Logo"
+            title="iJAC IT Solutions Logo"
             width={100}
             height={100}
             className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28"
             priority={true}
+            loading="eager"
+            quality={90}
+            sizes="(max-width: 768px) 80px, (max-width: 1024px) 96px, 112px"
           />
         </motion.div>
         <motion.h2

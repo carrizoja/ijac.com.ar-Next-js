@@ -85,6 +85,7 @@ export default function PoliticaDePrivacidad() {
               <p className="text-gray-700 dark:text-gray-300">
                 Puede optar por no participar en Google Analytics visitando: 
                 <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" 
+                   title="Descargar extensión para deshabilitar Google Analytics"
                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline ml-1">
                   Google Analytics Opt-out
                 </a>

@@ -24,6 +24,7 @@ export const MenuItem = ({
     <motion.div className="relative" whileHover="hover">
       <Link 
         href={href}
+        title={typeof item === 'string' ? item : ''}
         className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
         onClick={handleClick}
       >
@@ -70,12 +71,13 @@ export const ProductItem = ({
   src: string;
 }) => {
   return (
-    <a href={href} className="flex space-x-2">
+    <a href={href} title={title} className="flex space-x-2">
       <Image
         src={src}
         width={140}
         height={70}
         alt={title}
+        title={title}
         className="shrink-0 rounded-md shadow-2xl"
       />
       <div>
@@ -104,6 +106,7 @@ export const HoveredLink = ({
   return (
     <a
       href={href}
+      title={typeof children === 'string' ? children : ''}
       className={`text-neutral-700 dark:text-neutral-200 hover:text-black ${className || ''}`}
       {...rest}
     >

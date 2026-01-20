@@ -72,7 +72,7 @@ export function About() {
       color: "text-blue-600"
     },
     {
-      numericValue: 98,
+      numericValue: 100,
       suffix: "%",
       label: "Satisfacción del Cliente",
       color: "text-purple-600"

@@ -46,7 +46,7 @@ const TestimonialsSection = () => {
   };
   return (
     <div className="my-8 w-full max-w-4xl mx-auto px-4">
-      <h2 className="text-lg sm:text-lg lg:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+      <h2 className="text-lg sm:text-lg lg:text-4xl font-bold font-heading text-gray-900 dark:text-white mb-8 text-center">
         Lo que dicen nuestros clientes
       </h2>
       <Swiper
@@ -76,6 +76,7 @@ const TestimonialsSection = () => {
                   <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}
+                    title={testimonial.name}
                     width={64}
                     height={64}
                     className="w-16 h-16 rounded-full object-cover border-3 border-blue-400 shadow-md"
@@ -96,9 +97,9 @@ const TestimonialsSection = () => {
 
                 {/* Name and Company */}
                   <div className="flex flex-col items-center justify-center mt-4 md:mt-6">
-                    <h4 className="font-semibold text-white text-base">
+                    <h3 className="font-semibold text-white text-base">
                       {testimonial.name}
-                    </h4>
+                    </h3>
                     <p className="text-blue-400 text-sm font-medium">
                       {testimonial.company}
                     </p>

@@ -44,7 +44,7 @@ export function FAQ() {
       />
       <section className="py-8 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl md:text-4xl font-bold text-center mb-12 font-heading">
+          <h2 className="text-xl md:text-4xl font-bold font-heading text-center mb-12">
             Preguntas Frecuentes
           </h2>
           <div className="space-y-6">

@@ -17,6 +17,7 @@ export const Card = React.memo(
       title: string;
       src: string;
       desc: string;
+      alt: string;
     };
     index: number;
     hovered: number | null;
@@ -32,7 +33,8 @@ export const Card = React.memo(
     >
       <Image
         src={card.src}
-        alt={card.title}
+        alt={card.alt}
+        title={card.alt}
         loading={isFirstCard(index) ? "eager" : "lazy"}
         fill
         className="object-cover absolute inset-0"
@@ -62,6 +64,7 @@ type Card = {
   title: string;
   src: string;
 desc: string;
+  alt: string;
 };
 
 export function FocusCards({ cards }: { cards: Card[] }) {

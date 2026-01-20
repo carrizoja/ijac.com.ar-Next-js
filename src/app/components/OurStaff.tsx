@@ -97,6 +97,7 @@ export function OurStaff() {
                     <Image 
                       src={member.avatar} 
                       alt={member.name}
+                      title={member.name}
                       width={80}
                       height={80}
                       className="w-full h-full object-cover"
