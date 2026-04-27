@@ -27,8 +27,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       }
     ],
-    domains: ['res.cloudinary.com', 'cloudinary.com', 'assets.aceternity.com'],
     formats: ['image/webp', 'image/avif'],
+    qualities: [25, 50, 75, 90, 100],
   },
   // Performance optimizations
   compress: true,

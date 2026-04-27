@@ -46,9 +46,9 @@ export function Hero() {
             src="/ijac-logo.png"
             alt="iJAC IT Solutions Logo"
             title="iJAC IT Solutions Logo"
-            width={100}
-            height={100}
-            className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28"
+            width={320}
+            height={315}
+            className="w-20 h-auto md:w-24 lg:w-28"
             priority={true}
             loading="eager"
             quality={90}

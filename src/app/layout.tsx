@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -25,6 +25,11 @@ const spaceGrotesk = Space_Grotesk({
   preload: true,
   adjustFontFallback: true,
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: {
@@ -61,10 +66,6 @@ export const metadata: Metadata = {
     email: false,
     address: false,
     telephone: false,
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
   },
   metadataBase: new URL('https://ijac.com.ar'),
   alternates: {

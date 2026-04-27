@@ -21,8 +21,9 @@ const Footer = () => {
                 src="/ijac-logo.png"
                 alt="IJAC Logo"
                 title="IJAC IT Solutions Logo"
-                width={50}
-                height={50}
+                width={320}
+                height={315}
+                className="w-[50px] h-auto"
                 priority
               />
             </div>

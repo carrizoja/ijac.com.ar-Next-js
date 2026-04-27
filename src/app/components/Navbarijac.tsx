@@ -41,9 +41,9 @@ function Navbar({ className }: { className?: string }) {
                 src="/ijac-logo.png"
                 alt="IJAC Logo"
                 title="IJAC IT Solutions Logo"
-                width={40}
-                height={40}
-                className="hover:scale-110 transition-transform duration-300"
+                width={320}
+                height={315}
+                className="w-10 h-auto hover:scale-110 transition-transform duration-300"
                 priority
               />
             </Link>
