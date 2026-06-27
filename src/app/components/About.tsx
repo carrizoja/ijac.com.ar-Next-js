@@ -108,8 +108,8 @@ export function About() {
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            <HeroHighlight containerClassName=" w-full md:w-[100%] h-48 rounded-2xl border border-gray-200 dark:border-gray-700">
-              <p className=" w-[90%] mx-auto text-center text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+            <HeroHighlight containerClassName="w-full md:w-[100%] h-56 md:h-72 rounded-2xl border border-gray-200 dark:border-gray-700">       
+                <p className=" w-[90%] mx-auto text-center text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
                 En <Highlight className="text-black dark:text-white p-1 md:p-2">iJac IT Solutions</Highlight>, 
                 somos una empresa de software en Argentina con sede en Almagro, Buenos Aires,especializada en brindar soluciones informáticas que impulsen el crecimiento de tu negocio.
               </p>
