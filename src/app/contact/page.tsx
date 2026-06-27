@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { Breadcrumbs } from '../components/Breadcrumbs'
+import { PrimaryButton } from '../components/ui/PrimaryButton'
 
 export const metadata: Metadata = {
   title: 'Contacto iJac IT Solutions | IT Consulting & Support en Buenos Aires',
@@ -70,7 +71,20 @@ export default function ContactPage() {
               <div className="space-y-1">
                 <p>Lunes - Viernes: 9:00 AM - 6:00 PM</p>
               </div>
+              <div className="mt-4">
+                    <PrimaryButton
+              text="WhatsApp"
+              href="https://wa.me/541130862409?text=Hola%20iJAC%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20sus%20servicios"
+              colorVariant="green"
+              className="justify-start"
+              target="_blank"
+              rel="noopener noreferrer"
+            />
+              </div>
+            
+              
             </div>
+
           </div>
         </div>
       </div>

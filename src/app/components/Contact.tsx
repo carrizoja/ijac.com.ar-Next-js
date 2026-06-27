@@ -124,7 +124,7 @@ export function Contact() {
         {/* Call to Action */}
         <div className="text-center mt-16">
           <PrimaryButton 
-            text="¿Tenés alguna pregunta? Mandanos un mail" 
+            text="¿Dudas? Mandanos un mail" 
             colorVariant="green" 
             variant="large"
             onClick={() => window.location.href = "mailto:jose.carrizo@ijac.com.ar"}

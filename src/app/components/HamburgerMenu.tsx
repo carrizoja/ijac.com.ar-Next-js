@@ -1,13 +1,26 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+
+type MenuItem =
+  | { kind: "link"; label: string; href: string }
+  | { kind: "section"; label: string; section: string };
 
 export function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   // Function to handle smooth scrolling to sections
   const scrollToSection = (sectionId: string) => {
+    if (pathname !== "/") {
+      window.location.href = `/#${sectionId}`;
+      setIsOpen(false);
+      return;
+    }
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({
@@ -18,12 +31,12 @@ export function HamburgerMenu() {
     setIsOpen(false); // Close menu after navigation
   };
 
-  const menuItems = [
-    { label: "Servicios", section: "servicios" },
-    { label: "Nosotros", section: "nosotros" },
-    { label: "Testimonios", section: "testimonios" },
-    { label: "FAQ", section: "faq" },
-    { label: "Contacto", section: "contacto" },
+  const menuItems: MenuItem[] = [
+    { kind: "link", label: "Servicios", href: "/services" },
+    { kind: "section", label: "Nosotros", section: "nosotros" },
+    { kind: "section", label: "Testimonios", section: "testimonios" },
+    { kind: "section", label: "FAQ", section: "faq" },
+    { kind: "section", label: "Contacto", section: "contacto" },
   ];
 
   return (
@@ -102,34 +115,51 @@ export function HamburgerMenu() {
                 <ul className="space-y-4">
                   {menuItems.map((item, index) => (
                     <motion.li
-                      key={item.section}
+                      key={item.kind === "link" ? item.href : item.section}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 + 0.2 }}
                     >
-                      <button
-                        onClick={() => scrollToSection(item.section)}
-                        className="group relative w-full text-left py-3 px-6 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-white/80 dark:hover:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/30 hover:border-gray-400 dark:hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
-                      >
-                        {/* Glow Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-gray-300/0 via-gray-400/10 to-gray-300/0 dark:from-blue-400/0 dark:via-cyan-400/5 dark:to-blue-400/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        
-                        {/* Text */}
-                        <span className="relative z-10 text-lg font-medium text-gray-800 dark:text-gray-200 group-hover:text-black dark:group-hover:text-white transition-colors duration-300">
-                          {item.label}
-                        </span>
-                        
-                        {/* Arrow */}
-                        <motion.div
-                          className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-blue-400"
-                          whileHover={{ x: 4 }}
-                          transition={{ duration: 0.2 }}
+                      {item.kind === "link" ? (
+                        <Link
+                          href={item.href}
+                          onClick={() => setIsOpen(false)}
+                          className="group relative block w-full text-left py-3 px-6 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-white/80 dark:hover:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/30 hover:border-gray-400 dark:hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
                         >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </motion.div>
-                      </button>
+                          <div className="absolute inset-0 bg-gradient-to-r from-gray-300/0 via-gray-400/10 to-gray-300/0 dark:from-blue-400/0 dark:via-cyan-400/5 dark:to-blue-400/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <span className="relative z-10 text-lg font-medium text-gray-800 dark:text-gray-200 group-hover:text-black dark:group-hover:text-white transition-colors duration-300">
+                            {item.label}
+                          </span>
+                          <motion.div
+                            className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-blue-400"
+                            whileHover={{ x: 4 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </motion.div>
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={() => scrollToSection(item.section)}
+                          className="group relative w-full text-left py-3 px-6 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-white/80 dark:hover:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/30 hover:border-gray-400 dark:hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-gray-300/0 via-gray-400/10 to-gray-300/0 dark:from-blue-400/0 dark:via-cyan-400/5 dark:to-blue-400/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <span className="relative z-10 text-lg font-medium text-gray-800 dark:text-gray-200 group-hover:text-black dark:group-hover:text-white transition-colors duration-300">
+                            {item.label}
+                          </span>
+                          <motion.div
+                            className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-blue-400"
+                            whileHover={{ x: 4 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </motion.div>
+                        </button>
+                      )}
                     </motion.li>
                   ))}
                 </ul>

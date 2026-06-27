@@ -5,8 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 
 // Common 404 patterns and their redirects
 const redirectMap: Record<string, string> = {
-  '/services': '/#servicios',
-  '/servicios': '/#servicios',
+  '/servicios': '/services',
   '/about': '/#nosotros',
   '/nosotros': '/#nosotros',
   '/testimonials': '/#testimonios',

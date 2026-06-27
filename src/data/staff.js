@@ -38,5 +38,13 @@ export const staffMembers = [
     initials: "FB",
     color: "from-cyan-500 to-teal-600",
     avatar: "https://res.cloudinary.com/dovghglgj/image/upload/v1755358246/ijac/Staff/ijac/photo_2025-08-16_12-28-37_1_w7l6ax.jpg"
+  },
+  {
+    id: 6,
+    name: "Facundo Argüello",
+    position: "Help Desk - IT Support",
+    initials: "FA",
+    color: "from-cyan-500 to-teal-600",
+    avatar: "https://res.cloudinary.com/dovghglgj/image/upload/v1782592259/ijac/Staff/ijac/facundo_nbeaqj.jpg"
   }
 ];

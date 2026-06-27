@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Menu, MenuItem } from "./ui/navbar-menu";
 import { cn } from "@/lib/utils";
 
@@ -14,8 +15,15 @@ export function NavbarIjac() {
 }
 
 function Navbar({ className }: { className?: string }) {
+  const pathname = usePathname();
+
   // Function to handle smooth scrolling to sections
   const scrollToSection = (sectionId: string) => {
+    if (pathname !== "/") {
+      window.location.href = `/#${sectionId}`;
+      return;
+    }
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({
@@ -53,8 +61,7 @@ function Navbar({ className }: { className?: string }) {
           <div className="flex flex-row gap-x-2 justify-center items-center">
             <MenuItem
               item="Servicios"
-              href="/#servicios"
-              onClick={() => scrollToSection("servicios")}
+              href="/services"
             />
             <MenuItem
               item="Nosotros"

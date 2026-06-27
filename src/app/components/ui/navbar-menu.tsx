@@ -14,8 +14,8 @@ export const MenuItem = ({
   href?: string;
 }) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
     if (onClick) {
+      e.preventDefault();
       onClick();
     }
   };
