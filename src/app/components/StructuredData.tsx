@@ -1,3 +1,5 @@
+import { business } from "../../data/business";
+
 export function StructuredData() {
   const organizationData = {
     "@context": "https://schema.org",
@@ -8,7 +10,7 @@ export function StructuredData() {
     "logo": "https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png",
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+54 11 3086-2409",
+      "telephone": business.phoneDisplay,
       "contactType": "customer service",
       "areaServed": ["AR", "US", "ES", "BR"],
       "availableLanguage": ["Spanish", "English"]
@@ -50,10 +52,10 @@ export function StructuredData() {
       "latitude": "-34.6037",
       "longitude": "-58.3816"
     },
-    "telephone": "+54 11 3086-2409",
+    "telephone": business.phoneDisplay,
     "url": "https://ijac.com.ar",
     "priceRange": "$$",
-    "openingHours": "Mo-Fr 09:00-18:00",
+    "openingHours": business.hours.schema,
     "servesCuisine": "Technology Services",
     "image": "https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png"
   };

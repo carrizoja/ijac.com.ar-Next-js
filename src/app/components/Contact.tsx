@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { PrimaryButton } from "./ui/PrimaryButton";
+import { business } from "../../data/business";
 
 export function Contact() {
   const contactInfo = [
@@ -36,9 +37,9 @@ export function Contact() {
         </svg>
       ),
       title: "WhatsApp",
-      info: "+54 11 3086-2409",
+      info: business.phoneDisplay,
       subInfo: "Escribinos por WhatsApp",
-      href: "https://wa.me/541130862409?text=Hola%20iJAC%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20sus%20servicios",
+      href: business.whatsappUrl,
       bgGradient: "from-green-500 to-emerald-500"
     },
     {
@@ -127,7 +128,7 @@ export function Contact() {
             text="¿Dudas? Mandanos un mail" 
             colorVariant="green" 
             variant="large"
-            onClick={() => window.location.href = "mailto:jose.carrizo@ijac.com.ar"}
+            onClick={() => window.location.href = `mailto:${business.email}`}
           />
         </div>
       </div>

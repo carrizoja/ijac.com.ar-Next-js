@@ -14,11 +14,11 @@ const faqData: FAQItem[] = [
   },
   {
     question: "¿Cuál es el horario de atención?",
-    answer: "Nuestro horario de atención es de lunes a viernes de 9 a 18h (GMT-3)."
+    answer: `Nuestro horario de atención es ${business.hours.display.toLocaleLowerCase("es")} (GMT-3).`
   },
   {
     question: "¿Cuál es el tiempo de respuesta para consultas?",
-    answer: "Nuestro tiempo de respuesta estándar es de 2-4 horas para consultas normales y menos de 1 hora para urgencias."
+    answer: `El tiempo de respuesta depende del tipo de consulta. Para coordinar la atención, escribinos a ${business.email} o por WhatsApp al ${business.phoneDisplay}.`
   }
 ];
 
@@ -64,3 +64,4 @@ export function FAQ() {
     </>
   );
 }
+import { business } from "../../data/business";

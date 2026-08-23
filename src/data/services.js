@@ -49,7 +49,7 @@ export const services = [
   },
   {
     slug: "soporte-tecnico-pc-mac-apple",
-    title: "Soporte Técnico para PC, Mac y Apple en CABA",
+    title: "Soporte Técnico para PC, Mac y Apple en Almagro - CABA",
     src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755040556/ijac/services/tech_oix929.jpg",
     desc: "Diagnóstico y resolución de problemas de hardware y software - Mantenimiento preventivo y correctivo - Asesoramiento técnico - Configuración de pcs y macbook pro, mac mini, imac, iphone y ipad",
     seoIntro: "Brindamos asistencia técnica para equipos Windows y Apple con enfoque en diagnóstico rápido, mantenimiento y continuidad operativa.",

@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { Breadcrumbs } from '../components/Breadcrumbs'
 import { PrimaryButton } from '../components/ui/PrimaryButton'
+import { business } from '../../data/business'
 
 export const metadata: Metadata = {
   title: 'Contacto iJac IT Solutions | IT Consulting & Support en Buenos Aires',
@@ -35,9 +36,9 @@ export default function ContactPage() {
       "name": "iJac IT Solutions",
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+54-11-1234-5678",
+        "telephone": business.phoneDisplay,
         "contactType": "customer service",
-        "email": "info@ijac.com.ar",
+        "email": business.email,
         "availableLanguage": ["Spanish", "English"]
       }
     }
@@ -60,8 +61,8 @@ export default function ContactPage() {
             <div className="p-6 border rounded-lg">
               <h2 className="text-xl font-semibold mb-4 font-heading">Información de Contacto</h2>
               <div className="space-y-2">
-                <p><strong>Email:</strong> <a href="mailto:jose.carrizo@ijac.com.ar" title="Enviar correo electrónico a iJAC" className="text-blue-600 hover:text-blue-800">jose.carrizo@ijac.com.ar</a></p>
-                <p><strong>Teléfono:</strong> <a href="tel:+541130862409" title="Llamar a iJAC" className="text-blue-600 hover:text-blue-800">+54 11 30862409</a></p>
+                 <p><strong>Email:</strong> <a href={`mailto:${business.email}`} title="Enviar correo electrónico a iJAC" className="text-blue-600 hover:text-blue-800">{business.email}</a></p>
+                 <p><strong>Teléfono:</strong> <a href={`tel:${business.phoneHref}`} title="Llamar a iJAC" className="text-blue-600 hover:text-blue-800">{business.phoneDisplay}</a></p>
                 <p><strong>Dirección:</strong> Buenos Aires, Argentina</p>
               </div>
             </div>
@@ -69,12 +70,12 @@ export default function ContactPage() {
             <div className="p-6 border rounded-lg">
               <h2 className="text-xl font-semibold mb-4 font-heading">Horario de Atención</h2>
               <div className="space-y-1">
-                <p>Lunes - Viernes: 9:00 AM - 6:00 PM</p>
+                 <p>{business.hours.display}</p>
               </div>
               <div className="mt-4">
                     <PrimaryButton
               text="WhatsApp"
-              href="https://wa.me/541130862409?text=Hola%20iJAC%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20sus%20servicios"
+              href={business.whatsappUrl}
               colorVariant="green"
               className="justify-start"
               target="_blank"

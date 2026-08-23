@@ -10,7 +10,6 @@ import {
 } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import Image from "next/image";
 
 // Import Swiper styles
 import "swiper/css";
@@ -25,10 +24,13 @@ import { testimonials } from "../../data/testimonials.js";
 interface Testimonial {
   id: number;
   name: string;
-  company: string;
   comment: string;
   rating: number;
-  avatar: string;
+  reviewDate: string;
+  avatarInitials: string;
+  image_avatar?: string;
+  source: string;
+  sourceUrl: string;
 }
 
 const TestimonialsSection = () => {
@@ -39,6 +41,7 @@ const TestimonialsSection = () => {
         className={`text-xl ${
           index < rating ? "text-yellow-400" : "text-gray-300"
         }`}
+        aria-hidden="true"
       >
         ★
       </span>
@@ -67,48 +70,57 @@ const TestimonialsSection = () => {
         pagination={{ clickable: true }}
         scrollbar={{ draggable: true }}
       >
-                {testimonials.map((testimonial: Testimonial) => (
+        {testimonials.map((testimonial: Testimonial) => (
           <SwiperSlide key={testimonial.id}>
-            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-4 sm:p-6 min-h-[360px] w-full max-w-md mx-auto border border-gray-700/50">
+            <a
+              href={testimonial.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Ver la reseña de ${testimonial.name} en Google (se abre en una pestaña nueva)`}
+              className="block bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-4 sm:p-6 min-h-[360px] w-full max-w-md mx-auto border border-gray-700/50 transition-colors hover:border-blue-400/70 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-400 focus-visible:ring-offset-4 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
+            >
               <div className="flex flex-col items-center text-center h-full">
-                {/* Avatar */}
-                <div className="relative mb-4">
-                  <Image
-                    src={testimonial.avatar}
+                {testimonial.image_avatar ? (
+                  <img
+                    src={testimonial.image_avatar}
                     alt={testimonial.name}
-                    title={testimonial.name}
-                    width={64}
-                    height={64}
-                    className="w-16 h-16 rounded-full object-cover border-3 border-blue-400 shadow-md"
+                    className="mb-4 h-16 w-16 rounded-full border-2 border-blue-400 object-cover shadow-md"
                   />
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                    <span className="text-white text-xs">✓</span>
+                ) : (
+                  <div
+                    className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-blue-400 bg-blue-950 text-lg font-bold text-blue-100 shadow-md"
+                    aria-hidden="true"
+                  >
+                    {testimonial.avatarInitials}
                   </div>
-                </div>
+                )}
 
-                {/* Stars */}
-                <div className="flex justify-center mb-2 md:mb-3">
+                <div
+                  className="flex justify-center mb-2 md:mb-3"
+                  role="img"
+                  aria-label={`${testimonial.rating} de 5 estrellas`}
+                >
                   {renderStars(testimonial.rating)}
                 </div>
 
-                {/* Comment */}
-                <blockquote className="text-gray-300 italic mb-2 md:mb-4 text-sm leading-relaxed flex-1">
+                <blockquote className="text-gray-300 italic mb-2 md:mb-4 text-sm leading-relaxed whitespace-pre-line flex-1">
                   &ldquo;{testimonial.comment}&rdquo;
-
-                {/* Name and Company */}
-                  <div className="flex flex-col items-center justify-center mt-4 md:mt-6">
-                    <h3 className="font-semibold text-white text-base">
-                      {testimonial.name}
-                    </h3>
-                    <p className="text-blue-400 text-sm font-medium">
-                      {testimonial.company}
-                    </p>
-                  </div>
                 </blockquote>
 
-                <div className="mt-auto mb-4"></div>
+                <div className="flex flex-col items-center justify-center mt-4 md:mt-6">
+                  <cite className="not-italic font-semibold text-white text-base">
+                    {testimonial.name}
+                  </cite>
+                  <p className="text-gray-400 text-sm">
+                    {testimonial.reviewDate}
+                  </p>
+                  <p className="mt-2 text-blue-400 text-sm font-semibold">
+                    Reseña de {testimonial.source}
+                    <span aria-hidden="true"> ↗</span>
+                  </p>
+                </div>
               </div>
-            </div>
+            </a>
           </SwiperSlide>
         ))}
       </Swiper>
