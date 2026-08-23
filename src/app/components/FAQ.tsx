@@ -1,3 +1,5 @@
+import { business } from "../../data/business";
+
 interface FAQItem {
   question: string;
   answer: string;
@@ -64,4 +66,3 @@ export function FAQ() {
     </>
   );
 }
-import { business } from "../../data/business";

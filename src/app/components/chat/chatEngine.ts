@@ -31,18 +31,22 @@ export interface ChatResponse {
   contactHandoff: boolean;
 }
 
-const serviceBySlug = Object.fromEntries(
-  services.map((service) => [service.slug, service]),
-);
+const serviceBySlug = services.reduce<
+  Record<string, (typeof services)[number]>
+>((bySlug, service) => {
+  bySlug[service.slug] = service;
+  return bySlug;
+}, {});
 
 const contactText = `Podés escribirnos por WhatsApp al ${business.phoneDisplay} o por email a ${business.email}.`;
+const unsupportedInformationText = `No tengo información aprobada para responder eso con precisión. Puedo ayudarte con servicios, cotizaciones, soporte, horarios o contacto. También podés comunicarte directamente: ${contactText}`;
 
 export function normalizeChatInput(input: string): string {
   return input
     .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("es")
-    .replace(/[^\p{Letter}\p{Number}]+/gu, " ")
+    .replace(/[^a-z0-9]+/g, " ")
     .trim();
 }
 
@@ -55,6 +59,11 @@ function includesAny(message: string, phrases: string[]): boolean {
 
 function serviceResponse(slug: string, intro: string): string {
   const service = serviceBySlug[slug];
+
+  if (!service) {
+    return unsupportedInformationText;
+  }
+
   return `${intro}\n\n${service.highlights.map((item) => `• ${item}`).join("\n")}\n\n¿Querés contarnos qué necesitás?`;
 }
 
@@ -96,6 +105,40 @@ function continueFlow(
   };
 }
 
+function shouldInterruptFlow(
+  input: string,
+  message: string,
+  intent: ChatIntent,
+  context: Exclude<ConversationContext, null>,
+): boolean {
+  if (["contact", "hours", "location"].includes(intent)) {
+    return true;
+  }
+
+  if (
+    (intent === "quote" || intent === "support") &&
+    intent !== context.flow
+  ) {
+    return true;
+  }
+
+  if (intent === "fallback" || intent === "greeting" || intent === context.flow) {
+    return false;
+  }
+
+  return (
+    /[?¿]/.test(input) ||
+    includesAny(message, [
+      "quiero consultar",
+      "quiero saber",
+      "necesito informacion",
+      "informacion sobre",
+      "contame sobre",
+      "hablame de",
+    ])
+  );
+}
+
 export function getChatResponse(
   input: string,
   context: ConversationContext = null,
@@ -121,6 +164,19 @@ export function getChatResponse(
   }
 
   if (context) {
+    const reclassifiedResponse = getChatResponse(input);
+
+    if (
+      shouldInterruptFlow(
+        input,
+        message,
+        reclassifiedResponse.intent,
+        context,
+      )
+    ) {
+      return reclassifiedResponse;
+    }
+
     return continueFlow(context);
   }
 
@@ -397,7 +453,7 @@ export function getChatResponse(
 
   return {
     intent: "fallback",
-    text: `No tengo información aprobada para responder eso con precisión. Puedo ayudarte con servicios, cotizaciones, soporte, horarios o contacto. También podés comunicarte directamente: ${contactText}`,
+    text: unsupportedInformationText,
     context: null,
     contactHandoff: false,
   };
