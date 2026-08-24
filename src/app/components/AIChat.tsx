@@ -30,6 +30,15 @@ const initialMessage: Message = {
   timestamp: new Date(),
 };
 
+const focusableSelector = [
+  'a[href]:not([tabindex="-1"])',
+  'button:not([disabled]):not([tabindex="-1"])',
+  'input:not([disabled]):not([tabindex="-1"])',
+  'select:not([disabled]):not([tabindex="-1"])',
+  'textarea:not([disabled]):not([tabindex="-1"])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
+
 export function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
@@ -41,6 +50,8 @@ export function AIChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
+  const restoreFocusFrameRef = useRef<number | null>(null);
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
   const nextMessageId = () => {
@@ -50,10 +61,20 @@ export function AIChat() {
 
   const closeChat = () => {
     setIsOpen(false);
-    window.requestAnimationFrame(() => triggerRef.current?.focus());
+    if (restoreFocusFrameRef.current !== null) {
+      window.cancelAnimationFrame(restoreFocusFrameRef.current);
+    }
+    restoreFocusFrameRef.current = window.requestAnimationFrame(() => {
+      triggerRef.current?.focus();
+      restoreFocusFrameRef.current = null;
+    });
   };
 
   const openChat = () => {
+    if (restoreFocusFrameRef.current !== null) {
+      window.cancelAnimationFrame(restoreFocusFrameRef.current);
+      restoreFocusFrameRef.current = null;
+    }
     setIsOpen(true);
     emitChatTelemetry({ event: "opened" });
   };
@@ -65,21 +86,65 @@ export function AIChat() {
   useEffect(() => {
     if (!isOpen) return;
 
-    const focusFrame = window.requestAnimationFrame(() => inputRef.current?.focus());
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeChat();
+    inputRef.current?.focus();
+    let focusFrame: number | null = null;
+    let delayedFocusFrame: number | null = null;
+    focusFrame = window.requestAnimationFrame(() => {
+      delayedFocusFrame = window.requestAnimationFrame(() => inputRef.current?.focus());
+    });
+    const handleDialogKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeChat();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+
+      const focusableElements = Array.from(
+        dialog.querySelectorAll<HTMLElement>(focusableSelector),
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements.at(-1);
+      const activeElement = document.activeElement;
+      const activeElementIsFocusable = focusableElements.includes(
+        activeElement as HTMLElement,
+      );
+
+      if (!firstElement || !lastElement) {
+        event.preventDefault();
+        return;
+      }
+
+      if (!dialog.contains(activeElement) || !activeElementIsFocusable) {
+        event.preventDefault();
+        (event.shiftKey ? lastElement : firstElement).focus();
+      } else if (event.shiftKey && activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
     };
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener("keydown", handleDialogKeyDown);
 
     return () => {
-      window.cancelAnimationFrame(focusFrame);
-      document.removeEventListener("keydown", handleEscape);
+      if (focusFrame !== null) window.cancelAnimationFrame(focusFrame);
+      if (delayedFocusFrame !== null) window.cancelAnimationFrame(delayedFocusFrame);
+      document.removeEventListener("keydown", handleDialogKeyDown);
     };
   }, [isOpen]);
 
   useEffect(() => {
     const timers = timersRef.current;
-    return () => timers.forEach((timer) => clearTimeout(timer));
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+      if (restoreFocusFrameRef.current !== null) {
+        window.cancelAnimationFrame(restoreFocusFrameRef.current);
+      }
+    };
   }, []);
 
   const submitMessage = (rawInput: string) => {
@@ -181,9 +246,10 @@ export function AIChat() {
       <AnimatePresence>
         {isOpen && (
           <motion.section
+            ref={dialogRef}
             id="ijac-chat-dialog"
             role="dialog"
-            aria-modal="false"
+            aria-modal="true"
             aria-labelledby="ijac-chat-title"
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

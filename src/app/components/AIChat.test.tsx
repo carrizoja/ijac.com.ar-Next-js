@@ -101,6 +101,67 @@ describe("AIChat", () => {
     expect(launcher).toHaveFocus();
   });
 
+  it("focuses the textbox when reopened from the keyboard", async () => {
+    render(<AIChat />);
+
+    const { launcher, user } = await openChat();
+    await user.keyboard("{Escape}");
+    await user.keyboard("{Enter}");
+
+    expect(screen.getByRole("dialog", { name: "Asistente iJAC" })).toHaveAttribute(
+      "aria-modal",
+      "true",
+    );
+    expect(screen.getByRole("textbox", { name: "Escribí tu pregunta" })).toHaveFocus();
+    expect(launcher).toHaveAccessibleName("Cerrar chat");
+  });
+
+  it("wraps forward Tab from the last enabled dialog control", async () => {
+    render(<AIChat />);
+
+    const { user } = await openChat();
+    const dialog = screen.getByRole("dialog", { name: "Asistente iJAC" });
+    const input = within(dialog).getByRole("textbox", { name: "Escribí tu pregunta" });
+
+    expect(within(dialog).getByRole("button", { name: "Enviar mensaje" })).toBeDisabled();
+    input.focus();
+    await user.tab();
+
+    expect(within(dialog).getByRole("button", { name: "Cerrar chat" })).toHaveFocus();
+  });
+
+  it("wraps backward Shift+Tab from the first enabled dialog control", async () => {
+    render(<AIChat />);
+
+    const { user } = await openChat();
+    const dialog = screen.getByRole("dialog", { name: "Asistente iJAC" });
+    const closeButton = within(dialog).getByRole("button", { name: "Cerrar chat" });
+
+    closeButton.focus();
+    await user.tab({ shift: true });
+
+    expect(within(dialog).getByRole("textbox", { name: "Escribí tu pregunta" })).toHaveFocus();
+  });
+
+  it("recovers focus into the dialog when Tab starts outside it", async () => {
+    render(
+      <>
+        <a href="#background">Background link</a>
+        <AIChat />
+      </>,
+    );
+
+    const { user } = await openChat();
+    const dialog = screen.getByRole("dialog", { name: "Asistente iJAC" });
+    const backgroundLink = screen.getByRole("link", { name: "Background link" });
+
+    backgroundLink.focus();
+    await user.tab();
+
+    expect(dialog).toContainElement(document.activeElement as HTMLElement);
+    expect(within(dialog).getByRole("button", { name: "Cerrar chat" })).toHaveFocus();
+  });
+
   it("submits the clicked quick question instead of stale typed input", async () => {
     render(<AIChat />);
     const { user } = await openChat();
