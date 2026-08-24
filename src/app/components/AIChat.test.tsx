@@ -196,7 +196,7 @@ describe("AIChat", () => {
     expect(log).toHaveTextContent("Nuestro horario de atención es");
   });
 
-  it("locks typing and rejects an overlapping submission", async () => {
+  it("keeps the textbox focused and read-only while rejecting overlapping input", async () => {
     render(<AIChat />);
     const { user } = await openChat();
     const input = screen.getByRole("textbox", { name: "Escribí tu pregunta" });
@@ -205,16 +205,39 @@ describe("AIChat", () => {
     expect(form).not.toBeNull();
     await user.type(input, "Necesito soporte");
     await user.click(screen.getByRole("button", { name: "Enviar mensaje" }));
+    await user.type(input, "Envío duplicado");
     fireEvent.submit(form!);
 
-    expect(input).toBeDisabled();
+    expect(input).toHaveFocus();
+    expect(input).toHaveAttribute("readonly");
+    expect(input).not.toBeDisabled();
+    expect(input).toHaveValue("");
     expect(screen.getByRole("button", { name: "Enviar mensaje" })).toBeDisabled();
     expect(screen.getAllByText("Necesito soporte")).toHaveLength(1);
 
     await advanceResponse();
 
+    expect(input).not.toHaveAttribute("readonly");
     expect(input).toBeEnabled();
+    expect(input).toHaveFocus();
     expect(screen.getByText("Te ayudo a orientar el caso. ¿Es un problema de PC, equipo Apple, red o sitio web?")).toBeInTheDocument();
+  });
+
+  it("hands quick-question focus to the stable textbox while responding", async () => {
+    render(<AIChat />);
+    const { user } = await openChat();
+    const input = screen.getByRole("textbox", { name: "Escribí tu pregunta" });
+
+    await user.click(screen.getByRole("button", { name: "¿Cómo los contacto?" }));
+
+    expect(input).toHaveFocus();
+    expect(input).toHaveAttribute("readonly");
+    expect(input).not.toBeDisabled();
+
+    await advanceResponse();
+
+    expect(input).not.toHaveAttribute("readonly");
+    expect(input).toHaveFocus();
   });
 
   it("cancels pending work on unmount without late telemetry or errors", async () => {

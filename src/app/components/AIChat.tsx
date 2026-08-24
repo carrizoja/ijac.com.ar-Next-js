@@ -152,6 +152,7 @@ export function AIChat() {
     if (!text || isProcessingRef.current) return;
 
     isProcessingRef.current = true;
+    inputRef.current?.focus();
     setMessages((current) => [
       ...current,
       {
@@ -343,7 +344,7 @@ export function AIChat() {
                   type="text"
                   value={inputText}
                   onChange={(event) => setInputText(event.target.value)}
-                  disabled={isTyping}
+                  readOnly={isTyping}
                   placeholder="Escribí tu pregunta..."
                   autoComplete="off"
                   className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 dark:border-gray-600 dark:bg-neutral-800 dark:text-white"
