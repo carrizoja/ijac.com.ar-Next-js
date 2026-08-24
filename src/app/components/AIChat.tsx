@@ -280,7 +280,7 @@ export function AIChat() {
               </button>
             </div>
 
-            <div role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversación" className="flex-1 space-y-4 overflow-y-auto p-4">
+            <div role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversación" tabIndex={0} className="flex-1 space-y-4 overflow-y-auto p-4">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}

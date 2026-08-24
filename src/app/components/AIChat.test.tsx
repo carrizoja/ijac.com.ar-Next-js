@@ -130,6 +130,22 @@ describe("AIChat", () => {
     expect(within(dialog).getByRole("button", { name: "Cerrar chat" })).toHaveFocus();
   });
 
+  it("advances forward Tab from the conversation log to the next control", async () => {
+    render(<AIChat />);
+
+    const { user } = await openChat();
+    const dialog = screen.getByRole("dialog", { name: "Asistente iJAC" });
+    const log = within(dialog).getByRole("log", { name: "Conversación" });
+
+    expect(log).toHaveAttribute("tabindex", "0");
+    log.focus();
+    await user.tab();
+
+    expect(
+      within(dialog).getByRole("button", { name: "¿Qué servicios ofrecen?" }),
+    ).toHaveFocus();
+  });
+
   it("wraps backward Shift+Tab from the first enabled dialog control", async () => {
     render(<AIChat />);
 
