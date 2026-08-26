@@ -75,9 +75,13 @@ export const knowledgeRepositorySchema = z.array(approvedKnowledgeEntrySchema).m
 
 export type ApprovedKnowledgeEntry = z.infer<typeof approvedKnowledgeEntrySchema>;
 export interface KnowledgeRepository {
-  getEntries(): Promise<KnowledgeEntry[]>;
+  getEntries(): Promise<ApprovedKnowledgeEntry[]>;
 }
 
 export function isFreshKnowledgeEntry(entry: KnowledgeEntry, now = new Date()): boolean {
-  return entry.status === "approved" && Date.parse(entry.reapprovalDueAt) >= now.getTime();
+  const nowTimestamp = now.getTime();
+  return entry.status === "approved"
+    && Date.parse(entry.approvedAt) <= nowTimestamp
+    && Date.parse(entry.reviewedAt) <= nowTimestamp
+    && Date.parse(entry.reapprovalDueAt) >= nowTimestamp;
 }

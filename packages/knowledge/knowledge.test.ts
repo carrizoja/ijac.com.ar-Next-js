@@ -1,6 +1,7 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import {
   type ApprovedKnowledgeEntry,
+  type KnowledgeRepository,
   approvedKnowledgeEntrySchema,
   knowledgeEntrySchema,
   knowledgeRepositorySchema,
@@ -11,6 +12,8 @@ import { approvedKnowledgeEntriesV1 } from "./fixtures/v1";
 const validEntry = approvedKnowledgeEntriesV1[0];
 
 expectTypeOf<ApprovedKnowledgeEntry["status"]>().toEqualTypeOf<"approved">();
+expectTypeOf<Awaited<ReturnType<KnowledgeRepository["getEntries"]>>>()
+  .toEqualTypeOf<ApprovedKnowledgeEntry[]>();
 
 describe("governed knowledge entries", () => {
   it("accepts versioned approved fixtures with multilingual content and approval metadata", () => {
@@ -33,6 +36,18 @@ describe("governed knowledge entries", () => {
   ])("rejects %s entries", (_label, change) => {
     const candidate = { ...validEntry, ...change };
     expect(() => approvedKnowledgeEntrySchema.parse(candidate)).toThrow();
+  });
+
+  it.each([
+    ["future approval", { approvedAt: "2098-01-01T00:00:00.000Z", reviewedAt: "2098-01-01T00:00:00.000Z" }],
+    ["future review", { reviewedAt: "2098-01-01T00:00:00.000Z" }],
+    ["review before approval", { approvedAt: "2026-01-02T00:00:00.000Z", reviewedAt: "2026-01-01T00:00:00.000Z" }],
+  ])("rejects %s timestamps", (_label, change) => {
+    expect(() => approvedKnowledgeEntrySchema.parse({ ...validEntry, ...change })).toThrow();
+  });
+
+  it("rejects duplicate repository IDs", () => {
+    expect(() => knowledgeRepositorySchema.parse([validEntry, validEntry])).toThrow();
   });
 
   it("rejects unsafe or malformed canonical URLs", () => {

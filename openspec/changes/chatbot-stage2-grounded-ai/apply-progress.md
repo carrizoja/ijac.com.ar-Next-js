@@ -24,7 +24,7 @@
 | Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
 |---|---|---|---|---|---|---|---|
 | 1.1 | `packages/contracts/chat.test.ts` | Unit | ✅ Existing contract safety net completed | ✅ Added invalid result-code, exact source URL, and contract-boundary assertions first | ✅ Focused contract tests 17/17 passed | ✅ Supported languages, failure invariants, invalid codes, URL policy, and manifests | ✅ Exported result-code schema, removed obsolete Zod type assertion, tightened URL policy |
-| 1.2 | `packages/knowledge/knowledge.test.ts` | Unit | ✅ New files; no existing knowledge tests | ✅ Wrote governance tests before production files | ✅ Focused knowledge tests 8/8 passed | ✅ Approved fixture, rejection cases, unsafe URLs, and freshness branches | ✅ Extracted schemas; tests remained green |
+| 1.2 | `packages/knowledge/knowledge.test.ts` | Unit | ✅ New files; no existing knowledge tests | ✅ Wrote governance and future-date regressions before production corrections | ✅ Focused knowledge tests 12/12 passed | ✅ Approved fixture, timestamp ordering, duplicate IDs, unsafe URLs, and freshness branches | ✅ Extracted schemas and narrowed approved repository output; tests remained green |
 
 ## Work Unit Evidence
 
@@ -33,9 +33,9 @@
 | Focused test command and exact result | `npm test -- packages/contracts/chat.test.ts` — 17/17 passed |
 | Runtime harness command/scenario and exact result | Native objective generation 4, ordinal 5 — `passed`; full suite 3 files, 62/62 passed; `npx tsc --noEmit` passed; `npm run build` passed with 21/21 pages generated; `git diff --check` passed; no stale Next/Vitest processes remained |
 | Rollback boundary | Revert `packages/contracts/chat.ts`, `packages/contracts/chat.test.ts`, root `package.json`/`package-lock.json` contract-boundary changes, and these two bookkeeping artifacts; leave unrelated worktree changes intact. This boundary does not include task 1.2 or any later slice. |
-| Focused test command and exact result | `npm test -- packages/knowledge/knowledge.test.ts` — 8/8 passed |
+| Focused test command and exact result | `npx vitest run packages/knowledge/knowledge.test.ts` — 12/12 passed |
 | Runtime harness command/scenario and exact result | Parent-owned native runtime attempt for PR 2 / task 1.2 settled `passed` / `complete` after the sdd-apply worker returned; evidence revision `sha256:af40086ea6efab7804cabc151f646055ee1ebec46993959256c9c157fce57044`. Within that attempt, `npm run build` passed; static build compiled and generated 21/21 pages. |
-| Rollback boundary | Revert only `packages/knowledge/knowledge.test.ts`, `packages/knowledge/types.ts`, `packages/knowledge/fixtures/v1.ts`, this progress artifact, and the task 1.2 checkbox; leave task 1.1 and unrelated worktree changes intact. |
+| Rollback boundary | Revert only `packages/knowledge/knowledge.test.ts`, `packages/knowledge/types.ts`, `packages/knowledge/fixtures/v1.ts`, `packages/knowledge/package.json`, the corresponding root `package-lock.json` workspace records, this progress artifact, and the task 1.2 checkbox; leave task 1.1 and unrelated worktree changes intact. |
 
 ## Additional Checks
 
@@ -46,11 +46,11 @@
 - `git diff --check` — passed.
 - No stale Next/Vitest processes remained.
 - Direct Node contract smoke — passed: valid SUCCESS parses; query-bearing source URL and invalid result code reject.
-- Full suite — `npm test -- --run` — 4 files, 70/70 passed.
+- Full suite — `npm test -- --run` — 4 files, 74/74 passed.
 - Typecheck — `npx tsc --noEmit` — passed.
 - Static build — `npm run build` — passed; 21/21 pages generated.
 - Diff validation — `git diff --check` — passed.
-- Authored changed lines — 191 total: 186 additions and 5 deletions, including task/progress bookkeeping (under 400-line slice maximum); implementation/test files contribute 170 additions.
+- Authored changed lines — 233 total: 228 additions and 5 deletions, including dependency ownership and task/progress bookkeeping (under 400-line slice maximum); implementation/test files contribute 189 additions.
 
 ## Status
 
