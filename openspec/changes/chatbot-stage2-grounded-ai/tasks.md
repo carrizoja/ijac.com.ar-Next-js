@@ -29,7 +29,7 @@ All slices target `main` and merge in order; each child starts from the precedin
 
 ## Phase 1: Contracts and Foundation
 - [x] 1.1 RED: add strict tests for one-question `ChatRequest`, `ChatResponse`, versions, supported languages, no extras/history/attachments/streaming, and server-only package boundary; GREEN: add `packages/contracts/chat.ts`, workspace/API manifests without Groq/Upstash in frontend.
-- [ ] 1.2 RED: test `KnowledgeEntry` approval/freshness/stable-ID and exact `https://ijac.com.ar/...` URL rules; GREEN: add `packages/knowledge/types.ts` and versioned approved fixtures with owner/reapproval metadata.
+- [x] 1.2 RED: test `KnowledgeEntry` approval/freshness/stable-ID and exact `https://ijac.com.ar/...` URL rules; GREEN: add `packages/knowledge/types.ts` and versioned approved fixtures with owner/reapproval metadata.
 
 ## Phase 2: Grounding and API Core
 - [ ] 2.1 RED: fixtures for normalization, aliases, weights (tags 3/title 2/aliases 2/claims 1), K=3, threshold, version/freshness ties, unrelated and ambiguous queries; GREEN: implement `packages/knowledge/retriever.ts`.
