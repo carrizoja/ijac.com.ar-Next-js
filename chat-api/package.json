@@ -1,0 +1,9 @@
+{
+  "name": "@ijac/chat-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@ijac/contracts": "0.1.0"
+  }
+}
