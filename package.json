@@ -2,6 +2,10 @@
   "name": "ijac-next-app",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*",
+    "chat-api"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

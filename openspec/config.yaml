@@ -1,20 +1,57 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Next.js 16.2.4 + React 19.2.5 + TypeScript 5 static-export site.
+  Tailwind CSS v4, shadcn/ui new-york style, lucide icons.
+  Output: 'export' to out/; deployed to Hostinger as static files.
+  No API routes, Server Actions, middleware, or ISR.
+  Site locale es_AR; agent replies in English per AGENTS.md.
+  Path alias @/* -> ./src/*; components live in src/app/components/ui.
+  Existing OpenSpec domains: home-featured-services, invalid-route-recovery.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Respect static-export constraints (no server runtime)
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - Site copy is Spanish; artifacts remain English
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+    - Prefer client components for interactivity; no server actions
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+    - Update tests or add new ones before implementation when in TDD mode
+  apply:
+    guidelines:
+      - Follow existing code patterns
+      - Keep components in src/app/components unless the surrounding style uses @/* aliases
+      - Maintain Spanish site copy and accessibility labels
+    tdd: true
+    test_command: "npm test"
+  verify:
+    test_command: "npm test"
+    build_command: "npm run build"
+    typecheck_command: "npx tsc --noEmit"
+    lint_command: "npm run lint"
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
+    - Preserve existing domain specs when merging deltas
+
+testing:
+  strict_tdd: true
+  runner: vitest
+  test_command: "npm test"
+  typecheck_command: "npx tsc --noEmit"
+  build_command: "npm run build"
+  lint_command: "npm run lint"
+  layers:
+    unit: true
+    integration: true
+    e2e: false
+  coverage: false
+  formatter: false

@@ -1,0 +1,13 @@
+{
+  "name": "@ijac/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./chat.ts",
+    "./chat": "./chat.ts"
+  },
+  "dependencies": {
+    "zod": "^4.1.8"
+  }
+}
