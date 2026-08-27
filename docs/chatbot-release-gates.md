@@ -3,7 +3,7 @@
 These gates block **release**, not local implementation. Every one of them requires an account,
 a credential, a DNS record, or a human approval that cannot be produced from the codebase.
 
-The implementation is complete and verified without any of them: 358 tests, typecheck, lint and
+The implementation is complete and verified without any of them: 377 tests, typecheck, lint and
 the static build all pass with no credentials, because every test uses a fake transport and an
 in-memory KV double.
 
@@ -18,7 +18,7 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 
 | # | Gate | Owner | Status |
 |---|---|---|---|
-| 1 | Knowledge base approval | Content owner | ❌ Not met — 1 placeholder entry |
+| 1 | Knowledge base approval | Content owner | ✅ Met — 8 services approved 2026-08-27 |
 | 2 | Localized copy approval | Content owner | ❌ Not met |
 | 3 | Groq account, privacy terms, model choice | Account owner | ❌ Not met |
 | 4 | KV store account and quota | Account owner | ❌ Not met — client implemented, account still required |
@@ -33,25 +33,24 @@ its current production behaviour and is unaffected.
 
 ## 1. Knowledge base approval
 
-**Blocked because:** `packages/knowledge/fixtures/v1.ts` contains exactly **one** entry
-(`managed-it-support`), with the placeholder `owner: "content-owner"` and
-`reapprovalDueAt: "2099-01-01"`.
+**Met on 2026-08-27.** `packages/knowledge/fixtures/services.ts` holds 8 approved entries, one
+per service published on the site, owned by José Carrizo and due for reapproval on 2027-08-27.
+The former single-entry placeholder (`fixtures/v1.ts`, `owner: "content-owner"`,
+`reapprovalDueAt: "2099-01-01"`) has been deleted — its far-future date disabled the freshness
+check and it must never have shipped.
 
-That is test scaffolding, not a content set. With one entry the retriever will fall below its
-score threshold for almost every real question, and the chatbot will hand off instead of
-answering — technically correct, commercially useless.
+Every claim was reviewed against the published copy entry by entry. Seven of the eight had a
+coverage gap that was closed during review; the two that mattered commercially were SEO and
+ongoing maintenance under `desarrollo-web-apps`, both sold in the site copy but absent from the
+claims, and both of which would have handed off to WhatsApp.
 
-Required before release:
+Retrieval coverage is pinned by tests: eight realistic questions across Spanish, English and
+Portuguese each resolve to the expected entry, and an off-topic question still returns nothing.
 
-- Approved entries covering the services the chatbot is expected to discuss.
-- A real `owner` value per entry, not the `content-owner` placeholder.
-- A realistic `reapprovalDueAt`. `2099-01-01` disables the freshness mechanism entirely; it
-  exists so fixtures never expire mid-test and must not reach production.
-- Each `url` pointing at a live, canonical `https://ijac.com.ar/...` page.
-
-**Verify:** every entry has `status: "approved"`, a named owner, and a review date within your
-chosen cadence. Retrieval silently drops anything not `approved`, so an unapproved edit removes
-an entry from service rather than publishing it.
+**Re-verify when content changes:** every entry must keep `status: "approved"`, a named owner,
+and a `reviewedAt` within your cadence. Retrieval silently drops anything not approved, so an
+unapproved edit removes an entry from service rather than publishing it. Changing an entry's
+meaning rather than its wording requires a new `id`.
 
 ## 2. Localized copy approval
 
