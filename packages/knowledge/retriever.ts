@@ -1,4 +1,4 @@
-import type { ApprovedKnowledgeEntry } from "./types";
+import { approvedKnowledgeEntrySchema, type ApprovedKnowledgeEntry, type KnowledgeEntry } from "./types";
 
 export const DEFAULT_RETRIEVAL_LIMIT = 3;
 export const DEFAULT_RETRIEVAL_THRESHOLD = 2;
@@ -71,18 +71,24 @@ function compareMatches(left: RetrievalMatch, right: RetrievalMatch): number {
     || right.entry.version - left.entry.version
     || Date.parse(right.entry.reviewedAt) - Date.parse(left.entry.reviewedAt)
     || Date.parse(right.entry.approvedAt) - Date.parse(left.entry.approvedAt)
-    || left.entry.id.localeCompare(right.entry.id);
+    || (left.entry.id < right.entry.id ? -1 : left.entry.id > right.entry.id ? 1 : 0);
 }
 
 export function retrieveKnowledge(
   query: string,
-  entries: readonly ApprovedKnowledgeEntry[],
+  entries: readonly KnowledgeEntry[],
   options: RetrievalOptions = {},
 ): RetrievalResult {
   const limit = Math.max(0, Math.floor(options.limit ?? DEFAULT_RETRIEVAL_LIMIT));
   const threshold = options.threshold ?? DEFAULT_RETRIEVAL_THRESHOLD;
+  if (!Number.isFinite(threshold) || threshold <= 0) {
+    return { matches: [], belowThreshold: true, ambiguous: false };
+  }
+
   const ranked = entries
-    .map((entry) => ({ entry, score: scoreKnowledgeEntry(query, entry) }))
+    .map((entry) => approvedKnowledgeEntrySchema.safeParse(entry))
+    .filter((result): result is { success: true; data: ApprovedKnowledgeEntry } => result.success)
+    .map(({ data: entry }) => ({ entry, score: scoreKnowledgeEntry(query, entry) }))
     .filter(({ score }) => score >= threshold)
     .sort(compareMatches);
   const matches = ranked.slice(0, limit);
@@ -96,7 +102,7 @@ export function retrieveKnowledge(
 }
 
 export function createKnowledgeRetriever(
-  entries: readonly ApprovedKnowledgeEntry[],
+  entries: readonly KnowledgeEntry[],
   options: RetrievalOptions = {},
 ): (query: string) => RetrievalResult {
   return (query) => retrieveKnowledge(query, entries, options);

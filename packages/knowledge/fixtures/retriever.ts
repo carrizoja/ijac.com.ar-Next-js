@@ -42,7 +42,7 @@ export const retrieverFixtures = {
   ties: [
     makeEntry("older-review", { tags: ["consulting"], version: 1, reviewedAt: "2026-01-01T00:00:00.000Z" }),
     makeEntry("newer-review", { tags: ["consulting"], version: 1, reviewedAt: "2026-02-01T00:00:00.000Z" }),
-    makeEntry("version-two", { tags: ["consulting"], version: 2, reviewedAt: "2025-01-01T00:00:00.000Z" }),
+    makeEntry("version-two", { tags: ["consulting"], version: 2, reviewedAt: "2026-01-01T00:00:00.000Z" }),
   ],
   ambiguous: [
     makeEntry("cloud-private", { tags: ["cloud"], version: 2 }),

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { retrieverFixtures } from "./fixtures/retriever";
+import type { KnowledgeEntry } from "./types";
 import {
   DEFAULT_RETRIEVAL_LIMIT,
   DEFAULT_RETRIEVAL_THRESHOLD,
@@ -26,11 +27,31 @@ describe("lexical knowledge retrieval", () => {
   });
 
   it("retrieves multilingual aliases after diacritic normalization", () => {
-    const result = retrieveKnowledge("¿Cómo contrato soporte técnico?", retrieverFixtures.multilingual);
+    const queries = ["How do I get technical support?", "Como contrato suporte técnico?"];
 
-    expect(result.matches.map(({ entry }) => entry.id)).toEqual(["managed-it-support"]);
-    expect(result.matches[0]?.score).toBeGreaterThanOrEqual(DEFAULT_RETRIEVAL_THRESHOLD);
+    for (const query of queries) {
+      const result = retrieveKnowledge(query, retrieverFixtures.multilingual);
+      expect(result.matches.map(({ entry }) => entry.id)).toEqual(["managed-it-support"]);
+      expect(result.matches[0]?.score).toBeGreaterThanOrEqual(DEFAULT_RETRIEVAL_THRESHOLD);
+    }
   });
+
+  it("rejects draft and stale entries at the retrieval boundary", () => {
+    const invalidEntries = [
+      { ...retrieverFixtures.multilingual[0], status: "draft" },
+      { ...retrieverFixtures.multilingual[0], reapprovalDueAt: "2020-01-01T00:00:00.000Z" },
+    ] as KnowledgeEntry[];
+
+    expect(retrieveKnowledge("technical support", invalidEntries).matches).toEqual([]);
+  });
+
+  it.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY])
+    ("fails closed for invalid threshold %s", (threshold) => {
+      const result = retrieveKnowledge("support", retrieverFixtures.multilingual, { threshold });
+
+      expect(result.matches).toEqual([]);
+      expect(result.belowThreshold).toBe(true);
+    });
 
   it("returns no evidence when the best score is below the threshold", () => {
     const result = retrieveKnowledge("pricing", retrieverFixtures.multilingual, { threshold: 2 });
@@ -55,6 +76,19 @@ describe("lexical knowledge retrieval", () => {
       "newer-review",
       "older-review",
     ]);
+  });
+
+  it("uses locale-independent stable ID ordering as the final tie breaker", () => {
+    const entries = retrieverFixtures.ties.map((entry) => ({
+      ...entry,
+      version: 1,
+      reviewedAt: "2026-01-01T00:00:00.000Z",
+      approvedAt: "2026-01-01T00:00:00.000Z",
+      id: entry.id === "older-review" ? "zeta" : entry.id === "newer-review" ? "alpha" : "beta",
+    }));
+
+    expect(retrieveKnowledge("consulting", entries, { threshold: 1 }).matches.map(({ entry }) => entry.id))
+      .toEqual(["alpha", "beta", "zeta"]);
   });
 
   it("keeps close matches for an ambiguous query while bounding the result", () => {

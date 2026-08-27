@@ -9,7 +9,7 @@
 - Final evidence revision: `sha256:1ddcc13f77a37dc6d169dc1718039c5ebad9fce9904c1467b605688471b1d7e8`.
 - Parent-owned runtime attempt for PR 2 / task 1.2 settled `passed` / `complete` after the sdd-apply worker returned; evidence revision: `sha256:af40086ea6efab7804cabc151f646055ee1ebec46993959256c9c157fce57044`.
 - Assigned and authorized scope: PR 2 / task 1.2 only, based on merged PR 1 commit `fd17435215cfcd19014ede1b445948bf09563f7f`.
-- Delivery: `auto-chain`, `stacked-to-main`; no commit, branch, PR, push, deployment, provider, KV, retrieval, API handler, frontend integration, or later-slice work.
+- Delivery: `auto-chain`, `stacked-to-main`; candidate commits `a0618fe` and `1ce172b` exist; no push, PR, deployment, provider, KV, API handler, frontend integration, or later-slice work.
 - Changed-line limit: 400 authored additions + deletions.
 - Recovery resolution: the prior single failure was caused by a malformed missing-language test fixture; production schema already required `language`, and the fixture was corrected with a one-line test-fixture change.
 
@@ -55,7 +55,7 @@
 
 ## Status
 
-Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD verification/review/delivery step. Tasks 2.2+ remain pending.
+Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD verification/review/delivery step. Tasks 2.2+ remain pending. Candidate commits exist; no push, PR, or receipt was created.
 
 ## Task 2.1 Slice
 
@@ -67,26 +67,30 @@ Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD veri
 
 | Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
 |---|---|---|---|---|---|---|---|
-| 2.1 | `packages/knowledge/retriever.test.ts` | Unit | ✅ `packages/knowledge/knowledge.test.ts` baseline 12/12 passed | ✅ Added 8 retrieval tests and fixtures before `retriever.ts`; missing-module failure confirmed | ✅ 8 cases cover normalization, multilingual aliases, all field weights, K=3, threshold, ties, unrelated, and ambiguity; final focused run 8/8 passed | ✅ Extracted tokenization/scoring/comparison helpers and constants; final focused run remained 8/8 |
+| 2.1 | `packages/knowledge/retriever.test.ts` | Unit | ✅ `packages/knowledge/knowledge.test.ts` baseline 12/12 passed | ✅ Added governance, threshold, English/PT alias, and locale-order tests before production correction; 3 failures confirmed | ✅ 14/14 passed after boundary filtering and positive-finite threshold validation | ✅ Deterministic ID comparison and governed-entry parsing retained; 14/14 remained green |
 
 ## Work Unit Evidence (Task 2.1)
 
 | Evidence | Result |
 |---|---|
-| Focused test command and exact result | `npx vitest run packages/knowledge/retriever.test.ts` — 1 file, 8/8 tests passed |
-| Runtime harness command/scenario and exact result | `npm test` — 5 files, 82/82 passed; `npx tsc --noEmit` passed; `npm run build` passed with 21/21 static pages generated; `git diff --check` passed. Runtime provider/API harness: N/A — task 2.1 is pure in-memory retrieval with no runtime boundary, credentials, network, provider, or KV integration. |
+| Focused test command and exact result | `npx vitest run packages/knowledge/retriever.test.ts` — 1 file, 14/14 tests passed |
+| Runtime harness command/scenario and exact result | `npm test` — 5 files, 88/88 passed; `npx tsc --noEmit` passed; `npm run build` passed with 21/21 static pages generated; `git diff --check` passed. Runtime provider/API harness: N/A — task 2.1 is pure in-memory retrieval with no runtime boundary, credentials, network, provider, or KV integration. |
 | Rollback boundary | Revert `packages/knowledge/retriever.ts`, `packages/knowledge/retriever.test.ts`, `packages/knowledge/fixtures/retriever.ts`, the `packages/knowledge/package.json` retriever export, this task checkbox, and this task 2.1 progress section; leave tasks 1.1/1.2 and later work untouched. |
-| Final authored changed-line count | 272 total: 268 additions and 4 deletions, including task/progress bookkeeping; under the 400-line isolated-slice limit. |
+| Final authored changed-line count | 352 total cumulative: 64 additions and 16 deletions relative to `1ce172b` in this correction; 80 correction lines, within the authorized maximum. |
 
 ## Additional Checks (Task 2.1)
 
-- Focused retrieval tests — 8/8 passed.
-- Full suite — 5 files, 82/82 passed.
+- Focused retrieval tests — 14/14 passed.
+- Full suite — 5 files, 88/88 passed.
 - Typecheck — `npx tsc --noEmit` passed.
 - Static build — `npm run build` passed; 21/21 pages generated.
 - Diff validation — `git diff --check` passed.
 - No live provider, KV, credentials, or network harness was required for this pure retrieval slice.
 
+## Authorized Scoped Correction (Task 2.1)
+
+- Findings corrected: governance, thresholds, locale-independent IDs, and direct regressions; boundary is the three knowledge files plus this evidence. RED: 3/14 focused failures before production edits. GREEN: 14/14 focused and 88/88 full-suite tests after correction. Rollback: revert those three files and this evidence only; prior/later tasks remain untouched.
+
 ## Current Status
 
-Tasks 1.1, 1.2, and 2.1 are complete. Tasks 2.2–4.3 remain pending. This slice is ready for independent verification/review; no commit, push, PR, or receipt was created.
+Tasks 1.1, 1.2, and 2.1 are complete. Tasks 2.2–4.3 remain pending. This slice is ready for independent verification/review; candidate commits exist, but no push, PR, or receipt was created.
