@@ -126,3 +126,36 @@ Tasks 1.1, 1.2, 2.1, and 2.2 are complete and ready for the next independent SDD
 ## Current Status
 
 Tasks 1.1, 1.2, 2.1, and 2.2 are complete. Tasks 2.3–4.3 remain pending. Task 2.2 validation is uncommitted by instruction; no stage, commit, push, PR, or receipt was created. Ready for independent verification.
+
+## Authorized Scoped Correction (Task 2.2)
+
+- Scope: one authorized correction transaction for task 2.2 only, relative to frozen initial commit `b620f64`; no task 2.3+ implementation.
+- Findings corrected: semantic inversion/negation and unsupported claims; punctuation-resistant structural injection detection; exact numeric comparison and conflicting approved-price rejection; answer grounding bound to cited evidence; strict rejection of unknown provider top-level fields; direct `@ijac/knowledge: 0.1.0` ownership in `chat-api` and lockfile, with no version change.
+- TDD RED: added 7 regression assertions covering the admitted critical findings and warnings; focused run failed 5/13 before production changes.
+- TDD GREEN: focused validation run passed 13/13 after the minimum validation changes.
+- Triangulation: English negation, Portuguese unsupported claim, punctuation injection, exact 9-vs-90 numeric distinction, conflicting approved prices, citation mismatch, unknown top-level field, existing six adversarial cases, and grounded Portuguese/no-URL acceptance.
+
+## TDD Cycle Evidence (Scoped Correction)
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+|---|---|---|---|---|---|---|---|
+| 2.2 correction | `chat-api/validation.test.ts` | Unit | ✅ Existing baseline 6/6 | ✅ 5/13 failed before production edits | ✅ 13/13 passed | ✅ Critical and warning matrix cases plus preserved ES/EN/PT and no-URL behavior | ✅ Structural token checks, exact numeric values, cited-entry binding; 13/13 remained green |
+
+## Work Unit Evidence (Scoped Correction)
+
+| Evidence | Result |
+|---|---|
+| Focused test command and exact result | `npx vitest run chat-api/validation.test.ts` — 1 file, 13/13 passed. |
+| Runtime harness command/scenario and exact result | N/A — pure in-memory validation; no provider, API handler, KV, credential, or network boundary exists in task 2.2. |
+| Rollback boundary | Revert only `chat-api/validation.ts`, `chat-api/validation.test.ts`, `chat-api/package.json`, the matching `package-lock.json` workspace ownership record, and this correction evidence; leave tasks 1.1–2.1 and 2.3+ untouched. |
+| Full test command and exact result | `npm test -- --run` — 6 files, 106/106 passed. |
+| Typecheck/build/diff command results | `npx tsc --noEmit` passed; `npm run build` passed with 21/21 static pages; `git diff --check` passed. |
+| Correction count | Native `git diff --numstat b620f64`: 82 additions + 12 deletions = 94; hard maximum respected. |
+
+## Deviations and Risks (Scoped Correction)
+
+- Deviations: none from the authorized correction boundary; validation remains deterministic and fail-closed.
+
+## Cumulative Status After Scoped Correction
+
+Tasks 1.1, 1.2, 2.1, and 2.2 remain checked; tasks 2.3–4.3 remain pending. No stage, commit, push, PR, receipt, provider, controls, handler, frontend, or release work was performed.

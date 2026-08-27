@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@ijac/contracts": "0.1.0"
+    "@ijac/contracts": "0.1.0",
+    "@ijac/knowledge": "0.1.0"
   }
 }
