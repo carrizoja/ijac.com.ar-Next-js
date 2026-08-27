@@ -5,6 +5,8 @@
   "type": "module",
   "dependencies": {
     "@ijac/contracts": "0.1.0",
-    "@ijac/knowledge": "0.1.0"
+    "@ijac/knowledge": "0.1.0",
+    "groq-sdk": "^1.6.0",
+    "zod": "^4.1.8"
   }
 }
