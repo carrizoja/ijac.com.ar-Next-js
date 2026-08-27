@@ -2,9 +2,12 @@ import { chatResponseSchema, type ChatResponse, type SupportedLanguage } from ".
 import { approvedKnowledgeEntrySchema, type ApprovedKnowledgeEntry } from "../packages/knowledge/types";
 import type { RetrievalMatch } from "../packages/knowledge/retriever";
 
-const INJECTION_PATTERN = /ignore (?:all|any|the|previous)|system prompt|developer message|jailbreak|disregard (?:the|all|your)|reveal (?:your|the) instructions/i;
 const URL_PATTERN = /https?:\/\/[^\s)]+/gi;
 const NUMBER_PATTERN = /\b\d+(?:[.,]\d+)?\s*(?:%|usd|eur|ars|brl|dollars?|euros?|pesos?)?\b/gi;
+const NEGATION_TOKENS = new Set(["no", "not", "never", "without", "doesnt", "dont", "isnt", "cannot", "ningun", "ninguna", "no", "nao", "nunca"]);
+const INJECTION_VERBS = new Set(["ignore", "disregard", "reveal", "jailbreak", "ignora", "ignorar", "revele"]);
+const INJECTION_TARGETS = new Set(["instruction", "instructions", "prompt", "message", "mensagem", "instrucciones", "instrucoes"]);
+const COMMON_WORDS = new Set(["and", "for", "the", "with", "from", "that", "this", "are", "can", "you", "your", "our", "per", "para", "com", "uma", "dos", "das", "los", "las", "por", "que"]);
 
 export interface GroundedValidation {
   valid: boolean;
@@ -31,12 +34,27 @@ function evidenceText(entry: ApprovedKnowledgeEntry, language: SupportedLanguage
   return [entry.title[language], ...entry.aliases[language], ...entry.tags, ...entry.claims].join(" ");
 }
 
+function hasInjectionTokens(answer: string): boolean {
+  const answerTokens = tokens(answer);
+  return [...answerTokens].some((token) => INJECTION_VERBS.has(token))
+    && [...answerTokens].some((token) => INJECTION_TARGETS.has(token));
+}
+
 function hasGrounding(answer: string, entries: readonly ApprovedKnowledgeEntry[], language: SupportedLanguage): boolean {
   return answer.split(/[.!?]+/).map((sentence) => tokens(sentence)).filter((sentence) => sentence.size > 0)
     .every((sentence) => entries.some((entry) => {
       const known = tokens(evidenceText(entry, language));
+      if ([...sentence].some((token) => NEGATION_TOKENS.has(token))) return false;
+      if ([...sentence].some((token) => !known.has(token) && !COMMON_WORDS.has(token))) return false;
       return [...sentence].filter((token) => known.has(token)).length >= 2;
     }));
+}
+
+function numberValues(value: string): Set<string> {
+  return new Set((value.match(NUMBER_PATTERN) ?? []).map((number) => {
+    const match = number.match(/\d+(?:[.,]\d+)?/);
+    return match?.[0].replace(",", ".") ?? number;
+  }));
 }
 
 function isSafeSource(source: unknown, evidence: readonly RetrievalMatch[], language: SupportedLanguage): boolean {
@@ -60,25 +78,31 @@ export function validateGroundedOutput(
     return { valid: false, response: safe };
   }
 
+  if (Object.keys(output).some((key) => !["supported", "answer", "language", "sources"].includes(key))) {
+    return { valid: false, response: safe };
+  }
   const candidate = output as { supported?: unknown; answer?: unknown; language?: unknown; sources?: unknown };
   if (candidate.supported !== true || candidate.language !== language || typeof candidate.answer !== "string" || !candidate.answer.trim()) {
     return { valid: false, response: safe };
   }
-  if (INJECTION_PATTERN.test(candidate.answer) || !hasGrounding(candidate.answer, evidence.map(({ entry }) => entry), language)) {
-    return { valid: false, response: safe };
-  }
-
-  const allEvidenceText = evidence.map(({ entry }) => Object.values(entry.title).join(" ") + " " + entry.claims.join(" ")).join(" ");
-  const unsupportedNumbers = candidate.answer.match(NUMBER_PATTERN)?.some((number) => !allEvidenceText.includes(number)) ?? false;
-  if (unsupportedNumbers) return { valid: false, response: safe };
-
-  const urls = candidate.answer.match(URL_PATTERN) ?? [];
-  const approvedUrls = new Set(evidence.map(({ entry }) => entry.url).filter(Boolean));
-  if (urls.some((url) => !approvedUrls.has(url))) return { valid: false, response: safe };
+  if (hasInjectionTokens(candidate.answer)) return { valid: false, response: safe };
 
   if (!Array.isArray(candidate.sources) || candidate.sources.length === 0 || candidate.sources.length > 3 || candidate.sources.some((source) => !isSafeSource(source, evidence, language))) {
     return { valid: false, response: safe };
   }
+  const citedIds = new Set(candidate.sources.map((source) => (source as { id: string }).id));
+  const citedEntries = evidence.filter(({ entry }) => citedIds.has(entry.id)).map(({ entry }) => entry);
+  if (!hasGrounding(candidate.answer, citedEntries, language)) {
+    return { valid: false, response: safe };
+  }
+
+  const answerNumbers = numberValues(candidate.answer);
+  const citedNumbers = new Set(citedEntries.flatMap((entry) => [...numberValues(Object.values(entry.title).join(" ") + " " + entry.claims.join(" "))]));
+  if ([...answerNumbers].some((number) => !citedNumbers.has(number)) || (answerNumbers.size > 0 && citedNumbers.size > 1)) return { valid: false, response: safe };
+
+  const urls = candidate.answer.match(URL_PATTERN) ?? [];
+  const approvedUrls = new Set(evidence.map(({ entry }) => entry.url).filter(Boolean));
+  if (urls.some((url) => !approvedUrls.has(url))) return { valid: false, response: safe };
 
   const response = chatResponseSchema.safeParse({
     apiVersion: "v1", code: "SUCCESS", supported: true, answer: candidate.answer.trim(), language, sources: candidate.sources,
