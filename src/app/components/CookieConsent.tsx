@@ -9,28 +9,27 @@ export function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
 
+  // Derived during render rather than pushed into state by an effect,
+  // so navigating to a legal page hides the banner without a state update.
+  const isLegalPage = pathname === '/terminos-y-condiciones' ||
+                      pathname === '/politica-de-privacidad';
+
   useEffect(() => {
-    // Don't show banner on legal pages
-    const isLegalPage = pathname === '/terminos-y-condiciones' || 
-                       pathname === '/politica-de-privacidad';
-    
-    if (isLegalPage) {
-      // Ensure banner is hidden on legal pages
-      setShowBanner(false);
-      setIsVisible(false);
-      return;
-    }
+    if (isLegalPage) return;
 
     // Check if user has already given consent
     const consent = localStorage.getItem('cookie-consent');
-    if (!consent) {
-      // Delay showing banner slightly for better UX
-      setTimeout(() => {
-        setShowBanner(true);
-        setIsVisible(true);
-      }, 1000);
-    }
-  }, [pathname]);
+    if (consent) return;
+
+    // Delay showing banner slightly for better UX
+    const timer = setTimeout(() => {
+      setShowBanner(true);
+      setIsVisible(true);
+    }, 1000);
+
+    // Without this, a banner scheduled before navigation still fires on a legal page.
+    return () => clearTimeout(timer);
+  }, [isLegalPage]);
 
   const acceptCookies = () => {
     localStorage.setItem('cookie-consent', 'accepted');
@@ -60,7 +59,7 @@ export function CookieConsent() {
     }
   };
 
-  if (!showBanner) return null;
+  if (isLegalPage || !showBanner) return null;
 
   return (
     <AnimatePresence>
