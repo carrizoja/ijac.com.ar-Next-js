@@ -16,6 +16,18 @@ const exactOrigin = z
 
 const positiveInt = z.coerce.number().int().positive();
 
+const httpsUrl = z
+  .string()
+  .trim()
+  .min(1)
+  .refine((value) => {
+    try {
+      return new URL(value).protocol === "https:";
+    } catch {
+      return false;
+    }
+  }, "Must be an https URL");
+
 const envSchema = z.object({
   GROQ_API_KEY: z.string().trim().min(1),
   GROQ_MODEL: z.string().trim().min(1),
@@ -31,6 +43,8 @@ const envSchema = z.object({
   CHAT_API_QUOTA_WINDOW_SECONDS: positiveInt,
   CHAT_API_TIMEOUT_MS: positiveInt,
   CHAT_API_MAX_BYTES: positiveInt,
+  CHAT_API_KV_URL: httpsUrl,
+  CHAT_API_KV_TOKEN: z.string().trim().min(1),
 });
 
 export interface ChatApiConfig {
@@ -44,9 +58,14 @@ export interface ChatApiConfig {
   quotaWindowSeconds: number;
   timeoutMs: number;
   maxRequestBytes: number;
+  kvUrl: string;
+  kvToken: string;
 }
 
-export type RedactedChatApiConfig = Omit<ChatApiConfig, "groqApiKey" | "clientKeySecret">;
+export type RedactedChatApiConfig = Omit<
+  ChatApiConfig,
+  "groqApiKey" | "clientKeySecret" | "kvToken"
+>;
 
 export type ChatApiConfigResult =
   | { ok: true; config: ChatApiConfig }
@@ -75,6 +94,8 @@ export function loadChatApiConfig(env: Record<string, string | undefined>): Chat
       quotaWindowSeconds: values.CHAT_API_QUOTA_WINDOW_SECONDS,
       timeoutMs: values.CHAT_API_TIMEOUT_MS,
       maxRequestBytes: values.CHAT_API_MAX_BYTES,
+      kvUrl: values.CHAT_API_KV_URL,
+      kvToken: values.CHAT_API_KV_TOKEN,
     },
   };
 }
@@ -93,5 +114,6 @@ export function redactConfig(config: ChatApiConfig): RedactedChatApiConfig {
     quotaWindowSeconds: config.quotaWindowSeconds,
     timeoutMs: config.timeoutMs,
     maxRequestBytes: config.maxRequestBytes,
+    kvUrl: config.kvUrl,
   };
 }

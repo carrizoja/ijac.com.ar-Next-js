@@ -12,6 +12,8 @@ const validEnv = {
   CHAT_API_QUOTA_WINDOW_SECONDS: "3600",
   CHAT_API_TIMEOUT_MS: "8000",
   CHAT_API_MAX_BYTES: "2048",
+  CHAT_API_KV_URL: "https://kv.example.upstash.io",
+  CHAT_API_KV_TOKEN: "kv-token-value",
 };
 
 function loadOrThrow(env: Record<string, string | undefined>) {
@@ -33,10 +35,19 @@ describe("chat API configuration", () => {
       quotaWindowSeconds: 3600,
       timeoutMs: 8000,
       maxRequestBytes: 2048,
+      kvUrl: "https://kv.example.upstash.io",
+      kvToken: "kv-token-value",
     });
   });
 
-  it.each(["GROQ_API_KEY", "GROQ_MODEL", "CHAT_API_CLIENT_KEY_SECRET", "CHAT_API_ALLOWED_ORIGINS"])(
+  it.each([
+    "GROQ_API_KEY",
+    "GROQ_MODEL",
+    "CHAT_API_CLIENT_KEY_SECRET",
+    "CHAT_API_ALLOWED_ORIGINS",
+    "CHAT_API_KV_URL",
+    "CHAT_API_KV_TOKEN",
+  ])(
     "fails closed when %s is missing",
     (key) => {
       const result = loadChatApiConfig({ ...validEnv, [key]: undefined });
@@ -80,6 +91,14 @@ describe("chat API configuration", () => {
     const serialized = JSON.stringify(redacted);
     expect(serialized).not.toContain("gsk-secret-value");
     expect(serialized).not.toContain("hmac-secret-value");
+    expect(serialized).not.toContain("kv-token-value");
     expect(redacted.groqModel).toBe("llama-3.3-70b-versatile");
   });
+
+  it.each(["http://kv.example.upstash.io", "kv.example.upstash.io", "not a url"])(
+    "rejects %s as a KV URL",
+    (url) => {
+      expect(loadChatApiConfig({ ...validEnv, CHAT_API_KV_URL: url }).ok).toBe(false);
+    },
+  );
 });
