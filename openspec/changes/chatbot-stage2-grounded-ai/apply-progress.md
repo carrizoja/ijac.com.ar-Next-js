@@ -9,7 +9,7 @@
 - Final evidence revision: `sha256:1ddcc13f77a37dc6d169dc1718039c5ebad9fce9904c1467b605688471b1d7e8`.
 - Parent-owned runtime attempt for PR 2 / task 1.2 settled `passed` / `complete` after the sdd-apply worker returned; evidence revision: `sha256:af40086ea6efab7804cabc151f646055ee1ebec46993959256c9c157fce57044`.
 - Assigned and authorized scope: PR 2 / task 1.2 only, based on merged PR 1 commit `fd17435215cfcd19014ede1b445948bf09563f7f`.
-- Delivery: `auto-chain`, `stacked-to-main`; candidate commits `a0618fe` and `1ce172b` exist; no push, PR, deployment, provider, KV, API handler, frontend integration, or later-slice work.
+- Delivery: `ask-on-risk` resolved as one isolated `stacked-to-main` slice; candidate commits `a0618fe`, `1ce172b`, and `2a8fc88` exist; no push, PR, deployment, provider, KV, API handler, frontend integration, or later-slice work.
 - Changed-line limit: 400 authored additions + deletions.
 - Recovery resolution: the prior single failure was caused by a malformed missing-language test fixture; production schema already required `language`, and the fixture was corrected with a one-line test-fixture change.
 
@@ -76,7 +76,7 @@ Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD veri
 | Focused test command and exact result | `npx vitest run packages/knowledge/retriever.test.ts` — 1 file, 14/14 tests passed |
 | Runtime harness command/scenario and exact result | `npm test` — 5 files, 88/88 passed; `npx tsc --noEmit` passed; `npm run build` passed with 21/21 static pages generated; `git diff --check` passed. Runtime provider/API harness: N/A — task 2.1 is pure in-memory retrieval with no runtime boundary, credentials, network, provider, or KV integration. |
 | Rollback boundary | Revert `packages/knowledge/retriever.ts`, `packages/knowledge/retriever.test.ts`, `packages/knowledge/fixtures/retriever.ts`, the `packages/knowledge/package.json` retriever export, this task checkbox, and this task 2.1 progress section; leave tasks 1.1/1.2 and later work untouched. |
-| Final authored changed-line count | 352 total cumulative: 64 additions and 16 deletions relative to `1ce172b` in this correction; 80 correction lines, within the authorized maximum. |
+| Final authored changed-line count | 318 total cumulative: 313 additions and 5 deletions relative to `main`; the correction changed 62 additions and 18 deletions relative to `1ce172b`, exactly 80 correction lines within the authorized maximum. |
 
 ## Additional Checks (Task 2.1)
 
