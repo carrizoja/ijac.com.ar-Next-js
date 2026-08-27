@@ -1,10 +1,10 @@
 # Proposal: Stage 2 Grounded AI Chatbot
 
-## Intent
+## Why
 
 The deterministic chatbot cannot safely answer open-ended questions. Stage 2 gives visitors Spanish, English, and Portuguese answers grounded only in approved iJAC content, with contact handoff.
 
-## Scope
+## What Changes
 
 ### In Scope
 - Preserve deterministic quotation, support, contact, hours, location, and answered-service flows; route only unmatched open-ended questions to AI.
@@ -30,7 +30,24 @@ The deterministic chatbot cannot safely answer open-ended questions. Stage 2 giv
 
 Keep the frontend static. A versioned API validates one question, retrieves evidence, and gives Groq only that evidence. Invalid output, insufficient evidence, or failures return localized unknown plus WhatsApp/contact handoff. Deploy independently.
 
-## Affected Areas
+## Considered Alternatives
+
+### Claim-identity grounding — rejected 2026-08-27
+
+An amendment proposed removing provider-authored prose entirely: the provider would return only claim and source identities, and the API would join pre-approved ES/EN/PT sentences in canonical rank order. It was rejected.
+
+| Factor | Claim-identity selection | Chosen: provider-authored, validated |
+|---|---|---|
+| Fabrication risk | Impossible by construction | Layered validation; residual accepted |
+| Off-script questions | Cannot answer; always hands off | Answered within retrieved evidence |
+| Localized wording | Pre-approved per claim | Provider-generated, evidence-limited, validated |
+| Added machinery | Claim identities, per-claim canonical ranks, drift tokens, re-resolution | Reuses shipped retrieval and validation |
+
+Rationale: the identity design bought fabrication-proofness by removing the assistant's ability to answer anything not already written verbatim, which defeats this proposal's intent. Shipped `chat-api/validation.ts` already rejects injection, negation, subject/object role inversion, numeric drift, conflicting approved prices, claims unbound to cited evidence, unknown source IDs, non-canonical URLs, and unknown provider fields.
+
+Accepted residual risk: validation enumerates known attack shapes rather than proving semantic entailment, so a novel bypass class remains possible. Compensating controls are the retrieval threshold (the provider is never called below it), evidence-only prompting, strict structured output, and fail-closed handoff. Revisit this decision if a bypass reaches production.
+
+## Impact
 
 | Area | Impact | Description |
 |---|---|---|
