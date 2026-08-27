@@ -3,7 +3,7 @@
 These gates block **release**, not local implementation. Every one of them requires an account,
 a credential, a DNS record, or a human approval that cannot be produced from the codebase.
 
-The implementation is complete and verified without any of them: 321 tests, typecheck, lint and
+The implementation is complete and verified without any of them: 345 tests, typecheck, lint and
 the static build all pass with no credentials, because every test uses a fake transport and an
 in-memory KV double.
 
@@ -21,7 +21,7 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 | 1 | Knowledge base approval | Content owner | ❌ Not met — 1 placeholder entry |
 | 2 | Localized copy approval | Content owner | ❌ Not met |
 | 3 | Groq account, privacy terms, model choice | Account owner | ❌ Not met |
-| 4 | KV store account and quota | Account owner | ❌ Not met — **also blocked in code** |
+| 4 | KV store account and quota | Account owner | ❌ Not met — client implemented, account still required |
 | 5 | DNS for `api.ijac.com.ar` | Domain owner | ❌ Not met |
 | 6 | Preview smoke evidence | Release owner | ❌ Blocked by 1–5 |
 | 7 | Secret and log inspection in production | Release owner | ⚠️ Repo clean; production unverifiable until deployed |
@@ -87,30 +87,26 @@ environment rather than defaulted in code.
 
 ## 4. KV store account and quota
 
-**Blocked because:** this gate is not only an account — **there is no production `KvClient`
-implementation.** `chat-api/controls.ts` defines the interface (`get` / `incr` / `expire`) and
-`chat-api/testing/fakeRedis.ts` implements it for tests. Nothing implements it for production.
-
-Consequence today: `evaluateGate` catches the missing store and returns `PROVIDER_UNAVAILABLE`.
-The API fails closed rather than serving unmetered traffic, which is the safe outcome, but it
-means the API cannot answer at all until this is bound.
+**Blocked because:** no account exists. The client itself is now implemented —
+`chat-api/kv/upstash.ts` speaks the Upstash REST protocol as a thin fetch wrapper over `get`,
+`incr` and `expire`, with no added dependency, and is covered by 19 tests.
 
 Required before release:
 
-- A KV account (Upstash or equivalent) with its own quota headroom.
-- An implementation of `KvClient`. It needs three operations and no more, so it can be a thin
-  fetch wrapper over a REST API — a full SDK is not required.
+- An Upstash Redis database (or an equivalent REST-compatible store) with its own quota headroom.
+- `CHAT_API_KV_URL` and `CHAT_API_KV_TOKEN` set on the API.
 - Quota values chosen for `CHAT_API_CLIENT_QUOTA`, `CHAT_API_GLOBAL_QUOTA` and
   `CHAT_API_QUOTA_WINDOW_SECONDS`.
 
-**Note for whoever implements this:** `packages/contracts/chat.test.ts` asserts `@upstash/redis`
-is absent from the `chat-api` manifest. Adding a real client will trip that assertion. It should
-be narrowed exactly as the `groq-sdk` assertion was — the boundary that matters is that the
-static frontend never reaches the server package, not that the server avoids its own
-dependencies.
+A wrong token or an unreachable store fails closed with `PROVIDER_UNAVAILABLE`, so a
+misconfiguration surfaces as an outage rather than as an unmetered API.
 
-**Verify:** quota counters appear in the store under `chat-api:quota:*` after a request, and
-exhausting a client quota returns `RATE_LIMITED` (429).
+**Verify:** quota counters appear under `chat-api:quota:*` after a request, and exhausting a
+client quota returns `RATE_LIMITED` (429).
+
+**Separate remaining code gap:** there is still no composition root. Nothing wires
+`loadChatApiConfig(process.env)` to the KV client, the provider and the retriever, and no
+serverless entry point exports the handler. See "Not yet implemented" in `chat-api/README.md`.
 
 ## 5. DNS for `api.ijac.com.ar`
 

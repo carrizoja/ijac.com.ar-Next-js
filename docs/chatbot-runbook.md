@@ -73,8 +73,16 @@ https://ijac.com.ar,https://www.ijac.com.ar,https://ijac-next-app-abc123.vercel.
 
 ### 4. Provision the KV store
 
-**Not yet implemented.** See "Not yet implemented" in `chat-api/README.md`. Until a `KvClient`
-is bound, the gate fails closed with `PROVIDER_UNAVAILABLE` and the API will not serve answers.
+Create an Upstash Redis database (or any store speaking the same REST protocol) and set
+`CHAT_API_KV_URL` and `CHAT_API_KV_TOKEN`. The client is `chat-api/kv/upstash.ts`; it needs only
+`get`, `incr` and `expire`.
+
+Verify after enabling: a request creates `chat-api:quota:global` in the store, and exhausting a
+client quota returns `RATE_LIMITED` (429).
+
+If the store is unreachable or the token is wrong, the gate fails closed with
+`PROVIDER_UNAVAILABLE` rather than serving unmetered traffic — so a misconfiguration here shows
+up as an outage, never as an unmetered API.
 
 ### 5. Enable
 

@@ -21,6 +21,8 @@ function configWith(overrides: Record<string, string> = {}): ChatApiConfig {
     CHAT_API_QUOTA_WINDOW_SECONDS: "3600",
     CHAT_API_TIMEOUT_MS: "8000",
     CHAT_API_MAX_BYTES: "2048",
+    CHAT_API_KV_URL: "https://kv.example.upstash.io",
+    CHAT_API_KV_TOKEN: "kv-token-value",
     ...overrides,
   });
   if (!result.ok) throw new Error(`fixture config must load: ${result.errors.join("; ")}`);

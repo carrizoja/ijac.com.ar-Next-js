@@ -41,6 +41,8 @@ All variables are required unless stated otherwise. Missing or malformed values 
 | `CHAT_API_QUOTA_WINDOW_SECONDS` | `3600` | Fixed window length. |
 | `CHAT_API_TIMEOUT_MS` | `8000` | Provider timeout. |
 | `CHAT_API_MAX_BYTES` | `2048` | Max request body size, measured in **UTF-8 bytes**, not characters. |
+| `CHAT_API_KV_URL` | `https://….upstash.io` | KV REST endpoint. Must be `https:`. |
+| `CHAT_API_KV_TOKEN` | opaque token | Secret. Sent as a bearer header, never in a URL, and excluded from `redactConfig`. |
 
 The website is configured separately, at build time:
 
@@ -116,17 +118,26 @@ live Groq call or touches production infrastructure**, so no credentials are nee
 `FakeRedis.startOutage()` forces every KV operation to reject, which is how the fail-closed paths
 are exercised against a real rejection rather than a mocked return value.
 
+## KV store
+
+`kv/upstash.ts` implements `KvClient` over the Upstash REST protocol as a thin `fetch` wrapper —
+three commands, no SDK, no added dependency. `packages/contracts/chat.test.ts` still asserts
+`@upstash/redis` is absent from this manifest, and that assertion remains true and worth keeping.
+
+Every failure throws, so `evaluateGate` catches and returns `PROVIDER_UNAVAILABLE`. An
+unreachable, misconfigured or misbehaving store fails closed rather than serving unmetered
+traffic. Thrown messages are fixed strings: neither the token nor the upstream body appears in
+them, because an error can travel further than the request that produced it. Keys are
+URL-encoded, so an HMAC suffix can never alter the request path, and every call is bounded by an
+abort signal.
+
 ## Not yet implemented
 
-**There is no production KV client.** `controls.ts` depends on a structural `KvClient`
-interface (`get` / `incr` / `expire`); only the in-memory test double exists today. Quotas and
-the kill switch therefore have no durable backing store yet.
+**There is no composition root.** Nothing constructs the production dependency graph. `v1/route.ts`
+adapts `Request`/`Response` around a handler, and `handleChatRequest` takes its config, KV,
+provider and retriever as injected dependencies — but no module wires
+`loadChatApiConfig(process.env)` to `createUpstashKvClient`, `createGroqProvider` and
+`createKnowledgeRetriever`, and no serverless entry point exports the result.
 
-Until one is bound, `evaluateGate` catches the failure and returns `PROVIDER_UNAVAILABLE` — the
-API fails closed rather than serving unmetered traffic. Provisioning that store is an owner gate,
-tracked as task 4.3 in `openspec/changes/chatbot-stage2-grounded-ai/tasks.md`.
-
-Note that `packages/contracts/chat.test.ts` currently asserts `@upstash/redis` is absent from this
-package's manifest. Adding a real Upstash client will trip that assertion, which should then be
-narrowed the same way the `groq-sdk` assertion was — the frontend boundary is what matters, not
-the server's own dependencies.
+That entry point is the remaining code before this package can be deployed. It is small; every
+piece it needs already exists and is tested.
