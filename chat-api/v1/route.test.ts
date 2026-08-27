@@ -37,6 +37,13 @@ describe("chat route request extraction", () => {
     });
   });
 
+  it("passes the caller address alongside the request", async () => {
+    const { handle, handler } = route();
+    await handle(post(validBody));
+
+    expect(handler.mock.calls[0][1]).toBe("203.0.113.7");
+  });
+
   it("reports a missing origin as null rather than an empty string", async () => {
     const request = new Request("https://api.ijac.com.ar/v1/chat", {
       method: "POST",

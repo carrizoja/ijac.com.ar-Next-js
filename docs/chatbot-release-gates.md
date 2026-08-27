@@ -3,7 +3,7 @@
 These gates block **release**, not local implementation. Every one of them requires an account,
 a credential, a DNS record, or a human approval that cannot be produced from the codebase.
 
-The implementation is complete and verified without any of them: 345 tests, typecheck, lint and
+The implementation is complete and verified without any of them: 358 tests, typecheck, lint and
 the static build all pass with no credentials, because every test uses a fake transport and an
 in-memory KV double.
 
@@ -104,9 +104,9 @@ misconfiguration surfaces as an outage rather than as an unmetered API.
 **Verify:** quota counters appear under `chat-api:quota:*` after a request, and exhausting a
 client quota returns `RATE_LIMITED` (429).
 
-**Separate remaining code gap:** there is still no composition root. Nothing wires
-`loadChatApiConfig(process.env)` to the KV client, the provider and the retriever, and no
-serverless entry point exports the handler. See "Not yet implemented" in `chat-api/README.md`.
+**No remaining code gap.** `chat-api/app.ts` wires config, KV, provider and retriever, and
+`chat-api/api/chat.ts` exposes it as a serverless function. The package is deployable as soon as
+this gate and gates 3 and 5 are met.
 
 ## 5. DNS for `api.ijac.com.ar`
 

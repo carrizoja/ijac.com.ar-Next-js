@@ -131,13 +131,25 @@ them, because an error can travel further than the request that produced it. Key
 URL-encoded, so an HMAC suffix can never alter the request path, and every call is bounded by an
 abort signal.
 
-## Not yet implemented
+## Composition and deployment
 
-**There is no composition root.** Nothing constructs the production dependency graph. `v1/route.ts`
-adapts `Request`/`Response` around a handler, and `handleChatRequest` takes its config, KV,
-provider and retriever as injected dependencies — but no module wires
-`loadChatApiConfig(process.env)` to `createUpstashKvClient`, `createGroqProvider` and
-`createKnowledgeRetriever`, and no serverless entry point exports the result.
+`app.ts` is the composition root. `createChatApp(env, overrides?)` turns an environment record
+into a `(Request) => Promise<Response>` handler, wiring config, the KV client, the Groq provider
+and the knowledge retriever. Nothing below it reads `process.env`, which is why every layer stays
+injectable and the whole pipeline is exercised end to end in `app.test.ts` with a single fake
+transport routed by host.
 
-That entry point is the remaining code before this package can be deployed. It is small; every
-piece it needs already exists and is tested.
+Configuration problems are **returned, not thrown**, so a misconfigured deployment reports which
+variables are wrong instead of crashing on the first request.
+
+```
+api/chat.ts     serverless entry; builds the app once at cold start
+vercel.json     rewrites the public /v1/chat onto /api/chat
+```
+
+Deploy `chat-api/` as its own Vercel project with the root directory set to `chat-api`, so the
+website and the API release independently.
+
+**Diagnosing a dead deployment:** if every path returns an empty `503`, configuration failed to
+load. The entry point deliberately returns no detail — a public endpoint must not describe its own
+misconfiguration — so check the environment against the table above.
