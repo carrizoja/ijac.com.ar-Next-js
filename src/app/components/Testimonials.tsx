@@ -9,6 +9,7 @@ import {
   Autoplay
 } from "swiper/modules";
 
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -81,9 +82,11 @@ const TestimonialsSection = () => {
             >
               <div className="flex flex-col items-center text-center h-full">
                 {testimonial.image_avatar ? (
-                  <img
+                  <Image
                     src={testimonial.image_avatar}
                     alt={testimonial.name}
+                    width={64}
+                    height={64}
                     className="mb-4 h-16 w-16 rounded-full border-2 border-blue-400 object-cover shadow-md"
                   />
                 ) : (

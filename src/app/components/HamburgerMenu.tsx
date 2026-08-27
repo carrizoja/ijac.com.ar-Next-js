@@ -16,7 +16,7 @@ export function HamburgerMenu() {
   // Function to handle smooth scrolling to sections
   const scrollToSection = (sectionId: string) => {
     if (pathname !== "/") {
-      window.location.href = `/#${sectionId}`;
+      window.location.assign(`/#${sectionId}`);
       setIsOpen(false);
       return;
     }

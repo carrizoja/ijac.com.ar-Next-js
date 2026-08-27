@@ -4,7 +4,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { PrimaryButton } from "../../components/ui/PrimaryButton";
-import { SecondaryButton } from "../../components/ui/SecondaryButton";
 import { getServiceBySlug, getServiceSlugs } from "../../../data/services";
 
 type ServicePageProps = {
