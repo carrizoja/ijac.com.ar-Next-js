@@ -8,17 +8,18 @@
 - Final runtime status revision: `sha256:b9e747742c727478fbdb349e6a356cb608dfacb3e9b790cccc35df67da57ff7f`.
 - Final evidence revision: `sha256:1ddcc13f77a37dc6d169dc1718039c5ebad9fce9904c1467b605688471b1d7e8`.
 - Parent-owned runtime attempt for PR 2 / task 1.2 settled `passed` / `complete` after the sdd-apply worker returned; evidence revision: `sha256:af40086ea6efab7804cabc151f646055ee1ebec46993959256c9c157fce57044`.
-- Assigned and authorized scope: narrow task 2.1 correction only, based on exact head `1f7f78f`.
-- Delivery: `ask-on-risk` resolved as one isolated `stacked-to-main` slice; candidate commits `a0618fe`, `1ce172b`, and `2a8fc88` exist; no push, PR, deployment, provider, KV, API handler, frontend integration, or later-slice work.
+- Prior assigned scope: narrow task 2.1 correction only, based on exact head `1f7f78f`.
+- Delivery: `ask-on-risk` resolved as one isolated `stacked-to-main` slice; candidate commits `a0618fe`, `1ce172b`, and `2a8fc88` exist; no push, PR, deployment, controls, provider, KV, API handler, frontend integration, or later-slice work.
 - Changed-line limit: 400 authored additions + deletions.
-- Correction authorization: hard-cap public limits at K=3, deterministic non-finite limits fail closed, and isolate English/PT alias-only fixtures; no 2.2+ work.
+- Prior correction authorization: hard-cap public limits at K=3, deterministic non-finite limits fail closed, and isolate English/PT alias-only fixtures.
 
 ## Task Status
 
 - [x] 1.1 Contracts and foundation — implementation and required evidence complete.
 - [x] 1.2 Knowledge governance — implementation and required evidence complete.
 - [x] 2.1 Grounded retrieval — implementation and required evidence complete.
-- [ ] 2.2+ — all later tasks remain pending.
+- [x] 2.2 Grounded output validation — implementation and required evidence complete.
+- [ ] 2.3+ — all later tasks remain pending.
 
 ## TDD Cycle Evidence
 
@@ -26,6 +27,7 @@
 |---|---|---|---|---|---|---|---|
 | 1.1 | `packages/contracts/chat.test.ts` | Unit | ✅ Existing contract safety net completed | ✅ Added invalid result-code, exact source URL, and contract-boundary assertions first | ✅ Focused contract tests 17/17 passed | ✅ Supported languages, failure invariants, invalid codes, URL policy, and manifests | ✅ Exported result-code schema, removed obsolete Zod type assertion, tightened URL policy |
 | 1.2 | `packages/knowledge/knowledge.test.ts` | Unit | ✅ New files; no existing knowledge tests | ✅ Wrote governance and future-date regressions before production corrections | ✅ Focused knowledge tests 12/12 passed | ✅ Approved fixture, timestamp ordering, duplicate IDs, unsafe URLs, and freshness branches | ✅ Extracted schemas and narrowed approved repository output; tests remained green |
+| 2.2 | `chat-api/validation.test.ts` | Unit | ✅ New validation files; no existing validation tests | ✅ Added six adversarial/grounding cases before implementation; import failure confirmed | ✅ Focused validation tests 6/6 passed | ✅ Injection, conflicting price, unsupported claim, unknown URL, Portuguese paraphrase, and no-URL evidence | ✅ Extracted safe-result, grounding, source, and URL checks; tests remained green |
 
 ## Work Unit Evidence
 
@@ -53,9 +55,39 @@
 - Diff validation — `git diff --check` — passed.
 - Authored changed lines — 233 total: 228 additions and 5 deletions, including dependency ownership and task/progress bookkeeping (under 400-line slice maximum); implementation/test files contribute 189 additions.
 
+## Task 2.2 Slice
+
+- Assigned scope: task 2.2 only; isolated stacked-to-main slice targeting `main` after verification.
+- Implementation: `chat-api/validation.ts` validates strict provider shape, requested language, grounded sentence anchors, approved evidence IDs/titles/URLs, canonical links, and numeric claims; injection, malformed, unsupported, and conflicting output fails closed to the localized unknown result.
+- No task 2.3 controls/config/CORS/privacy, task 2.4 provider, task 3.1 handler, frontend, or release work was implemented.
+
+## TDD Cycle Evidence (Task 2.2)
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+|---|---|---|---|---|---|---|---|
+| 2.2 | `chat-api/validation.test.ts` | Unit | ✅ New files; no existing validation tests | ✅ Six cases written first; missing module failed before production code | ✅ 6/6 focused tests passed | ✅ Six cases cover all assigned adversarial fixtures and both URL branches | ✅ Helper extraction and type-safe success narrowing; focused tests remained green |
+
+## Work Unit Evidence (Task 2.2)
+
+| Evidence | Result |
+|---|---|
+| Focused test command and exact result | `npx vitest run chat-api/validation.test.ts` — 1 file, 6/6 passed. |
+| Full test command and exact result | `npm test -- --run` — 6 files, 99/99 passed. |
+| Typecheck command and exact result | `npx tsc --noEmit` — passed. |
+| Build command and exact result | `npm run build` — passed; 21/21 static pages generated. |
+| Runtime harness command/scenario and exact result | N/A — pure validation over governed in-memory evidence; no provider, API handler, KV, credentials, or network boundary exists in task 2.2. |
+| Rollback boundary | Revert only `chat-api/validation.ts`, `chat-api/validation.test.ts`, this task 2.2 checkbox, and the task 2.2 progress sections; leave tasks 1.1–2.1 and tasks 2.3+ untouched. |
+| Diff validation | `git diff --check` — passed. |
+| Authored line count | 188 changed lines: 181 additions and 7 deletions; hard 400-line limit respected. |
+
+## Deviations and Risks (Task 2.2)
+
+- Deviations: None — implementation matches the design's fail-closed, evidence-only boundary. Provider/API handler/control concerns remain out of scope.
+- Risks: grounding uses conservative token anchors and numeric-presence checks; semantic model evaluation remains a later provider/handler concern.
+
 ## Status
 
-Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD verification/review/delivery step. Tasks 2.2+ remain pending. Candidate commits exist; no push, PR, or receipt was created.
+Tasks 1.1, 1.2, 2.1, and 2.2 are complete and ready for the next independent SDD verification/review/delivery step. Tasks 2.3–4.3 remain pending. No push, PR, or receipt was created.
 
 ## Task 2.1 Slice
 
@@ -93,4 +125,4 @@ Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD veri
 
 ## Current Status
 
-Tasks 1.1, 1.2, and 2.1 are complete. Tasks 2.2–4.3 remain pending. Correction is uncommitted by instruction; no stage, commit, push, PR, or receipt was created. Ready for independent verification.
+Tasks 1.1, 1.2, 2.1, and 2.2 are complete. Tasks 2.3–4.3 remain pending. Task 2.2 validation is uncommitted by instruction; no stage, commit, push, PR, or receipt was created. Ready for independent verification.
