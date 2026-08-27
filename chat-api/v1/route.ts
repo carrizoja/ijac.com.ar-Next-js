@@ -4,7 +4,10 @@ import type { ChatHttpResponse } from "./chat";
 /** Used when no forwarded address is present, so quota keys are always well formed. */
 const UNKNOWN_ADDRESS = "unknown";
 
-export type ChatRouteHandler = (raw: RawChatRequest) => Promise<ChatHttpResponse>;
+export type ChatRouteHandler = (
+  raw: RawChatRequest,
+  clientAddress: string,
+) => Promise<ChatHttpResponse>;
 
 /**
  * First hop of x-forwarded-for. The value is only ever fed to the HMAC in
@@ -29,7 +32,7 @@ export function createChatRoute(handle: ChatRouteHandler) {
       body: request.method === "OPTIONS" ? "" : await request.text(),
     };
 
-    const result = await handle(raw);
+    const result = await handle(raw, clientAddressFrom(request.headers));
 
     if (result.body === undefined) {
       return new Response(null, { status: result.status, headers: result.headers });

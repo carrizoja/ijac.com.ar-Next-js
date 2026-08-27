@@ -10,7 +10,7 @@ Two deployables that are released, rolled back and disabled **independently**.
 | Deployable | Host | Contains | Release |
 |---|---|---|---|
 | Website | Hostinger, static `out/` | `AIChat.tsx`, deterministic engine, API client | `npm run build`, upload contents of `out/` to `public_html/` |
-| Chat API | Vercel, `api.ijac.com.ar` | Retrieval, provider, controls, secrets | Vercel deployment |
+| Chat API | Vercel, `api.ijac.com.ar` | Retrieval, provider, controls, secrets | Vercel project rooted at `chat-api/` |
 
 The website never holds a secret and never imports from `chat-api/`. Either side can be turned
 off without touching the other.
@@ -84,7 +84,16 @@ If the store is unreachable or the token is wrong, the gate fails closed with
 `PROVIDER_UNAVAILABLE` rather than serving unmetered traffic — so a misconfiguration here shows
 up as an outage, never as an unmetered API.
 
-### 5. Enable
+### 5. Deploy the API
+
+Create a Vercel project with the **root directory set to `chat-api`**. `chat-api/vercel.json`
+rewrites the public `/v1/chat` path onto the `api/chat` function, which builds the app once per
+cold start.
+
+An empty `503` on every path means configuration failed to load; check the environment against
+`chat-api/README.md`.
+
+### 6. Enable
 
 Set `CHAT_API_ENABLED=true` on the API, then build and deploy the website with
 `NEXT_PUBLIC_CHAT_AI_ENABLED=true` and `NEXT_PUBLIC_CHAT_API_URL=https://api.ijac.com.ar`.
