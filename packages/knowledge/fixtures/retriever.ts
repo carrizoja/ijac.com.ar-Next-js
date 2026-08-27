@@ -39,6 +39,10 @@ export const retrieverFixtures = {
     makeEntry("support-three", { tags: ["support"] }),
     makeEntry("support-four", { tags: ["support"] }),
   ],
+  aliasOnly: [
+    makeEntry("alias-only-en", { aliases: { es: [], en: ["technical support"], pt: [] } }),
+    makeEntry("alias-only-pt", { aliases: { es: [], en: [], pt: ["suporte técnico"] } }),
+  ],
   ties: [
     makeEntry("older-review", { tags: ["consulting"], version: 1, reviewedAt: "2026-01-01T00:00:00.000Z" }),
     makeEntry("newer-review", { tags: ["consulting"], version: 1, reviewedAt: "2026-02-01T00:00:00.000Z" }),

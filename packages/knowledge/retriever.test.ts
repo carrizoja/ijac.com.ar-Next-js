@@ -68,6 +68,24 @@ describe("lexical knowledge retrieval", () => {
     expect(result.matches.every(({ score }) => score >= 1)).toBe(true);
   });
 
+  it.each([4, Number.POSITIVE_INFINITY, Number.NaN])
+    ("bounds or rejects public limit %s", (limit) => {
+      const result = retrieveKnowledge("support", retrieverFixtures.topK, { limit, threshold: 1 });
+
+      expect(result.matches.length).toBeLessThanOrEqual(DEFAULT_RETRIEVAL_LIMIT);
+      if (!Number.isFinite(limit)) expect(result.matches).toEqual([]);
+    });
+
+  it.each([
+    ["English", "technical support", "alias-only-en"],
+    ["Portuguese", "suporte técnico", "alias-only-pt"],
+  ])("matches %s when only its alias contributes", (_language, query, id) => {
+    const result = retrieveKnowledge(query, retrieverFixtures.aliasOnly, { threshold: 2 });
+
+    expect(result.matches.map(({ entry }) => entry.id)).toEqual([id]);
+    expect(result.matches[0]?.score).toBe(4);
+  });
+
   it("breaks score ties by version, freshness, and stable ID", () => {
     const result = retrieveKnowledge("consulting", retrieverFixtures.ties, { threshold: 1 });
 

@@ -79,7 +79,10 @@ export function retrieveKnowledge(
   entries: readonly KnowledgeEntry[],
   options: RetrievalOptions = {},
 ): RetrievalResult {
-  const limit = Math.max(0, Math.floor(options.limit ?? DEFAULT_RETRIEVAL_LIMIT));
+  const requestedLimit = options.limit ?? DEFAULT_RETRIEVAL_LIMIT;
+  const limit = Number.isFinite(requestedLimit)
+    ? Math.min(DEFAULT_RETRIEVAL_LIMIT, Math.max(0, Math.floor(requestedLimit)))
+    : 0;
   const threshold = options.threshold ?? DEFAULT_RETRIEVAL_THRESHOLD;
   if (!Number.isFinite(threshold) || threshold <= 0) {
     return { matches: [], belowThreshold: true, ambiguous: false };
