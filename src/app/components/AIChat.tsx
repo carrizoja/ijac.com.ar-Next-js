@@ -2,17 +2,34 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  getChatResponse,
-  type ConversationContext,
-} from "./chat/chatEngine";
+import type { ConversationContext } from "./chat/chatEngine";
 import { emitChatTelemetry } from "./chat/chatTelemetry";
+import { createChatApiClient, type ChatApiClient } from "./chat/chatApi";
+import { resolveChatTurn, type ChatSourceLink } from "./chat/hybridChat";
 
 interface Message {
   id: string;
   text: string;
   isUser: boolean;
   timestamp: Date;
+  sources?: ChatSourceLink[];
+}
+
+/** The widget speaks the site's locale; the API localizes its own cards to match. */
+const CHAT_LANGUAGE = "es" as const;
+
+/**
+ * Built once from build-time env. When the flag is off or no URL is configured this is null,
+ * which restores deterministic-only behaviour without touching the component.
+ */
+const configuredClient: ChatApiClient | null =
+  process.env.NEXT_PUBLIC_CHAT_AI_ENABLED === "true" && process.env.NEXT_PUBLIC_CHAT_API_URL
+    ? createChatApiClient(process.env.NEXT_PUBLIC_CHAT_API_URL)
+    : null;
+
+interface AIChatProps {
+  /** Injection seam for tests; production uses the env-configured client. */
+  chatClient?: ChatApiClient | null;
 }
 
 const quickQuestions = [
@@ -39,7 +56,7 @@ const focusableSelector = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(",");
 
-export function AIChat() {
+export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [inputText, setInputText] = useState("");
@@ -53,6 +70,7 @@ export function AIChat() {
   const dialogRef = useRef<HTMLElement>(null);
   const restoreFocusFrameRef = useRef<number | null>(null);
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const abortRef = useRef<AbortController | null>(null);
 
   const nextMessageId = () => {
     messageIdRef.current += 1;
@@ -60,6 +78,9 @@ export function AIChat() {
   };
 
   const closeChat = () => {
+    // Drop any in-flight turn so a late answer cannot appear after the visitor left.
+    abortRef.current?.abort();
+    abortRef.current = null;
     setIsOpen(false);
     if (restoreFocusFrameRef.current !== null) {
       window.cancelAnimationFrame(restoreFocusFrameRef.current);
@@ -167,28 +188,60 @@ export function AIChat() {
     emitChatTelemetry({ event: "submitted" });
 
     const timer = setTimeout(() => {
-      const response = getChatResponse(text, contextRef.current);
-      contextRef.current = response.context;
-      setMessages((current) => [
-        ...current,
-        {
-          id: nextMessageId(),
-          text: response.text,
-          isUser: false,
-          timestamp: new Date(),
-        },
-      ]);
-      emitChatTelemetry({
-        event: response.intent === "fallback" ? "fallback" : "matched",
-        intent: response.intent,
-      });
-      if (response.contactHandoff) {
-        emitChatTelemetry({ event: "contact_handoff", intent: response.intent });
-      }
-      setIsTyping(false);
-      isProcessingRef.current = false;
-      timersRef.current.delete(timer);
-      window.requestAnimationFrame(() => inputRef.current?.focus());
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      void resolveChatTurn(
+        text,
+        contextRef.current,
+        { client: chatClient, language: CHAT_LANGUAGE },
+        controller.signal,
+      )
+        .then((turn) => {
+          contextRef.current = turn.context;
+          setMessages((current) => [
+            ...current,
+            {
+              id: nextMessageId(),
+              text: turn.text,
+              isUser: false,
+              timestamp: new Date(),
+              ...(turn.sources.length > 0 ? { sources: turn.sources } : {}),
+            },
+          ]);
+
+          if (turn.kind === "grounded") {
+            emitChatTelemetry({ event: "ai_answer", intent: turn.intent });
+          } else if (turn.kind === "unknown") {
+            emitChatTelemetry({ event: "ai_unknown", intent: turn.intent });
+          } else {
+            emitChatTelemetry({
+              event: turn.intent === "fallback" ? "fallback" : "matched",
+              intent: turn.intent,
+            });
+          }
+
+          if (turn.contactHandoff) {
+            emitChatTelemetry({ event: "contact_handoff", intent: turn.intent });
+          }
+        })
+        // An aborted turn is dropped silently: no card, no telemetry.
+        .catch(() => undefined)
+        .finally(() => {
+          abortRef.current = null;
+          setIsTyping(false);
+          isProcessingRef.current = false;
+          timersRef.current.delete(timer);
+          window.requestAnimationFrame(() => {
+            // Submitting focuses the textbox, so anything else holding focus now means the
+            // visitor moved it deliberately while waiting. Answers can take seconds to arrive;
+            // yanking focus back would interrupt whatever they navigated to.
+            const active = document.activeElement;
+            if (active === null || active === document.body || active === inputRef.current) {
+              inputRef.current?.focus();
+            }
+          });
+        });
     }, 500);
 
     timersRef.current.add(timer);
@@ -281,7 +334,7 @@ export function AIChat() {
               </button>
             </div>
 
-            <div role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversación" tabIndex={0} className="flex-1 space-y-4 overflow-y-auto p-4">
+            <div role="log" aria-live="polite" aria-relevant="additions" aria-busy={isTyping} aria-label="Conversación" tabIndex={0} className="flex-1 space-y-4 overflow-y-auto p-4">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
@@ -291,6 +344,26 @@ export function AIChat() {
                 >
                   <div className={`max-w-[85%] rounded-lg p-3 ${message.isUser ? "rounded-br-none bg-blue-500 text-white" : "rounded-bl-none bg-gray-100 text-gray-900 dark:bg-neutral-800 dark:text-white"}`}>
                     <p className="whitespace-pre-line text-sm">{message.text}</p>
+                    {message.sources && message.sources.length > 0 && (
+                      <ul className="mt-2 space-y-1 border-t border-current/20 pt-2">
+                        {message.sources.map((source) => (
+                          <li key={source.id} className="text-xs">
+                            {source.url ? (
+                              <a
+                                href={source.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline underline-offset-2 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                              >
+                                {source.title}
+                              </a>
+                            ) : (
+                              <span>{source.title}</span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                     <p className="mt-1 text-xs opacity-70">
                       {message.timestamp.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}
                     </p>
