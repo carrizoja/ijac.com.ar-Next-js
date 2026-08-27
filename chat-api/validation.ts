@@ -30,6 +30,11 @@ function tokens(value: string): Set<string> {
   );
 }
 
+function orderedTokens(value: string): string[] {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ").trim().split(/\s+/).filter((token) => token.length > 2);
+}
+
 function evidenceText(entry: ApprovedKnowledgeEntry, language: SupportedLanguage): string {
   return [entry.title[language], ...entry.aliases[language], ...entry.tags, ...entry.claims].join(" ");
 }
@@ -40,7 +45,21 @@ function hasInjectionTokens(answer: string): boolean {
     && [...answerTokens].some((token) => INJECTION_TARGETS.has(token));
 }
 
+function hasRoleInversion(answer: string, entries: readonly ApprovedKnowledgeEntry[]): boolean {
+  const answerTokens = orderedTokens(answer);
+  const answerSubject = answerTokens.indexOf("ijac");
+  if (answerSubject < 0) return false;
+  return entries.some((entry) => entry.claims.some((claim) => {
+    const claimTokens = orderedTokens(claim);
+    const claimSubject = claimTokens.indexOf("ijac");
+    const roleVerb = claimTokens[claimSubject + 1];
+    const answerVerb = roleVerb ? answerTokens.indexOf(roleVerb) : -1;
+    return claimSubject >= 0 && roleVerb !== undefined && answerVerb >= 0 && answerVerb < answerSubject;
+  }));
+}
+
 function hasGrounding(answer: string, entries: readonly ApprovedKnowledgeEntry[], language: SupportedLanguage): boolean {
+  if (hasRoleInversion(answer, entries)) return false;
   return answer.split(/[.!?]+/).map((sentence) => tokens(sentence)).filter((sentence) => sentence.size > 0)
     .every((sentence) => entries.some((entry) => {
       const known = tokens(evidenceText(entry, language));
