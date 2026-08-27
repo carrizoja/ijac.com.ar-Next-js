@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -161,10 +161,20 @@ describe("frontend/server package boundary", () => {
     expect(rootManifest.devDependencies ?? {}).not.toHaveProperty("@upstash/redis");
     expect(contractManifest.dependencies ?? {}).not.toHaveProperty("groq-sdk");
     expect(contractManifest.dependencies ?? {}).not.toHaveProperty("@upstash/redis");
-    expect(apiManifest.dependencies ?? {}).not.toHaveProperty("groq-sdk");
+    // chat-api is the server deployable, so it MAY depend on the provider SDK.
+    // The boundary that matters is that the static frontend never reaches it.
     expect(apiManifest.dependencies ?? {}).not.toHaveProperty("@upstash/redis");
-    expect(apiManifest.devDependencies ?? {}).not.toHaveProperty("groq-sdk");
     expect(apiManifest.devDependencies ?? {}).not.toHaveProperty("@upstash/redis");
+
+    const frontendSources = readdirSync(resolve(root, "src"), { recursive: true, encoding: "utf8" })
+      .filter((file) => /\.tsx?$/.test(String(file)));
+    expect(frontendSources.length).toBeGreaterThan(0);
+    for (const file of frontendSources) {
+      const content = readFileSync(resolve(root, "src", String(file)), "utf8");
+      expect(content, `${file} must not import the server deployable`).not.toMatch(
+        /["'][^"']*chat-api/,
+      );
+    }
     expect(packageSource).not.toMatch(/groq-sdk|@upstash\/redis/);
     expect(source).not.toMatch(/(?:from|require\(|import\s*\()[\s\S]{0,80}(?:node:|groq-sdk|@upstash\/)/);
     expect(source).not.toMatch(/(?:export\s+\*|export\s+\{)[\s\S]{0,80}(?:groq-sdk|@upstash\/)/);
