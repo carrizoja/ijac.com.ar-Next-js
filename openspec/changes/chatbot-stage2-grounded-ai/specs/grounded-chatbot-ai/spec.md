@@ -1,10 +1,8 @@
-# Chatbot Specification
-
 ## Purpose
 
 Enable multilingual answers from approved iJAC knowledge with handoff.
 
-## Requirements
+## ADDED Requirements
 
 ### Requirement: Hybrid
 Chatbot MUST prioritize safety/reset, active flow, quotation/support/contact, existing answers, AI, then unknown. AI MUST NOT mutate state or receive transcripts.
