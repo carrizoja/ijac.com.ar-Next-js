@@ -76,7 +76,7 @@ Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD veri
 | Focused test command and exact result | `npx vitest run packages/knowledge/retriever.test.ts` — 1 file, 8/8 tests passed |
 | Runtime harness command/scenario and exact result | `npm test` — 5 files, 82/82 passed; `npx tsc --noEmit` passed; `npm run build` passed with 21/21 static pages generated; `git diff --check` passed. Runtime provider/API harness: N/A — task 2.1 is pure in-memory retrieval with no runtime boundary, credentials, network, provider, or KV integration. |
 | Rollback boundary | Revert `packages/knowledge/retriever.ts`, `packages/knowledge/retriever.test.ts`, `packages/knowledge/fixtures/retriever.ts`, the `packages/knowledge/package.json` retriever export, this task checkbox, and this task 2.1 progress section; leave tasks 1.1/1.2 and later work untouched. |
-| Final authored changed-line count | 273 total: 268 additions and 5 deletions, including task/progress bookkeeping; under the 400-line isolated-slice limit. |
+| Final authored changed-line count | 272 total: 268 additions and 4 deletions, including task/progress bookkeeping; under the 400-line isolated-slice limit. |
 
 ## Additional Checks (Task 2.1)
 
