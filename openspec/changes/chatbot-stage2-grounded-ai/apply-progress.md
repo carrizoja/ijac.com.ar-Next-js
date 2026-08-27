@@ -8,16 +8,17 @@
 - Final runtime status revision: `sha256:b9e747742c727478fbdb349e6a356cb608dfacb3e9b790cccc35df67da57ff7f`.
 - Final evidence revision: `sha256:1ddcc13f77a37dc6d169dc1718039c5ebad9fce9904c1467b605688471b1d7e8`.
 - Parent-owned runtime attempt for PR 2 / task 1.2 settled `passed` / `complete` after the sdd-apply worker returned; evidence revision: `sha256:af40086ea6efab7804cabc151f646055ee1ebec46993959256c9c157fce57044`.
-- Assigned and authorized scope: PR 2 / task 1.2 only, based on merged PR 1 commit `fd17435215cfcd19014ede1b445948bf09563f7f`.
-- Delivery: `auto-chain`, `stacked-to-main`; no commit, branch, PR, push, deployment, provider, KV, retrieval, API handler, frontend integration, or later-slice work.
+- Assigned and authorized scope: narrow task 2.1 correction only, based on exact head `1f7f78f`.
+- Delivery: `ask-on-risk` resolved as one isolated `stacked-to-main` slice; candidate commits `a0618fe`, `1ce172b`, and `2a8fc88` exist; no push, PR, deployment, provider, KV, API handler, frontend integration, or later-slice work.
 - Changed-line limit: 400 authored additions + deletions.
-- Recovery resolution: the prior single failure was caused by a malformed missing-language test fixture; production schema already required `language`, and the fixture was corrected with a one-line test-fixture change.
+- Correction authorization: hard-cap public limits at K=3, deterministic non-finite limits fail closed, and isolate English/PT alias-only fixtures; no 2.2+ work.
 
 ## Task Status
 
 - [x] 1.1 Contracts and foundation — implementation and required evidence complete.
 - [x] 1.2 Knowledge governance — implementation and required evidence complete.
-- [ ] 2.1+ — untouched; all later tasks remain pending.
+- [x] 2.1 Grounded retrieval — implementation and required evidence complete.
+- [ ] 2.2+ — all later tasks remain pending.
 
 ## TDD Cycle Evidence
 
@@ -54,4 +55,42 @@
 
 ## Status
 
-Tasks 1.1 and 1.2 are complete and ready for the next independent SDD verification/review/delivery step. Tasks 2.1+ remain untouched and pending.
+Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD verification/review/delivery step. Tasks 2.2+ remain pending. Candidate commits exist; no push, PR, or receipt was created.
+
+## Task 2.1 Slice
+
+- Assigned scope: task 2.1 only; stacked-to-main slice targeting `main` after verification.
+- Implementation: deterministic lexical retrieval with Unicode/diacritic normalization, multilingual aliases, weighted term-frequency scoring, threshold fail-closed behavior, bounded K=3 results, and deterministic version/freshness/ID tie-breaking.
+- No task 2.2 validation, API controls, providers, handlers, frontend, or release work was implemented.
+
+## TDD Cycle Evidence (Task 2.1)
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+|---|---|---|---|---|---|---|---|
+| 2.1 | `packages/knowledge/retriever.test.ts` | Unit | ✅ Prior retriever baseline 14/14 passed | ✅ Added limit and isolated English/PT alias tests before production edits; 2 failures confirmed | ✅ 19/19 passed after K=3 cap and finite-limit guard | ✅ Existing governance, threshold, ties, ambiguity, and normalization cases retained; 19/19 green |
+
+## Work Unit Evidence (Task 2.1)
+
+| Evidence | Result |
+|---|---|
+| Focused test command and exact result | `npx vitest run packages/knowledge/retriever.test.ts` — 1 file, 19/19 passed; RED was 2/19 before production edits. |
+| Runtime harness command/scenario and exact result | `npm test` — 5 files, 93/93 passed; `npx tsc --noEmit` passed; `npm run build` generated 21/21 static pages; `git diff --check` passed; provider/API harness N/A — pure in-memory retrieval. |
+| Rollback boundary | Revert only the three retriever files changed by this correction; leave task 2.1 prior behavior, tasks 1.1/1.2, and later work untouched. |
+| Correction count and cumulative diff | Relative to `1f7f78f`: 49 native-measured changed lines (37 additions, 12 deletions), explicitly approved by the maintainer. Final cumulative diff from `main`: 340 additions, 7 deletions (347 changed lines). |
+
+## Additional Checks (Task 2.1)
+
+- Focused retrieval tests — 19/19 passed (RED 2 failures, then GREEN 19/19).
+- Full suite — `npm test`: 5 files, 93/93 passed.
+- Typecheck — `npx tsc --noEmit` passed.
+- Static build — `npm run build` passed; 21/21 pages generated.
+- Diff validation — `git diff --check` passed.
+- No live provider, KV, credentials, or network harness was required for this pure retrieval slice.
+
+## Authorized Scoped Correction (Task 2.1)
+
+- Findings corrected: public limit cap/non-finite fail-closed behavior and independently proven English/PT aliases. RED: 2 focused failures before production edits. GREEN: 19/19 focused after correction. Rollback: revert the three retriever files only; prior/later tasks remain untouched.
+
+## Current Status
+
+Tasks 1.1, 1.2, and 2.1 are complete. Tasks 2.2–4.3 remain pending. Correction is uncommitted by instruction; no stage, commit, push, PR, or receipt was created. Ready for independent verification.
