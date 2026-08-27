@@ -18,9 +18,9 @@ const validEnv: Record<string, string | undefined> = {
 
 const groundedAnswer = {
   supported: true,
-  answer: "iJAC provides managed IT support.",
+  answer: "iJAC handles hardware and software incidents on Mac computers and Apple devices.",
   language: "en",
-  sources: [{ id: "managed-it-support", title: "Managed IT support" }],
+  sources: [{ id: "soporte-tecnico-pc-mac-apple", title: "Technical support for PC, Mac, and Apple devices" }],
 };
 
 function json(body: unknown, status = 200) {
@@ -99,14 +99,14 @@ describe("chat app construction", () => {
 describe("chat app end to end", () => {
   it("answers an approved question with a grounded answer and its sources", async () => {
     const { impl, groqCalls } = transport();
-    const response = await appOrThrow({ fetch: impl })(ask("What is managed IT support?"));
+    const response = await appOrThrow({ fetch: impl })(ask("Can you fix my MacBook?"));
 
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
       apiVersion: "v1",
       code: "SUCCESS",
       supported: true,
-      answer: "iJAC provides managed IT support.",
+      answer: "iJAC handles hardware and software incidents on Mac computers and Apple devices.",
     });
     expect(groqCalls).toHaveLength(1);
   });
@@ -125,7 +125,7 @@ describe("chat app end to end", () => {
   it("rejects a disallowed origin without touching the KV store or the provider", async () => {
     const { impl, kvUrls, groqCalls } = transport();
     const response = await appOrThrow({ fetch: impl })(
-      ask("What is managed IT support?", { origin: "https://evil.example" }),
+      ask("Can you fix my MacBook?", { origin: "https://evil.example" }),
     );
 
     expect(response.status).toBe(403);
@@ -135,7 +135,7 @@ describe("chat app end to end", () => {
 
   it("fails closed when the KV store is unreachable", async () => {
     const { impl, groqCalls } = transport({ kvDown: true });
-    const response = await appOrThrow({ fetch: impl })(ask("What is managed IT support?"));
+    const response = await appOrThrow({ fetch: impl })(ask("Can you fix my MacBook?"));
 
     expect(response.status).toBe(503);
     expect(await response.json()).toMatchObject({ code: "PROVIDER_UNAVAILABLE" });
@@ -146,14 +146,14 @@ describe("chat app end to end", () => {
     const { impl } = transport({
       answer: { ...groundedAnswer, answer: "iJAC guarantees 99.999% uptime for 5 USD." },
     });
-    const response = await appOrThrow({ fetch: impl })(ask("What is managed IT support?"));
+    const response = await appOrThrow({ fetch: impl })(ask("Can you fix my MacBook?"));
 
     expect(await response.json()).toMatchObject({ code: "UNKNOWN", supported: false });
   });
 
   it("keys quotas by an HMAC of the caller, never the raw address", async () => {
     const { impl, kvUrls } = transport();
-    await appOrThrow({ fetch: impl })(ask("What is managed IT support?"));
+    await appOrThrow({ fetch: impl })(ask("Can you fix my MacBook?"));
 
     expect(kvUrls.join("|")).not.toContain("203.0.113.7");
     expect(kvUrls.some((url) => url.includes("quota%3Aclient"))).toBe(true);
@@ -174,7 +174,7 @@ describe("chat app end to end", () => {
 
   it("returns a contract-shaped body and CORS headers on every path", async () => {
     const { impl } = transport();
-    const response = await appOrThrow({ fetch: impl })(ask("What is managed IT support?"));
+    const response = await appOrThrow({ fetch: impl })(ask("Can you fix my MacBook?"));
 
     expect(response.headers.get("vary")).toBe("Origin");
     expect(response.headers.get("access-control-allow-origin")).toBe("https://ijac.com.ar");
@@ -183,7 +183,7 @@ describe("chat app end to end", () => {
 
   it("never leaks a secret or telemetry into the response body", async () => {
     const { impl } = transport();
-    const response = await appOrThrow({ fetch: impl })(ask("What is managed IT support?"));
+    const response = await appOrThrow({ fetch: impl })(ask("Can you fix my MacBook?"));
     const text = await response.text();
 
     for (const secret of ["gsk-secret-value", "hmac-secret-value", "kv-token-value", "latencyBand"]) {

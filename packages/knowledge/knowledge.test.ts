@@ -7,9 +7,9 @@ import {
   knowledgeRepositorySchema,
   isFreshKnowledgeEntry,
 } from "./types";
-import { approvedKnowledgeEntriesV1 } from "./fixtures/v1";
+import { approvedServiceEntries } from "./fixtures/services";
 
-const validEntry = approvedKnowledgeEntriesV1[0];
+const validEntry = approvedServiceEntries[0];
 
 expectTypeOf<ApprovedKnowledgeEntry["status"]>().toEqualTypeOf<"approved">();
 expectTypeOf<Awaited<ReturnType<KnowledgeRepository["getEntries"]>>>()
@@ -17,8 +17,8 @@ expectTypeOf<Awaited<ReturnType<KnowledgeRepository["getEntries"]>>>()
 
 describe("governed knowledge entries", () => {
   it("accepts versioned approved fixtures with multilingual content and approval metadata", () => {
-    expect(knowledgeRepositorySchema.parse(approvedKnowledgeEntriesV1)).toEqual(
-      approvedKnowledgeEntriesV1,
+    expect(knowledgeRepositorySchema.parse(approvedServiceEntries)).toEqual(
+      approvedServiceEntries,
     );
     expect(validEntry.status).toBe("approved");
     expect(validEntry.owner).toBeTruthy();
@@ -66,8 +66,8 @@ describe("governed knowledge entries", () => {
   });
 
   it("exposes freshness as a fail-closed approval check", () => {
-    expect(isFreshKnowledgeEntry(validEntry, new Date("2026-01-01T00:00:00.000Z"))).toBe(true);
-    expect(isFreshKnowledgeEntry({ ...validEntry, reapprovalDueAt: "2025-12-31T23:59:59.000Z" }, new Date("2026-01-01T00:00:00.000Z"))).toBe(false);
-    expect(isFreshKnowledgeEntry({ ...validEntry, status: "draft" }, new Date("2026-01-01T00:00:00.000Z"))).toBe(false);
+    expect(isFreshKnowledgeEntry(validEntry, new Date("2026-09-01T00:00:00.000Z"))).toBe(true);
+    expect(isFreshKnowledgeEntry({ ...validEntry, reapprovalDueAt: "2025-12-31T23:59:59.000Z" }, new Date("2026-09-01T00:00:00.000Z"))).toBe(false);
+    expect(isFreshKnowledgeEntry({ ...validEntry, status: "draft" }, new Date("2026-09-01T00:00:00.000Z"))).toBe(false);
   });
 });

@@ -1,6 +1,6 @@
 import type { KnowledgeEntry } from "../packages/knowledge/types";
 import { createKnowledgeRetriever } from "../packages/knowledge/retriever";
-import { approvedKnowledgeEntriesV1 } from "../packages/knowledge/fixtures/v1";
+import { approvedServiceEntries } from "../packages/knowledge/fixtures/services";
 import { loadChatApiConfig } from "./config";
 import { createUpstashKvClient } from "./kv/upstash";
 import { createGroqProvider } from "./providers/groq";
@@ -35,7 +35,7 @@ export function createChatApp(
   const config = loaded.config;
   const kv = createUpstashKvClient(config, overrides.fetch);
   const provider = createGroqProvider(config, overrides.fetch ? { fetch: overrides.fetch } : {});
-  const retrieve = createKnowledgeRetriever(overrides.entries ?? approvedKnowledgeEntriesV1);
+  const retrieve = createKnowledgeRetriever(overrides.entries ?? approvedServiceEntries);
 
   const handler = createChatRoute((raw, clientAddress) =>
     handleChatRequest(raw, { config, kv, provider, retrieve, clientAddress }),
