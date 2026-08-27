@@ -166,8 +166,8 @@ Tasks 1.1, 1.2, 2.1, and 2.2 remain checked; tasks 2.3–4.3 remain pending. No 
 - RED: added a failing token-preserving subject/object role-inversion regression and a valid subject-led paraphrase control; focused result was 1 failure / 15 tests before production edits.
 - GREEN: deterministic claim-order guard rejects the inversion while preserving the control and existing ES/EN/PT, citation, numeric, injection, URL, and safe-fallback behavior.
 - Conservative scope: this is not general semantic entailment; it only rejects a cited claim's recognized `iJAC` subject role when the same role verb appears before `iJAC` in the answer.
-- Exact correction count relative to `6d3f006`: 25 implementation additions, 0 deletions; 37 additions, 0 deletions including this bookkeeping update. Final cumulative diff from `main`: 290 additions, 8 deletions.
+- Exact correction count relative to `6d3f006`: 25 implementation additions, 0 deletions; 37 additions, 0 deletions including this bookkeeping update. Final cumulative diff from `main`: 290 additions, 9 deletions (299 changed lines).
 - TDD cycle: RED written first; GREEN focused validation passed; triangulation retained the valid paraphrase and prior multilingual/adversarial cases; refactor extracted ordered-token/role checks.
 - Work unit evidence: focused tests, full tests, typecheck, build, and diff check are recorded in the final verification section below.
 - Rollback: revert only `chat-api/validation.ts`, `chat-api/validation.test.ts`, and this narrow correction section; preserve all prior task 1.1–2.1 and task 2.3+ artifacts.
-- Current commit state: branch `feat/chatbot-stage2-validation`, exact HEAD remains `6d3f006`; no stage, commit, push, branch switch, install, or remote change.
+- Current commit state: branch `feat/chatbot-stage2-validation`; correction commit `f4d1aae` exists locally; no push, PR, install, or remote change.
