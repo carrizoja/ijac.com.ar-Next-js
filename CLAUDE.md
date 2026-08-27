@@ -8,10 +8,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev      # Dev server with Turbopack (default port 3000)
 npm run build    # Production build → static export to out/
 npm run export   # Alias for build (produces the same out/ directory)
-npm run lint     # ESLint via next lint (next/core-web-vitals + next/typescript)
+npm run lint     # ESLint 9 flat config from eslint.config.mjs
+npm test         # Vitest (vitest.config.mts, node environment)
+npx tsc --noEmit # Typecheck
 ```
 
-There is no test suite configured. `npm start` exists but is not the deploy target — see "Static export" below.
+`npm start` exists but is not the deploy target — see "Static export" below.
+
+### Lint
+
+`next lint` was removed in Next.js 16, so the script calls `eslint` directly and ESLint
+auto-discovers `eslint.config.mjs`. `eslint-config-next` ships **native flat configs** —
+`eslint-config-next/core-web-vitals` and `/typescript` both default-export arrays that are
+spread straight into the config. Do not reintroduce `FlatCompat`: it only translates legacy
+eslintrc configs, and feeding it a flat array crashes the validator with a misleading
+"Converting circular structure to JSON" from the error formatter, masking the real cause.
+
+### Tests
+
+Vitest, `node` environment by default. Component tests opt into jsdom with a
+`// @vitest-environment jsdom` pragma on the first line. Tests live beside their subject
+(`*.test.ts` / `*.test.tsx`). `strict_tdd` is enabled in `openspec/config.yaml` — write the
+failing test first.
 
 ## Repo conventions (from AGENTS.md)
 
