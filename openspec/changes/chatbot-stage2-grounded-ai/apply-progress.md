@@ -17,7 +17,8 @@
 
 - [x] 1.1 Contracts and foundation — implementation and required evidence complete.
 - [x] 1.2 Knowledge governance — implementation and required evidence complete.
-- [ ] 2.1+ — untouched; all later tasks remain pending.
+- [x] 2.1 Grounded retrieval — implementation and required evidence complete.
+- [ ] 2.2+ — all later tasks remain pending.
 
 ## TDD Cycle Evidence
 
@@ -54,4 +55,38 @@
 
 ## Status
 
-Tasks 1.1 and 1.2 are complete and ready for the next independent SDD verification/review/delivery step. Tasks 2.1+ remain untouched and pending.
+Tasks 1.1, 1.2, and 2.1 are complete and ready for the next independent SDD verification/review/delivery step. Tasks 2.2+ remain pending.
+
+## Task 2.1 Slice
+
+- Assigned scope: task 2.1 only; stacked-to-main slice targeting `main` after verification.
+- Implementation: deterministic lexical retrieval with Unicode/diacritic normalization, multilingual aliases, weighted term-frequency scoring, threshold fail-closed behavior, bounded K=3 results, and deterministic version/freshness/ID tie-breaking.
+- No task 2.2 validation, API controls, providers, handlers, frontend, or release work was implemented.
+
+## TDD Cycle Evidence (Task 2.1)
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+|---|---|---|---|---|---|---|---|
+| 2.1 | `packages/knowledge/retriever.test.ts` | Unit | ✅ `packages/knowledge/knowledge.test.ts` baseline 12/12 passed | ✅ Added 8 retrieval tests and fixtures before `retriever.ts`; missing-module failure confirmed | ✅ 8 cases cover normalization, multilingual aliases, all field weights, K=3, threshold, ties, unrelated, and ambiguity; final focused run 8/8 passed | ✅ Extracted tokenization/scoring/comparison helpers and constants; final focused run remained 8/8 |
+
+## Work Unit Evidence (Task 2.1)
+
+| Evidence | Result |
+|---|---|
+| Focused test command and exact result | `npx vitest run packages/knowledge/retriever.test.ts` — 1 file, 8/8 tests passed |
+| Runtime harness command/scenario and exact result | `npm test` — 5 files, 82/82 passed; `npx tsc --noEmit` passed; `npm run build` passed with 21/21 static pages generated; `git diff --check` passed. Runtime provider/API harness: N/A — task 2.1 is pure in-memory retrieval with no runtime boundary, credentials, network, provider, or KV integration. |
+| Rollback boundary | Revert `packages/knowledge/retriever.ts`, `packages/knowledge/retriever.test.ts`, `packages/knowledge/fixtures/retriever.ts`, the `packages/knowledge/package.json` retriever export, this task checkbox, and this task 2.1 progress section; leave tasks 1.1/1.2 and later work untouched. |
+| Final authored changed-line count | 273 total: 268 additions and 5 deletions, including task/progress bookkeeping; under the 400-line isolated-slice limit. |
+
+## Additional Checks (Task 2.1)
+
+- Focused retrieval tests — 8/8 passed.
+- Full suite — 5 files, 82/82 passed.
+- Typecheck — `npx tsc --noEmit` passed.
+- Static build — `npm run build` passed; 21/21 pages generated.
+- Diff validation — `git diff --check` passed.
+- No live provider, KV, credentials, or network harness was required for this pure retrieval slice.
+
+## Current Status
+
+Tasks 1.1, 1.2, and 2.1 are complete. Tasks 2.2–4.3 remain pending. This slice is ready for independent verification/review; no commit, push, PR, or receipt was created.

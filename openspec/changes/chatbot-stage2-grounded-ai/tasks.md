@@ -32,7 +32,7 @@ All slices target `main` and merge in order; each child starts from the precedin
 - [x] 1.2 RED: test `KnowledgeEntry` approval/freshness/stable-ID and exact `https://ijac.com.ar/...` URL rules; GREEN: add `packages/knowledge/types.ts` and versioned approved fixtures with owner/reapproval metadata.
 
 ## Phase 2: Grounding and API Core
-- [ ] 2.1 RED: fixtures for normalization, aliases, weights (tags 3/title 2/aliases 2/claims 1), K=3, threshold, version/freshness ties, unrelated and ambiguous queries; GREEN: implement `packages/knowledge/retriever.ts`.
+- [x] 2.1 RED: fixtures for normalization, aliases, weights (tags 3/title 2/aliases 2/claims 1), K=3, threshold, version/freshness ties, unrelated and ambiguous queries; GREEN: implement `packages/knowledge/retriever.ts`.
 - [ ] 2.2 RED: adversarial fixtures for injection, conflicting price, unsupported/mistranslated claims, unknown source/URL, Portuguese paraphrase, and no-URL evidence; GREEN: implement evidence/output validation and localized safe results in `chat-api/validation.ts`.
 - [ ] 2.3 RED: test invalid method/type/size/JSON/origin, extra transcript, quota/global quota, KV outage, operational kill switch, deploy flag, HMAC-only client key, retry/timeout/429/5xx/connection/model removal, 30-day TTL and aggregate-only logs; GREEN: implement `chat-api/config.ts`, `cors.ts`, `privacy.ts`, `controls.ts`, fake Redis.
 - [ ] 2.4 RED: fake transport tests proving Groq receives only question/language/evidence and max one eligible 5xx retry; GREEN: implement provider-neutral `chat-api/providers/groq.ts` using SDK, env model, structured output, and fake transport.
