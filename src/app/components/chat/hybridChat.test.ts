@@ -105,7 +105,7 @@ describe("unknown and failure cards", () => {
   );
 
   it.each([
-    ["es", "No encontré información aprobada para responder con seguridad. Escríbenos por WhatsApp."],
+    ["es", "No encontré información aprobada para responder con precisión. Escribinos por WhatsApp."],
     ["en", "I could not find approved information to answer safely. Contact us on WhatsApp."],
     ["pt", "Não encontrei informação aprovada para responder com segurança. Fale conosco pelo WhatsApp."],
   ] as const)("uses the approved %s copy verbatim", (language, copy) => {

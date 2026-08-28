@@ -405,7 +405,7 @@ describe("AIChat hybrid API routing", () => {
 
     expect(
       within(dialog).getByText(
-        "No encontré información aprobada para responder con seguridad. Escríbenos por WhatsApp.",
+        "No encontré información aprobada para responder con precisión. Escribinos por WhatsApp.",
       ),
     ).toBeInTheDocument();
   });
@@ -629,5 +629,59 @@ describe("AIChat asynchronous accessibility", () => {
     expect(within(dialog).getByRole("log", { name: "Conversación" })).toHaveTextContent(
       /Para preparar una cotización/,
     );
+  });
+});
+
+describe("AIChat contact handoff", () => {
+  async function ask(question: string, client: unknown = null) {
+    render(<AIChat chatClient={client as never} />);
+    const { user } = await openChat();
+    const dialog = screen.getByRole("dialog", { name: "Asistente iJAC" });
+
+    await user.type(within(dialog).getByRole("textbox", { name: "Escribí tu pregunta" }), question);
+    await user.click(within(dialog).getByRole("button", { name: "Enviar mensaje" }));
+    await advanceResponse();
+
+    return { dialog, user };
+  }
+
+  it("offers a reachable WhatsApp link when the API cannot answer", async () => {
+    const client = {
+      ask: vi.fn(async () => ({
+        apiVersion: "v1", code: "UNKNOWN", supported: false, language: "es",
+      })),
+    };
+    const { dialog } = await ask("¿Cuál es su garantía de disponibilidad?", client);
+
+    const link = within(dialog).getByRole("link", { name: /WhatsApp/ });
+    expect(link.getAttribute("href")).toContain("wa.me");
+    expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
+
+    link.focus();
+    expect(link).toHaveFocus();
+  });
+
+  it("shows the number so it is usable without opening WhatsApp", async () => {
+    const client = {
+      ask: vi.fn(async () => ({
+        apiVersion: "v1", code: "UNKNOWN", supported: false, language: "es",
+      })),
+    };
+    const { dialog } = await ask("¿Cuál es su garantía de disponibilidad?", client);
+
+    expect(within(dialog).getByRole("link", { name: /WhatsApp/ })).toHaveTextContent(/\+54/);
+  });
+
+  it("offers the same link on a deterministic contact answer", async () => {
+    const { dialog } = await ask("¿Cómo los contacto?");
+
+    expect(within(dialog).getByRole("link", { name: /WhatsApp/ }).getAttribute("href"))
+      .toContain("wa.me");
+  });
+
+  it("does not attach a contact link to an answer that resolved successfully", async () => {
+    const { dialog } = await ask("¿Qué servicios ofrecen?");
+
+    expect(within(dialog).queryByRole("link", { name: /WhatsApp/ })).toBeNull();
   });
 });
