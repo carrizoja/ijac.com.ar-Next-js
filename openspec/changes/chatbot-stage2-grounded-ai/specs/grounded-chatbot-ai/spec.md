@@ -47,7 +47,7 @@ Spanish, English, and Portuguese cards MUST preserve language and MUST NOT expan
 - THEN the Portuguese answer is evidence-limited
 
 ### Requirement: Presentation
-Supported cards MUST show a relevant approved iJAC link when available and MUST NOT fabricate or emit unallowlisted links. Unknown/failure cards MUST offer WhatsApp/contact and use: ES “No encontré información aprobada para responder con seguridad. Escríbenos por WhatsApp.” EN “I could not find approved information to answer safely. Contact us on WhatsApp.” PT “Não encontrei informação aprovada para responder com segurança. Fale conosco pelo WhatsApp.” Failure MUST be distinct in telemetry.
+Supported cards MUST show a relevant approved iJAC link when available and MUST NOT fabricate or emit unallowlisted links. Unknown/failure cards MUST offer WhatsApp/contact and use: ES “No encontré información aprobada para responder con precisión. Escribinos por WhatsApp.” EN “I could not find approved information to answer safely. Contact us on WhatsApp.” PT “Não encontrei informação aprovada para responder com segurança. Fale conosco pelo WhatsApp.” Failure MUST be distinct in telemetry.
 #### Scenario: Invalid
 - GIVEN an unapproved source returns
 - WHEN checked

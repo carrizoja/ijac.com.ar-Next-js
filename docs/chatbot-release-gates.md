@@ -3,7 +3,7 @@
 These gates block **release**, not local implementation. Every one of them requires an account,
 a credential, a DNS record, or a human approval that cannot be produced from the codebase.
 
-The implementation is complete and verified without any of them: 377 tests, typecheck, lint and
+The implementation is complete and verified without any of them: 381 tests, typecheck, lint and
 the static build all pass with no credentials, because every test uses a fake transport and an
 in-memory KV double.
 
@@ -19,7 +19,7 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 | # | Gate | Owner | Status |
 |---|---|---|---|
 | 1 | Knowledge base approval | Content owner | ✅ Met — 8 services approved 2026-08-27 |
-| 2 | Localized copy approval | Content owner | ❌ Not met |
+| 2 | Localized copy approval | Content owner | ✅ Met — approved 2026-08-27 |
 | 3 | Groq account, privacy terms, model choice | Account owner | ❌ Not met |
 | 4 | KV store account and quota | Account owner | ❌ Not met — client implemented, account still required |
 | 5 | DNS for `api.ijac.com.ar` | Domain owner | ❌ Not met |
@@ -54,18 +54,30 @@ meaning rather than its wording requires a new `id`.
 
 ## 2. Localized copy approval
 
-**Blocked because:** the handoff card wording is contractual and appears verbatim to visitors in
-three languages. It lives in `UNKNOWN_COPY` in `src/app/components/chat/hybridChat.ts`:
+**Met on 2026-08-27.** The handoff wording is contractual and appears verbatim to visitors. It
+lives in `UNKNOWN_COPY` in `src/app/components/chat/hybridChat.ts` and is asserted
+character-for-character by tests, so changing it is a deliberate act that updates copy and test
+together.
 
-- ES — "No encontré información aprobada para responder con seguridad. Escríbenos por WhatsApp."
+- ES — "No encontré información aprobada para responder con precisión. Escribinos por WhatsApp."
 - EN — "I could not find approved information to answer safely. Contact us on WhatsApp."
 - PT — "Não encontrei informação aprovada para responder com segurança. Fale conosco pelo WhatsApp."
 
-These strings are asserted character-for-character by tests. Changing them is a deliberate act
-that updates both the copy and its test.
+Two corrections were made during review:
 
-**Verify:** the content owner has signed off on all three, including the Portuguese, which is
-not a machine translation of the Spanish and should be read by someone who speaks it.
+**Register.** The Spanish read "Escríbenos", which is tuteo, while the rest of the chatbot speaks
+Argentine voseo throughout (`Querés`, `Tenés`, `Podés`, `Escribí`, `Decime`, `coordiná`). It now
+reads "Escribinos". "con seguridad" also became "con precisión" to match the wording the
+deterministic fallback in `chatEngine.ts` already uses for the same situation.
+
+**The card promised a channel it did not provide.** `contactHandoff` only emitted telemetry, so a
+visitor was told to write on WhatsApp and given no way to do it. Handoff cards now render a
+keyboard-reachable link to `business.whatsappUrl` showing `business.phoneDisplay`, so the number
+is usable even without opening WhatsApp. Deterministic contact answers carry the same link;
+successful answers do not.
+
+**Verify when copy changes:** a speaker should read the Portuguese, which is not a machine
+translation of the Spanish. Keep all three strings in the register the rest of the site uses.
 
 ## 3. Groq account, privacy terms, model choice
 

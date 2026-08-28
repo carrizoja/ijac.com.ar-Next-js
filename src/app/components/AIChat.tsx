@@ -6,6 +6,7 @@ import type { ConversationContext } from "./chat/chatEngine";
 import { emitChatTelemetry } from "./chat/chatTelemetry";
 import { createChatApiClient, type ChatApiClient } from "./chat/chatApi";
 import { resolveChatTurn, type ChatSourceLink } from "./chat/hybridChat";
+import { business } from "../../data/business";
 
 interface Message {
   id: string;
@@ -13,6 +14,7 @@ interface Message {
   isUser: boolean;
   timestamp: Date;
   sources?: ChatSourceLink[];
+  contactHandoff?: boolean;
 }
 
 /** The widget speaks the site's locale; the API localizes its own cards to match. */
@@ -207,6 +209,7 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
               isUser: false,
               timestamp: new Date(),
               ...(turn.sources.length > 0 ? { sources: turn.sources } : {}),
+              ...(turn.contactHandoff ? { contactHandoff: true } : {}),
             },
           ]);
 
@@ -363,6 +366,18 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
                           </li>
                         ))}
                       </ul>
+                    )}
+                    {message.contactHandoff && (
+                      <p className="mt-2 border-t border-current/20 pt-2 text-xs">
+                        <a
+                          href={business.whatsappUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline underline-offset-2 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                        >
+                          WhatsApp {business.phoneDisplay}
+                        </a>
+                      </p>
                     )}
                     <p className="mt-1 text-xs opacity-70">
                       {message.timestamp.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}
