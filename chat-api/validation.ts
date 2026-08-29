@@ -7,7 +7,34 @@ const NUMBER_PATTERN = /\b\d+(?:[.,]\d+)?\s*(?:%|usd|eur|ars|brl|dollars?|euros?
 const NEGATION_TOKENS = new Set(["no", "not", "never", "without", "doesnt", "dont", "isnt", "cannot", "ningun", "ninguna", "no", "nao", "nunca"]);
 const INJECTION_VERBS = new Set(["ignore", "disregard", "reveal", "jailbreak", "ignora", "ignorar", "revele"]);
 const INJECTION_TARGETS = new Set(["instruction", "instructions", "prompt", "message", "mensagem", "instrucciones", "instrucoes"]);
-const COMMON_WORDS = new Set(["and", "for", "the", "with", "from", "that", "this", "are", "can", "you", "your", "our", "per", "para", "com", "uma", "dos", "das", "los", "las", "por", "que"]);
+/**
+ * Function words that carry no claim about the business: connectives, prepositions, articles,
+ * pronouns and copulas across the three supported languages. Tokens are compared after accent
+ * stripping, so entries are written unaccented. Quantifiers ("todos", "cada", "siempre") are
+ * deliberately absent — they would let an answer widen a claim the evidence never made.
+ */
+const COMMON_WORDS = new Set([
+  // English
+  "and", "for", "the", "with", "from", "that", "this", "are", "can", "you", "your", "our", "per",
+  "also", "including", "such", "while", "when", "where", "about", "between", "into", "than",
+  "then", "they", "these", "those", "been", "have", "has", "its", "but",
+  // Spanish
+  "para", "los", "las", "por", "que", "como", "asi", "incluyendo", "ademas", "tambien", "pero",
+  "sino", "aunque", "cuando", "donde", "sobre", "entre", "desde", "hasta", "ante", "tras",
+  "segun", "mediante", "durante", "una", "unos", "unas", "del", "ellos", "ellas", "esta", "este",
+  "estos", "estas", "esa", "ese", "son", "ser",
+  // Portuguese
+  "com", "uma", "dos", "das", "assim", "incluindo", "alem", "mas", "porem", "quando", "onde",
+  "ate", "seus", "suas", "estes", "sao",
+]);
+
+/**
+ * Minimum shared prefix that lets an inflected form match an evidence term. Spanish and
+ * Portuguese inflect heavily, so a literal match rejects grounded answers: "macbooks" for the
+ * alias "macbook", "repara" or "reparan" for "reparación". Six is short enough to cover those
+ * and long enough to keep unrelated words apart — "reparto" shares only five with "reparación".
+ */
+const MIN_SHARED_PREFIX = 6;
 
 export interface GroundedValidation {
   valid: boolean;
@@ -58,14 +85,33 @@ function hasRoleInversion(answer: string, entries: readonly ApprovedKnowledgeEnt
   }));
 }
 
+function sharedPrefixLength(left: string, right: string): number {
+  const limit = Math.min(left.length, right.length);
+  let index = 0;
+  while (index < limit && left[index] === right[index]) index += 1;
+  return index;
+}
+
+/** Exact match, or an inflection of an evidence term long enough to be unambiguous. */
+function isKnownToken(token: string, known: ReadonlySet<string>): boolean {
+  if (known.has(token)) return true;
+  if (token.length < MIN_SHARED_PREFIX) return false;
+  for (const candidate of known) {
+    if (candidate.length >= MIN_SHARED_PREFIX && sharedPrefixLength(token, candidate) >= MIN_SHARED_PREFIX) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function hasGrounding(answer: string, entries: readonly ApprovedKnowledgeEntry[], language: SupportedLanguage): boolean {
   if (hasRoleInversion(answer, entries)) return false;
   return answer.split(/[.!?]+/).map((sentence) => tokens(sentence)).filter((sentence) => sentence.size > 0)
     .every((sentence) => entries.some((entry) => {
       const known = tokens(evidenceText(entry, language));
       if ([...sentence].some((token) => NEGATION_TOKENS.has(token))) return false;
-      if ([...sentence].some((token) => !known.has(token) && !COMMON_WORDS.has(token))) return false;
-      return [...sentence].filter((token) => known.has(token)).length >= 2;
+      if ([...sentence].some((token) => !isKnownToken(token, known) && !COMMON_WORDS.has(token))) return false;
+      return [...sentence].filter((token) => isKnownToken(token, known)).length >= 2;
     }));
 }
 
