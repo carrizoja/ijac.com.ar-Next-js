@@ -20,7 +20,7 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 |---|---|---|---|
 | 1 | Knowledge base approval | Content owner | ✅ Met — 8 services approved 2026-08-27 |
 | 2 | Localized copy approval | Content owner | ✅ Met — approved 2026-08-27 |
-| 3 | Groq account, privacy terms, model choice | Account owner | ❌ Not met |
+| 3 | Groq account, privacy terms, model choice | Account owner | ✅ Met — `openai/gpt-oss-120b` verified 2026-08-29 |
 | 4 | KV store account and quota | Account owner | ❌ Not met — client implemented, account still required |
 | 5 | DNS for `api.ijac.com.ar` | Domain owner | ❌ Not met |
 | 6 | Preview smoke evidence | Release owner | ❌ Blocked by 1–5 |
@@ -81,20 +81,74 @@ translation of the Spanish. Keep all three strings in the register the rest of t
 
 ## 3. Groq account, privacy terms, model choice
 
-**Blocked because:** no account exists and no key has been issued.
+**Met on 2026-08-29.** `GROQ_MODEL` is pinned to `openai/gpt-oss-120b`, verified against the live
+API for strict `response_format: { type: "json_schema" }`, correct refusal behaviour, and Spanish
+that our own grounding validator accepts.
 
-Required before release:
+The account owner still carries two responsibilities that no test can discharge: **set a spend
+limit in the Groq console** — `CHAT_API_GLOBAL_QUOTA` is a ceiling enforced by our code, not by
+Groq's billing — and accept Groq's data-handling terms, since visitor questions leave your
+infrastructure and reach a third party.
 
-- An account with billing limits set. The global quota protects the free tier, but it is a
-  ceiling you configure, not one the provider enforces.
-- Explicit acceptance of Groq's data-handling terms. Visitor questions leave your infrastructure
-  and reach a third party — that is a privacy decision only the owner can make.
-- A model chosen for `GROQ_MODEL` that supports structured output
-  (`response_format: { type: "json_schema" }`). The adapter depends on it; a model without it
-  will fail validation on every request and the chatbot will hand off every time.
+### What the live probe found
 
-**Verify:** a smoke call returns a structured object, and the model id is pinned in the Vercel
-environment rather than defaulted in code.
+Three defects survived 381 passing tests because every test fakes the transport. Only a real call
+exposed them.
+
+**The response schema was invalid.** `sources.items` declared `id`, `title` and `url` but required
+only the first two. Groq's strict mode requires every declared property to be required, so *every*
+request would have returned 400, the failure would have classified as permanent, and every visitor
+would have received the WhatsApp card. The chatbot would have looked deployed and been inert.
+
+The fix removed `title` and `url` from the model's schema entirely rather than adding them to
+`required`. The validator already discarded any title or url that did not match the approved entry
+exactly, so the model was echoing data we own and we were checking the echo. It now returns ids
+only, and `toResponseSources` fills in the rest from the approved entry — a fabricated source link
+is structurally impossible instead of merely rejected.
+
+**The pinned model no longer existed.** `llama-3.3-70b-versatile` returns `model_not_found`; Groq
+retires models on a rolling schedule. Check `GET /openai/v1/models` before pinning a replacement.
+The code already handles this correctly at runtime: `classifyProviderFailure` treats a 404 as
+permanent rather than retry-eligible, so a future retirement fails fast to `PROVIDER_UNAVAILABLE`
+and the site falls back to deterministic answers instead of burning its retry budget.
+
+**The grounding validator rejected every correct answer.** Three models produced accurate,
+evidence-limited Spanish and all three were refused — meaning the chatbot would have handed off
+every visitor even with a valid schema. Two causes:
+
+- `COMMON_WORDS` held 22 mostly-English entries, so ordinary Spanish connectives (`incluyendo`,
+  `así`, `como`) counted as unsupported claims. They assert nothing, so blocking them bought no
+  safety. The list now covers connectives, prepositions, articles, pronouns and copulas in all
+  three languages. Quantifiers (`todos`, `cada`, `siempre`) are deliberately excluded — those
+  would let an answer widen a claim the evidence never made.
+- Token matching was literal, so Spanish morphology failed: `macbooks` did not match the alias
+  `macbook`, and `repara` did not match `reparación`. A token now also matches when it shares a
+  six-character prefix with an evidence term. Six is the tested boundary — `reparto` shares only
+  five with `reparación` and stays rejected. Tests pin the bound from both sides.
+
+Every other guard is unchanged: negation tokens, exact numeric comparison, the URL allowlist,
+injection tokens, role inversion, and the floor of two evidence hits per sentence.
+
+### Live probe results
+
+Question with evidence, question about prices (evidence contains none), and an off-topic question:
+
+| Model | Grounded | Price question | Off-topic |
+|---|---|---|---|
+| `openai/gpt-oss-120b` | answered, cited, accepted | `supported: false` | `supported: false` |
+| `openai/gpt-oss-20b` | answered but ungrammatical Spanish | `supported: false` | `supported: false` |
+| `qwen/qwen3.8-27b` | answered, cited, accepted | `supported: false` | `supported: false` |
+
+`gpt-oss-120b` was chosen for correct Spanish and a concise answer. `gpt-oss-20b` produced
+"iJAC reparan MacBooks", which fails subject-verb agreement. `groq/compound` was excluded on
+design grounds: it carries built-in tool use, and answers must come only from approved evidence.
+
+**Price questions require no special handling.** No approved entry contains a price, so the model
+returns `supported: false`, which renders the WhatsApp handoff card. The numeric check in
+`validation.ts` is the backstop: any figure absent from the cited claims rejects the answer.
+
+**Re-verify when changing the model:** run the strict-schema probe, confirm a price question still
+returns `supported: false`, and confirm a grounded answer passes `validateGroundedOutput`.
 
 ## 4. KV store account and quota
 
