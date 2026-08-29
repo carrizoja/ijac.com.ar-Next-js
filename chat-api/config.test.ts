@@ -3,7 +3,7 @@ import { loadChatApiConfig, redactConfig } from "./config";
 
 const validEnv = {
   GROQ_API_KEY: "gsk-secret-value",
-  GROQ_MODEL: "llama-3.3-70b-versatile",
+  GROQ_MODEL: "openai/gpt-oss-120b",
   CHAT_API_ENABLED: "true",
   CHAT_API_ALLOWED_ORIGINS: "https://ijac.com.ar,https://www.ijac.com.ar",
   CHAT_API_CLIENT_KEY_SECRET: "hmac-secret-value",
@@ -26,7 +26,7 @@ describe("chat API configuration", () => {
   it("loads every setting from a complete environment", () => {
     expect(loadOrThrow(validEnv)).toEqual({
       groqApiKey: "gsk-secret-value",
-      groqModel: "llama-3.3-70b-versatile",
+      groqModel: "openai/gpt-oss-120b",
       enabled: true,
       allowedOrigins: ["https://ijac.com.ar", "https://www.ijac.com.ar"],
       clientKeySecret: "hmac-secret-value",
@@ -92,7 +92,7 @@ describe("chat API configuration", () => {
     expect(serialized).not.toContain("gsk-secret-value");
     expect(serialized).not.toContain("hmac-secret-value");
     expect(serialized).not.toContain("kv-token-value");
-    expect(redacted.groqModel).toBe("llama-3.3-70b-versatile");
+    expect(redacted.groqModel).toBe("openai/gpt-oss-120b");
   });
 
   it.each(["http://kv.example.upstash.io", "kv.example.upstash.io", "not a url"])(

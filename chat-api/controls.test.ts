@@ -12,7 +12,7 @@ import { FakeRedis } from "./testing/fakeRedis";
 function configWith(overrides: Record<string, string> = {}): ChatApiConfig {
   const result = loadChatApiConfig({
     GROQ_API_KEY: "gsk-secret-value",
-    GROQ_MODEL: "llama-3.3-70b-versatile",
+    GROQ_MODEL: "openai/gpt-oss-120b",
     CHAT_API_ENABLED: "true",
     CHAT_API_ALLOWED_ORIGINS: "https://ijac.com.ar",
     CHAT_API_CLIENT_KEY_SECRET: "hmac-secret-value",

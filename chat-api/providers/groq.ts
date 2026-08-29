@@ -40,8 +40,11 @@ const languageNames: Record<SupportedLanguage, string> = {
   pt: "Portuguese",
 };
 
-/** Strict shape the model must return. Prose outside these fields is impossible by construction. */
-const responseFormat = {
+/**
+ * Strict shape the model must return. Prose outside these fields is impossible by construction.
+ * Exported so tests can assert strict-mode validity without spending a live call.
+ */
+export const responseFormat = {
   type: "json_schema" as const,
   json_schema: {
     name: "grounded_answer",
@@ -54,18 +57,17 @@ const responseFormat = {
         supported: { type: "boolean" },
         answer: { type: "string" },
         language: { type: "string", enum: [...supportedLanguages] },
+        // Ids only. Titles and urls are resolved server-side from the approved entry, so the
+        // model has no field in which to fabricate one. Strict mode also requires every
+        // declared property to be listed in "required".
         sources: {
           type: "array",
           maxItems: 3,
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["id", "title"],
-            properties: {
-              id: { type: "string" },
-              title: { type: "string" },
-              url: { type: "string" },
-            },
+            required: ["id"],
+            properties: { id: { type: "string" } },
           },
         },
       },
