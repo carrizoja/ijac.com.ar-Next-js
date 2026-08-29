@@ -76,15 +76,26 @@ function numberValues(value: string): Set<string> {
   }));
 }
 
-function isSafeSource(source: unknown, evidence: readonly RetrievalMatch[], language: SupportedLanguage): boolean {
+/**
+ * A citation carries an id and nothing else. The model is not asked for a title or url, so a
+ * source bearing extra fields has gone off-contract and the whole answer is discarded.
+ */
+function isSafeSource(source: unknown, evidence: readonly RetrievalMatch[]): boolean {
   if (!source || typeof source !== "object") return false;
-  const candidate = source as { id?: unknown; title?: unknown; url?: unknown };
-  const match = evidence.find(({ entry }) => entry.id === candidate.id);
-  if (!match || candidate.title !== match.entry.title[language]) return false;
-  const parsed = approvedKnowledgeEntrySchema.safeParse(match.entry);
-  if (!parsed.success) return false;
-  if (candidate.url !== undefined && candidate.url !== match.entry.url) return false;
-  return true;
+  if (Object.keys(source).some((key) => key !== "id")) return false;
+  const { id } = source as { id?: unknown };
+  const match = evidence.find(({ entry }) => entry.id === id);
+  if (!match) return false;
+  return approvedKnowledgeEntrySchema.safeParse(match.entry).success;
+}
+
+/** Source metadata comes from the approved entry, never from the model. */
+function toResponseSources(entries: readonly ApprovedKnowledgeEntry[], language: SupportedLanguage) {
+  return entries.map((entry) => ({
+    id: entry.id,
+    title: entry.title[language],
+    ...(entry.url ? { url: entry.url } : {}),
+  }));
 }
 
 export function validateGroundedOutput(
@@ -106,7 +117,7 @@ export function validateGroundedOutput(
   }
   if (hasInjectionTokens(candidate.answer)) return { valid: false, response: safe };
 
-  if (!Array.isArray(candidate.sources) || candidate.sources.length === 0 || candidate.sources.length > 3 || candidate.sources.some((source) => !isSafeSource(source, evidence, language))) {
+  if (!Array.isArray(candidate.sources) || candidate.sources.length === 0 || candidate.sources.length > 3 || candidate.sources.some((source) => !isSafeSource(source, evidence))) {
     return { valid: false, response: safe };
   }
   const citedIds = new Set(candidate.sources.map((source) => (source as { id: string }).id));
@@ -124,7 +135,7 @@ export function validateGroundedOutput(
   if (urls.some((url) => !approvedUrls.has(url))) return { valid: false, response: safe };
 
   const response = chatResponseSchema.safeParse({
-    apiVersion: "v1", code: "SUCCESS", supported: true, answer: candidate.answer.trim(), language, sources: candidate.sources,
+    apiVersion: "v1", code: "SUCCESS", supported: true, answer: candidate.answer.trim(), language, sources: toResponseSources(citedEntries, language),
   });
   return response.success ? { valid: true, response: response.data } : { valid: false, response: safe };
 }

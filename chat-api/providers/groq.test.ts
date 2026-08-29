@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { APIConnectionError, APIConnectionTimeoutError, APIError } from "groq-sdk";
-import { classifyGroqError, createGroqProvider } from "./groq";
+import { classifyGroqError, createGroqProvider, responseFormat } from "./groq";
 import { loadChatApiConfig, type ChatApiConfig } from "../config";
 import type { RetrievalMatch } from "../../packages/knowledge/retriever";
 
 const config: ChatApiConfig = (() => {
   const result = loadChatApiConfig({
     GROQ_API_KEY: "gsk-secret-value",
-    GROQ_MODEL: "llama-3.3-70b-versatile",
+    GROQ_MODEL: "openai/gpt-oss-120b",
     CHAT_API_ENABLED: "true",
     CHAT_API_ALLOWED_ORIGINS: "https://ijac.com.ar",
     CHAT_API_CLIENT_KEY_SECRET: "hmac-secret-value",
@@ -101,7 +101,7 @@ describe("groq provider request", () => {
     const { impl, calls } = transport(() => completion(answer));
     await createGroqProvider(config, { fetch: impl }).complete(ask());
 
-    expect(calls[0].body.model).toBe("llama-3.3-70b-versatile");
+    expect(calls[0].body.model).toBe("openai/gpt-oss-120b");
   });
 
   it("requests structured output so the reply cannot be free prose", async () => {
@@ -234,5 +234,41 @@ describe("groq error classification", () => {
 
   it("treats an unrecognized throwable as a connection failure rather than guessing", () => {
     expect(classifyGroqError(new Error("something else"))).toEqual({ kind: "connection" });
+  });
+});
+
+/**
+ * Groq rejects a strict schema unless every declared property is also required and every
+ * object forbids extras. Provider calls are faked everywhere else in this suite, so without
+ * this check an invalid schema reaches production as a 400 on every request.
+ */
+function strictModeViolations(node: unknown, path = "#"): string[] {
+  if (!node || typeof node !== "object") return [];
+  const schema = node as { properties?: Record<string, unknown>; required?: unknown; additionalProperties?: unknown; items?: unknown };
+  const problems: string[] = [];
+
+  if (schema.properties) {
+    const required = new Set(Array.isArray(schema.required) ? schema.required : []);
+    const missing = Object.keys(schema.properties).filter((key) => !required.has(key));
+    if (missing.length > 0) problems.push(`${path}: declared but not required: ${missing.join(", ")}`);
+    if (schema.additionalProperties !== false) problems.push(`${path}: additionalProperties must be false`);
+    for (const [key, child] of Object.entries(schema.properties)) {
+      problems.push(...strictModeViolations(child, `${path}/properties/${key}`));
+    }
+  }
+  if (schema.items) problems.push(...strictModeViolations(schema.items, `${path}/items`));
+  return problems;
+}
+
+describe("grounded answer response format", () => {
+  it("satisfies strict json_schema mode so live calls are not rejected", () => {
+    expect(strictModeViolations(responseFormat.json_schema.schema)).toEqual([]);
+  });
+
+  it("asks the model only for source ids, never for titles or urls it could fabricate", () => {
+    const schema = responseFormat.json_schema.schema as {
+      properties: { sources: { items: { properties: Record<string, unknown> } } };
+    };
+    expect(Object.keys(schema.properties.sources.items.properties)).toEqual(["id"]);
   });
 });

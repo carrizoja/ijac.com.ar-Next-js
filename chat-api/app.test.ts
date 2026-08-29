@@ -3,7 +3,7 @@ import { createChatApp } from "./app";
 
 const validEnv: Record<string, string | undefined> = {
   GROQ_API_KEY: "gsk-secret-value",
-  GROQ_MODEL: "llama-3.3-70b-versatile",
+  GROQ_MODEL: "openai/gpt-oss-120b",
   CHAT_API_ENABLED: "true",
   CHAT_API_ALLOWED_ORIGINS: "https://ijac.com.ar",
   CHAT_API_CLIENT_KEY_SECRET: "hmac-secret-value",
@@ -20,7 +20,7 @@ const groundedAnswer = {
   supported: true,
   answer: "iJAC handles hardware and software incidents on Mac computers and Apple devices.",
   language: "en",
-  sources: [{ id: "soporte-tecnico-pc-mac-apple", title: "Technical support for PC, Mac, and Apple devices" }],
+  sources: [{ id: "soporte-tecnico-pc-mac-apple" }],
 };
 
 function json(body: unknown, status = 200) {
@@ -107,6 +107,12 @@ describe("chat app end to end", () => {
       code: "SUCCESS",
       supported: true,
       answer: "iJAC handles hardware and software incidents on Mac computers and Apple devices.",
+      // The model cited an id only; title and url are resolved from the approved entry.
+      sources: [{
+        id: "soporte-tecnico-pc-mac-apple",
+        title: "Technical support for PC, Mac, and Apple devices",
+        url: "https://ijac.com.ar/services/soporte-tecnico-pc-mac-apple",
+      }],
     });
     expect(groqCalls).toHaveLength(1);
   });

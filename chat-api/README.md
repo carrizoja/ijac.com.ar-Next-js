@@ -32,7 +32,7 @@ All variables are required unless stated otherwise. Missing or malformed values 
 | Variable | Example | Notes |
 |---|---|---|
 | `GROQ_API_KEY` | `gsk_…` | Secret. Server-only. Sent as a bearer header, never in a request body. |
-| `GROQ_MODEL` | `llama-3.3-70b-versatile` | Must support structured output (`response_format: json_schema`). |
+| `GROQ_MODEL` | `openai/gpt-oss-120b` | Must support strict structured output (`response_format: json_schema`). Groq retires models on a rolling schedule, so verify with `GET /openai/v1/models` before pinning a new one. |
 | `CHAT_API_ENABLED` | `true` | Deploy flag. Anything other than the exact string `true` disables the API. Optional; defaults to disabled. |
 | `CHAT_API_ALLOWED_ORIGINS` | `https://ijac.com.ar,https://www.ijac.com.ar` | Comma-separated **exact** origins. Wildcards, paths, ports, credentials and `http:` are all rejected at load time. |
 | `CHAT_API_CLIENT_KEY_SECRET` | 32+ random bytes | HMAC secret for per-client quota keys. Rotating it resets all client counters and makes old keys uncorrelatable. |
