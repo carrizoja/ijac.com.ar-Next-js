@@ -20,11 +20,11 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 |---|---|---|---|
 | 1 | Knowledge base approval | Content owner | ✅ Met — 8 services approved 2026-08-27 |
 | 2 | Localized copy approval | Content owner | ✅ Met — approved 2026-08-27 |
-| 3 | Groq account, privacy terms, model choice | Account owner | ✅ Met — `openai/gpt-oss-120b` verified 2026-08-29 |
+| 3 | Groq account, privacy terms, model choice | Account owner | ✅ Met — model verified 2026-08-29; ZDR and spend limit set 2026-09-06 |
 | 4 | KV store account and quota | Account owner | ✅ Met — Upstash Redis verified 2026-09-06 |
 | 5 | DNS for `api.ijac.com.ar` | Domain owner | ❌ Not met |
 | 6 | Preview smoke evidence | Release owner | ❌ Blocked by 5 |
-| 7 | Secret and log inspection in production | Release owner | ⚠️ Repo clean; production unverifiable until deployed |
+| 7 | Secret and log inspection in production | Release owner | ⚠️ Repo clean, Groq ZDR on; Vercel logs unverifiable until deployed |
 
 Nothing ships until every row is met. Until then the website runs deterministically, which is
 its current production behaviour and is unaffected.
@@ -85,10 +85,41 @@ translation of the Spanish. Keep all three strings in the register the rest of t
 API for strict `response_format: { type: "json_schema" }`, correct refusal behaviour, and Spanish
 that our own grounding validator accepts.
 
-The account owner still carries two responsibilities that no test can discharge: **set a spend
-limit in the Groq console** — `CHAT_API_GLOBAL_QUOTA` is a ceiling enforced by our code, not by
-Groq's billing — and accept Groq's data-handling terms, since visitor questions leave your
-infrastructure and reach a third party.
+### Account owner responsibilities
+
+Both were completed on 2026-09-06. Neither can be discharged by a test, and neither is visible
+from the codebase — re-check them after any change of Groq account, plan or organization.
+
+**Zero Data Retention is enabled** (`console.groq.com/settings/data-controls`, organization-wide).
+Groq's default is not zero retention: inference requests are not stored, but inputs and outputs
+may be temporarily logged for reliability troubleshooting and abuse investigation and kept for up
+to 30 days. Visitor questions leave our infrastructure and reach a third party, so that window was
+closed deliberately rather than accepted by default.
+
+ZDR disables batch processing (`/openai/v1/batches`) and fine-tuning
+(`/openai/v1/fine_tunings`). Neither is reachable from this codebase: `providers/groq.ts` makes a
+single `client.chat.completions.create` call and touches no other Groq surface. Enabling ZDR
+therefore costs us nothing — but a future change that reaches for either endpoint will fail, and
+the fix is to reconsider the feature, not to switch retention back on.
+
+**A monthly spend limit of $25 is set**, with alerts at $5, $10 and $20
+(Settings → Billing → Limits). `CHAT_API_GLOBAL_QUOTA` is a ceiling enforced by our code; it does
+not cap Groq's billing, which is why a limit on the provider side is required as well.
+
+$25 is a blast radius, not a forecast. Measured against the three largest approved entries plus a
+full-length question, a worst-case request costs about $0.00051 — roughly 1,426 input tokens at
+$0.15/M and a 500-token output budget at $0.60/M, the output budget being generous because
+`gpt-oss-120b` bills reasoning tokens as output. `CHAT_API_GLOBAL_QUOTA=500` per hour permits
+360,000 requests a month, or about $184, if the quota were saturated every hour of every day.
+Realistic traffic is a few hundred questions a month, under a dollar.
+
+**The provider limit therefore binds before our own quota does under abuse, and that is safe.**
+Groq answers `400 blocked_api_access`; `classifyProviderFailure` maps any non-429, non-5xx status
+to `PROVIDER_UNAVAILABLE` with `retryEligible: false`, so a blocked account produces no retry
+storm and visitors receive the WhatsApp handoff card. The website stays up.
+
+Two caveats from Groq's documentation: spend tracking lags 10–15 minutes, so a spike can overshoot
+the limit slightly, and the limit resets on the 1st of each month.
 
 ### What the live probe found
 
@@ -229,8 +260,12 @@ all three languages cite only approved `ijac.com.ar` sources.
 - Zero `console.*` calls exist in `chat-api/`, `src/app/components/chat/` or `packages/`, so
   there is no code path by which a prompt, answer or raw IP could reach a log sink.
 
+**The Groq side is settled.** Zero Data Retention is enabled on the account (gate 3), so Groq
+retains nothing rather than logging inputs and outputs for up to 30 days. This is verifiable from
+the setting itself rather than inferred from a policy document.
+
 **Still required after deployment:** confirm the Vercel runtime logs contain no prompt, answer or
-raw IP address, and that the Groq dashboard retains nothing beyond what the accepted terms allow.
+raw IP address.
 Only aggregate telemetry may persist: `outcome`, `sourceIds`, `language`, `latencyBand`,
 `errorCategory`, expiring after 30 days.
 
