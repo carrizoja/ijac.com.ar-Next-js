@@ -44,6 +44,22 @@ All variables are required unless stated otherwise. Missing or malformed values 
 | `CHAT_API_KV_URL` | `https://….upstash.io` | KV REST endpoint. Must be `https:`. |
 | `CHAT_API_KV_TOKEN` | opaque token | Secret. Sent as a bearer header, never in a URL, and excluded from `redactConfig`. |
 
+### Account-level constraints
+
+Two settings live in the Groq console rather than in this configuration, and both are load-bearing.
+
+**Zero Data Retention is enabled** on the account, so Groq retains nothing from a request. It also
+disables batch processing (`/openai/v1/batches`) and fine-tuning (`/openai/v1/fine_tunings`).
+Neither is used here — `providers/groq.ts` makes a single `chat.completions.create` call — but a
+change that reaches for either endpoint will fail against a setting no code in this package
+mentions. Reconsider the feature rather than turning retention back on: visitor questions are
+third-party data.
+
+**A monthly spend limit is set.** `CHAT_API_GLOBAL_QUOTA` is a ceiling this code enforces, not one
+Groq bills against, so the provider needs its own. When it trips, Groq answers `400
+blocked_api_access`, which `classifyProviderFailure` treats as permanent — no retry, and visitors
+get the handoff card. See `docs/chatbot-release-gates.md` gate 3 for the current values.
+
 The website is configured separately, at build time:
 
 | Variable | Notes |
