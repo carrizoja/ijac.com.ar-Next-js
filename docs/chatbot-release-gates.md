@@ -3,7 +3,7 @@
 These gates block **release**, not local implementation. Every one of them requires an account,
 a credential, a DNS record, or a human approval that cannot be produced from the codebase.
 
-The implementation is complete and verified without any of them: 381 tests, typecheck, lint and
+The implementation is complete and verified without any of them: 389 tests, typecheck, lint and
 the static build all pass with no credentials, because every test uses a fake transport and an
 in-memory KV double.
 
@@ -21,9 +21,9 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 | 1 | Knowledge base approval | Content owner | ✅ Met — 8 services approved 2026-08-27 |
 | 2 | Localized copy approval | Content owner | ✅ Met — approved 2026-08-27 |
 | 3 | Groq account, privacy terms, model choice | Account owner | ✅ Met — `openai/gpt-oss-120b` verified 2026-08-29 |
-| 4 | KV store account and quota | Account owner | ❌ Not met — client implemented, account still required |
+| 4 | KV store account and quota | Account owner | ✅ Met — Upstash Redis verified 2026-09-06 |
 | 5 | DNS for `api.ijac.com.ar` | Domain owner | ❌ Not met |
-| 6 | Preview smoke evidence | Release owner | ❌ Blocked by 1–5 |
+| 6 | Preview smoke evidence | Release owner | ❌ Blocked by 5 |
 | 7 | Secret and log inspection in production | Release owner | ⚠️ Repo clean; production unverifiable until deployed |
 
 Nothing ships until every row is met. Until then the website runs deterministically, which is
@@ -152,26 +152,50 @@ returns `supported: false`, and confirm a grounded answer passes `validateGround
 
 ## 4. KV store account and quota
 
-**Blocked because:** no account exists. The client itself is now implemented —
-`chat-api/kv/upstash.ts` speaks the Upstash REST protocol as a thin fetch wrapper over `get`,
-`incr` and `expire`, with no added dependency, and is covered by 19 tests.
+**Met on 2026-09-06.** An Upstash Redis database exists and its REST credentials were verified
+against the live store before being trusted. `chat-api/kv/upstash.ts` speaks the Upstash REST
+protocol as a thin fetch wrapper over `get`, `incr` and `expire`, with no added dependency, and
+is covered by 19 tests.
 
-Required before release:
+Quota values chosen: `CHAT_API_CLIENT_QUOTA=10`, `CHAT_API_GLOBAL_QUOTA=500`,
+`CHAT_API_QUOTA_WINDOW_SECONDS=3600` — ten questions per visitor per hour, five hundred across
+everyone. Raising the global ceiling is the lever if legitimate traffic is being turned away.
+It is a ceiling **our** code enforces; it does not cap Groq's billing, which is why gate 3 also
+requires a spend limit in the Groq console.
 
-- An Upstash Redis database (or an equivalent REST-compatible store) with its own quota headroom.
-- `CHAT_API_KV_URL` and `CHAT_API_KV_TOKEN` set on the API.
-- Quota values chosen for `CHAT_API_CLIENT_QUOTA`, `CHAT_API_GLOBAL_QUOTA` and
-  `CHAT_API_QUOTA_WINDOW_SECONDS`.
+`CHAT_API_KV_URL` and `CHAT_API_KV_TOKEN` are not yet set on any deployment — they go into the
+Vercel project environment during gate 5, never into the repository.
+
+### What the credential probe checked
+
+The credentials were exercised with the same protocol the client uses — plain `GET`, a bearer
+token, a percent-encoded key — against a throwaway key, so no real counter was touched.
+
+- The URL is `https:`. `config.ts` validates it as `httpsUrl`, so the `redis://` connection
+  string shown next to it in the Upstash console is rejected at load time rather than at runtime.
+- `get` on a missing key returns null, which is how `evaluateGate` distinguishes "no kill switch"
+  from "kill switch set".
+- `incr` and `expire` both succeed. This is the check that matters: a **read-only** token can
+  `get` but not `incr`, so the store would appear reachable and then throw on the first real
+  request. Every visitor would receive `PROVIDER_UNAVAILABLE` and the chatbot would be silently
+  offline behind a working-looking configuration.
+- The TTL survives a subsequent `incr`. If incrementing reset the window, a caller who kept
+  knocking would never be released from the rate limit.
+- A `set`/`get` round-trip on a string value confirms the kill switch is writable, since
+  `chat-api:kill-switch` is set by hand during an incident rather than by the API.
+
+Eviction is disabled on the database. Eviction could drop `chat-api:kill-switch` under memory
+pressure and re-enable a chatbot that was deliberately shut off.
 
 A wrong token or an unreachable store fails closed with `PROVIDER_UNAVAILABLE`, so a
 misconfiguration surfaces as an outage rather than as an unmetered API.
 
-**Verify:** quota counters appear under `chat-api:quota:*` after a request, and exhausting a
-client quota returns `RATE_LIMITED` (429).
+**Verify after deployment:** quota counters appear under `chat-api:quota:*` after a request, and
+exhausting a client quota returns `RATE_LIMITED` (429).
 
 **No remaining code gap.** `chat-api/app.ts` wires config, KV, provider and retriever, and
 `chat-api/api/chat.ts` exposes it as a serverless function. The package is deployable as soon as
-this gate and gates 3 and 5 are met.
+gate 5 is met.
 
 ## 5. DNS for `api.ijac.com.ar`
 
@@ -185,7 +209,7 @@ an HTTP response over a valid certificate.
 
 ## 6. Preview smoke evidence
 
-**Blocked by gates 1–5.** Cannot be attempted until the API is reachable and configured.
+**Blocked by gate 5.** Cannot be attempted until the API is reachable and configured.
 
 Run the smoke checks in the runbook against a preview deployment, using that preview's **exact**
 origin added temporarily to `CHAT_API_ALLOWED_ORIGINS` and removed afterwards. Keep the output
