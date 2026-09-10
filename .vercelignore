@@ -1,0 +1,13 @@
+# Local agent-tooling artifacts. These are ignored by a global gitignore, so they
+# never appear as untracked, but Vercel CLI uploads walk the working directory and
+# only honour this file. .codegraph holds a Unix socket that aborts the upload.
+.codegraph
+.atl
+.pi
+.agents
+.claude
+
+# Build output of the website, which this project does not deploy.
+.next
+out
+node_modules
