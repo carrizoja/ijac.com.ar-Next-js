@@ -1,4 +1,4 @@
-import { createChatApp } from "../app";
+import { createChatApp } from "../app.js";
 
 /**
  * Serverless entry point. Deployed as its own Vercel project rooted at chat-api/, with

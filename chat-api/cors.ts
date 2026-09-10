@@ -1,5 +1,5 @@
-import { chatRequestSchema, type ChatRequest, type ChatResultCode } from "../packages/contracts/chat";
-import type { ChatApiConfig } from "./config";
+import { chatRequestSchema, type ChatRequest, type ChatResultCode } from "../packages/contracts/chat.js";
+import type { ChatApiConfig } from "./config.js";
 
 export interface RawChatRequest {
   method: string;

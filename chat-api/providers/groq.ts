@@ -1,13 +1,13 @@
 import Groq, { APIConnectionError, APIConnectionTimeoutError, APIError } from "groq-sdk";
-import { supportedLanguages, type SupportedLanguage } from "../../packages/contracts/chat";
-import type { RetrievalMatch } from "../../packages/knowledge/retriever";
-import type { ChatApiConfig } from "../config";
+import { supportedLanguages, type SupportedLanguage } from "../../packages/contracts/chat.js";
+import type { RetrievalMatch } from "../../packages/knowledge/retriever.js";
+import type { ChatApiConfig } from "../config.js";
 import {
   classifyProviderFailure,
   shouldRetry,
   type ProviderClassification,
   type ProviderFailure,
-} from "../controls";
+} from "../controls.js";
 
 export interface ProviderInput {
   question: string;

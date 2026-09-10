@@ -1,11 +1,11 @@
-import type { ChatResponse, ChatResultCode, SupportedLanguage } from "../../packages/contracts/chat";
-import type { RetrievalResult } from "../../packages/knowledge/retriever";
-import type { ChatApiConfig } from "../config";
-import { corsHeaders, preflightResponse, validateChatRequest, type RawChatRequest } from "../cors";
-import { deriveClientKey, evaluateGate, type KvClient } from "../controls";
-import { buildTelemetryRecord, type ErrorCategory, type TelemetryRecord } from "../privacy";
-import { validateGroundedOutput } from "../validation";
-import type { ChatProvider } from "../providers/groq";
+import type { ChatResponse, ChatResultCode, SupportedLanguage } from "../../packages/contracts/chat.js";
+import type { RetrievalResult } from "../../packages/knowledge/retriever.js";
+import type { ChatApiConfig } from "../config.js";
+import { corsHeaders, preflightResponse, validateChatRequest, type RawChatRequest } from "../cors.js";
+import { deriveClientKey, evaluateGate, type KvClient } from "../controls.js";
+import { buildTelemetryRecord, type ErrorCategory, type TelemetryRecord } from "../privacy.js";
+import { validateGroundedOutput } from "../validation.js";
+import type { ChatProvider } from "../providers/groq.js";
 
 /** Used only when the request failed before a language could be parsed. */
 const FALLBACK_LANGUAGE: SupportedLanguage = "es";

@@ -1,4 +1,4 @@
-import type { ChatResultCode, SupportedLanguage } from "../packages/contracts/chat";
+import type { ChatResultCode, SupportedLanguage } from "../packages/contracts/chat.js";
 
 /** Approved aggregates expire 30 days after they are written. */
 export const TELEMETRY_TTL_SECONDS = 30 * 24 * 60 * 60;

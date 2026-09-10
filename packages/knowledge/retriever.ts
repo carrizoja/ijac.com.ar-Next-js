@@ -1,4 +1,4 @@
-import { approvedKnowledgeEntrySchema, type ApprovedKnowledgeEntry, type KnowledgeEntry } from "./types";
+import { approvedKnowledgeEntrySchema, type ApprovedKnowledgeEntry, type KnowledgeEntry } from "./types.js";
 
 export const DEFAULT_RETRIEVAL_LIMIT = 3;
 export const DEFAULT_RETRIEVAL_THRESHOLD = 2;
