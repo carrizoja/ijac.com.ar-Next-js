@@ -11,9 +11,16 @@ import { createChatApp } from "../app.js";
  */
 const app = createChatApp(process.env);
 
-export const config = { runtime: "nodejs" };
-
-export default async function handler(request: Request): Promise<Response> {
-  if (!app.ok) return new Response(null, { status: 503 });
-  return app.handler(request);
-}
+/**
+ * The `fetch` Web Standard export, not a bare default function. Vercel picks a function's
+ * calling convention from the shape of its export: a bare default is handed Node's
+ * `IncomingMessage`/`ServerResponse`, and only this shape is handed a Web `Request`. The code
+ * below is written against the Web API, so the wrong shape deploys cleanly and then throws on
+ * every request. Node is the default runtime, so no `config` export is needed to select it.
+ */
+export default {
+  async fetch(request: Request): Promise<Response> {
+    if (!app.ok) return new Response(null, { status: 503 });
+    return app.handler(request);
+  },
+};
