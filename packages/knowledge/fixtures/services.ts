@@ -1,4 +1,4 @@
-import type { KnowledgeEntry } from "../types";
+import type { KnowledgeEntry } from "../types.js";
 
 /**
  * Approved service knowledge — the set served to visitors.

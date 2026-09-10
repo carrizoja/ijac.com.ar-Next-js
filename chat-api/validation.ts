@@ -1,6 +1,6 @@
-import { chatResponseSchema, type ChatResponse, type SupportedLanguage } from "../packages/contracts/chat";
-import { approvedKnowledgeEntrySchema, type ApprovedKnowledgeEntry } from "../packages/knowledge/types";
-import type { RetrievalMatch } from "../packages/knowledge/retriever";
+import { chatResponseSchema, type ChatResponse, type SupportedLanguage } from "../packages/contracts/chat.js";
+import { approvedKnowledgeEntrySchema, type ApprovedKnowledgeEntry } from "../packages/knowledge/types.js";
+import type { RetrievalMatch } from "../packages/knowledge/retriever.js";
 
 const URL_PATTERN = /https?:\/\/[^\s)]+/gi;
 const NUMBER_PATTERN = /\b\d+(?:[.,]\d+)?\s*(?:%|usd|eur|ars|brl|dollars?|euros?|pesos?)?\b/gi;

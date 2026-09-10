@@ -1,5 +1,5 @@
-import type { RawChatRequest } from "../cors";
-import type { ChatHttpResponse } from "./chat";
+import type { RawChatRequest } from "../cors.js";
+import type { ChatHttpResponse } from "./chat.js";
 
 /** Used when no forwarded address is present, so quota keys are always well formed. */
 const UNKNOWN_ADDRESS = "unknown";

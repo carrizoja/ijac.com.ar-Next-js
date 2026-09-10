@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
-import type { ChatResultCode } from "../packages/contracts/chat";
-import type { ErrorCategory } from "./privacy";
-import type { ChatApiConfig } from "./config";
+import type { ChatResultCode } from "../packages/contracts/chat.js";
+import type { ErrorCategory } from "./privacy.js";
+import type { ChatApiConfig } from "./config.js";
 
 /** Operational kill switch, flipped in the KV store without a redeploy. */
 export const KILL_SWITCH_KEY = "chat-api:kill-switch";

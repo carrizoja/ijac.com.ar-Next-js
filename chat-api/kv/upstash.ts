@@ -1,5 +1,5 @@
-import type { ChatApiConfig } from "../config";
-import type { KvClient } from "../controls";
+import type { ChatApiConfig } from "../config.js";
+import type { KvClient } from "../controls.js";
 
 /**
  * KvClient over the Upstash REST protocol.

@@ -1,4 +1,4 @@
-import type { ApprovedKnowledgeEntry } from "../types";
+import type { ApprovedKnowledgeEntry } from "../types.js";
 
 const makeEntry = (
   id: string,

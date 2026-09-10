@@ -1,11 +1,11 @@
-import type { KnowledgeEntry } from "../packages/knowledge/types";
-import { createKnowledgeRetriever } from "../packages/knowledge/retriever";
-import { approvedServiceEntries } from "../packages/knowledge/fixtures/services";
-import { loadChatApiConfig } from "./config";
-import { createUpstashKvClient } from "./kv/upstash";
-import { createGroqProvider } from "./providers/groq";
-import { handleChatRequest } from "./v1/chat";
-import { createChatRoute } from "./v1/route";
+import type { KnowledgeEntry } from "../packages/knowledge/types.js";
+import { createKnowledgeRetriever } from "../packages/knowledge/retriever.js";
+import { approvedServiceEntries } from "../packages/knowledge/fixtures/services.js";
+import { loadChatApiConfig } from "./config.js";
+import { createUpstashKvClient } from "./kv/upstash.js";
+import { createGroqProvider } from "./providers/groq.js";
+import { handleChatRequest } from "./v1/chat.js";
+import { createChatRoute } from "./v1/route.js";
 
 export interface CreateChatAppOverrides {
   /** Injection seam for tests; production uses the platform transport. */
