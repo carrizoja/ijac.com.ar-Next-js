@@ -22,8 +22,8 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 | 2 | Localized copy approval | Content owner | ✅ Met — approved 2026-08-27 |
 | 3 | Groq account, privacy terms, model choice | Account owner | ✅ Met — model verified 2026-08-29; ZDR and spend limit set 2026-09-06 |
 | 4 | KV store account and quota | Account owner | ✅ Met — Upstash Redis verified 2026-09-06 |
-| 5 | DNS for `api.ijac.com.ar` | Domain owner | ❌ Not met |
-| 6 | Preview smoke evidence | Release owner | ❌ Blocked by 5 |
+| 5 | DNS for `api.ijac.com.ar` | Domain owner | ✅ Met — resolving over TLS 2026-09-12 |
+| 6 | Preview smoke evidence | Release owner | ❌ Not met — unblocked, ready to run |
 | 7 | Secret and log inspection in production | Release owner | ⚠️ Repo clean, Groq ZDR on; Vercel logs unverifiable until deployed |
 
 Nothing ships until every row is met. Until then the website runs deterministically, which is
@@ -230,13 +230,53 @@ gate 5 is met.
 
 ## 5. DNS for `api.ijac.com.ar`
 
-**Blocked because:** the subdomain does not resolve.
+**Met on 2026-09-12.** The subdomain resolves to Vercel and serves the API over a valid
+Let's Encrypt certificate. The website is untouched: `ijac.com.ar` still answers from Hostinger.
 
-Required: a CNAME for `api` pointing at Vercel, the domain added to the Vercel project, and a
-certificate issued. Setup steps are in the runbook.
+```
+api.ijac.com.ar.  CNAME  9441a58f124c245b.vercel-dns-017.com.
+```
 
-**Verify:** `dig +short api.ijac.com.ar` resolves and `curl -sI https://api.ijac.com.ar` returns
-an HTTP response over a valid certificate.
+**The CNAME target is unique to the project.** Vercel no longer uses a shared
+`cname.vercel-dns.com` for subdomains; it still accepts that value as a fallback, but the
+project-specific target is what its dashboard and `vercel domains verify` return. Read the value
+from the project rather than copying it from any document, including this one.
+
+The API lives in its own Vercel project, `ijac-chat-api`, rooted at `chat-api/` with an empty
+build command — there is nothing to build, since Vercel's Node runtime compiles the function
+itself. It must be a **separate project** from any that deploys the website: a project has one
+root directory, and its deployment history is the rollback target the runbook depends on. A
+project shared with the website would offer website builds as "the previous API version".
+
+**The certificate needed an explicit request.** Automatic issuance had not fired several minutes
+after the domain verified; `vercel certs issue api.ijac.com.ar` produced it in twelve seconds.
+Until a certificate exists the domain answers plain HTTP correctly while HTTPS fails at the TLS
+handshake, which reads like a DNS fault and is not one.
+
+### What the first deployment found
+
+Two defects survived 389 passing tests, a clean typecheck and a clean lint, for the same reason
+the gate 3 defects did: the test toolchain resolves differently from the production runtime.
+Both are fixed and covered.
+
+**Every relative import was unloadable.** Vercel transpiles each function file individually
+rather than bundling it, so `import "../app"` reached the deployed JavaScript unchanged — and
+Node's ESM resolver requires an explicit extension. All 37 relative imports across 13 shipped
+files were extensionless. `tsconfig.json` sets `moduleResolution: "bundler"` with `noEmit`, and
+Vitest resolves the same way, so nothing in the suite could see it. `chat-api/moduleResolution.test.ts`
+now reads the shipped source directly and also checks that each specifier still resolves to a
+`.ts` file, so a rename cannot reintroduce it.
+
+**The entry point exported the wrong shape.** Vercel's Node runtime picks a function's calling
+convention from its export: a bare default function receives Node's `IncomingMessage`, and only
+the documented `fetch` Web Standard export — `export default { fetch }` — receives a Web
+`Request`. The module is written against the Web API, so it deployed cleanly and threw
+`request.headers.get is not a function` on every call.
+
+**Verify:** `dig +short api.ijac.com.ar` resolves, and a POST from an allowed origin returns a
+JSON body. A **bare** 503 with an empty body means configuration failed to load; a 503 carrying
+`{"code":"DISABLED"}` means configuration is valid and the API is parked, which is the expected
+state until gate 6.
 
 ## 6. Preview smoke evidence
 
