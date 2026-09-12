@@ -26,20 +26,38 @@ the sign-off table.
 
 ### 1. DNS for `api.ijac.com.ar`
 
-Add a CNAME at your DNS provider pointing the `api` subdomain at Vercel, then add the domain in
-the Vercel project so a certificate is issued.
+Add the domain to the Vercel project first, then create the CNAME it asks for. Adding it first
+matters: **the target is unique per project**, so it has to be read rather than remembered.
+
+```bash
+vercel domains add api.ijac.com.ar ijac-chat-api
+vercel domains verify api.ijac.com.ar          # prints recommended.records
+```
+
+That returns the record to create at the DNS provider — currently Hostinger, since the
+nameservers are `ns1`/`ns2.dns-parking.com`:
 
 ```
 Type   Name   Value
-CNAME  api    cname.vercel-dns.com.
+CNAME  api    <the value verify returned, e.g. 9441a58f124c245b.vercel-dns-017.com.>
 ```
 
-Verify before continuing:
+The name field is relative, so it is `api`, not `api.ijac.com.ar`. Leave the apex A records
+alone — they point at the website on Hostinger and have nothing to do with this.
+
+Then verify, and issue the certificate if it has not appeared:
 
 ```bash
-dig +short api.ijac.com.ar
-curl -sI https://api.ijac.com.ar | head -1     # expect an HTTP response, any status
+dig +short api.ijac.com.ar                     # expect the CNAME chain, then Vercel IPs
+vercel domains verify api.ijac.com.ar          # expect "configured-correctly"
+vercel certs ls | grep api.ijac.com.ar         # if absent, issue it explicitly:
+vercel certs issue api.ijac.com.ar
+curl -sI https://api.ijac.com.ar/v1/chat | head -1
 ```
+
+Automatic issuance is not guaranteed to fire promptly. Until a certificate exists the domain
+answers plain HTTP correctly while HTTPS fails at the TLS handshake — a failure that looks like
+broken DNS and is not.
 
 ### 2. Environment variables
 
