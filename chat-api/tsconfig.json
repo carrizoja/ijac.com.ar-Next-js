@@ -1,0 +1,16 @@
+{
+  "//": "Vercel deploys this package with the repository's chat-api/ as its root directory, so it looks for compiler options here rather than in the repository root. Without them its typecheck runs on bare defaults and cannot resolve process or node:crypto. Local `tsc --noEmit` still uses the root config; this file exists for the deployed build.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["**/*.ts", "../packages/**/*.ts"],
+  "exclude": ["**/*.test.ts", "testing"]
+}
