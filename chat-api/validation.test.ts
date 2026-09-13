@@ -35,6 +35,10 @@ const appleEvidence: RetrievalMatch[] = [{
       "iJAC atiende incidencias de hardware y software en PC, notebooks, equipos Mac y dispositivos Apple.",
       "iJAC realiza mantenimiento preventivo y correctivo, configuración inicial y resolución de errores.",
       "iJAC resuelve problemas de software, rendimiento y conectividad.",
+      "iJAC handles hardware and software incidents on PCs, laptops, Mac computers, and Apple devices.",
+      "iJAC performs preventive and corrective maintenance, initial setup, and error resolution.",
+      "A iJAC atende incidentes de hardware e software em PCs, notebooks, equipamentos Mac e dispositivos Apple.",
+      "A iJAC realiza manutenção preventiva e corretiva, configuração inicial e resolução de erros.",
     ],
     aliases: { es: ["soporte técnico", "reparación", "mac", "macbook"], en: ["technical support", "repair", "mac", "macbook"], pt: ["suporte técnico", "reparo", "mac", "macbook"] },
     tags: ["support", "repair", "maintenance", "apple", "mac", "pc"],
@@ -69,6 +73,75 @@ describe("Spanish morphology and connectives", () => {
 
   it("still rejects a claim the evidence never makes", () => {
     expect(validate("iJAC atiende equipos Mac con garantía extendida.").valid).toBe(false);
+  });
+});
+
+/**
+ * Verbatim answers from openai/gpt-oss-120b against the shipped entry, captured during release
+ * gate 6. Every one was accurate, evidence-limited and correctly cited, and every one was
+ * rejected — the Portuguese answer over the single word "sim" despite 19 evidence hits. A
+ * grounding check that refuses these hands every visitor to WhatsApp and the chatbot answers
+ * nothing at all.
+ */
+describe("answers the deployed model actually produces", () => {
+  const validate = (answer: string, language: "es" | "en" | "pt") => validateGroundedOutput(
+    { supported: true, answer, language, sources: [{ id: "soporte-tecnico-pc-mac-apple" }] },
+    appleEvidence,
+    language,
+  );
+
+  it("accepts an affirmation, which asserts nothing about the business", () => {
+    expect(validate("Sim, a iJAC oferece suporte técnico para PCs, notebooks, equipamentos Mac e dispositivos Apple, realizando manutenção preventiva e corretiva, configuração inicial e resolução de erros.", "pt").valid).toBe(true);
+  });
+
+  it("accepts a short affirmative answer, where tolerance alone would not save it", () => {
+    // Five tokens: without "sim" among the function words, the single unsupported token is a
+    // fifth of the sentence and the answer is refused. Mutating the affirmations out must fail.
+    expect(validate("Sim, a iJAC atende incidentes de hardware.", "pt").valid).toBe(true);
+  });
+
+  it("accepts a plural of an evidence term too short for prefix matching", () => {
+    // "macs" for the alias "mac" — four characters, so the shared-prefix rule cannot reach it.
+    expect(validate("Yes, iJAC offers technical support for PCs, Macs, and Apple devices.", "en").valid).toBe(true);
+  });
+
+  it("accepts a synonym when the rest of the sentence is densely grounded", () => {
+    // "ofrece" and "atendiendo" are synonyms of evidence wording, not inflections of it.
+    expect(validate("Sí, iJAC ofrece soporte técnico para PC, Mac y dispositivos Apple, atendiendo incidentes de hardware y software, realizando mantenimiento preventivo y correctivo, configuración inicial y resolución de errores.", "es").valid).toBe(true);
+  });
+});
+
+/**
+ * Tolerating a stray synonym must not tolerate a claim. These are the words that cost money or
+ * create an obligation, so they are refused however well grounded their neighbours are.
+ */
+describe("claim-bearing words are never tolerated", () => {
+  const validate = (answer: string, language: "es" | "en" = "es") => validateGroundedOutput(
+    { supported: true, answer, language, sources: [{ id: "soporte-tecnico-pc-mac-apple" }] },
+    appleEvidence,
+    language,
+  );
+
+  it("rejects a price the evidence never states", () => {
+    expect(validate("iJAC atiende incidencias de hardware y software en equipos Mac de forma gratuita.").valid).toBe(false);
+  });
+
+  it("rejects a guarantee the evidence never offers", () => {
+    expect(validate("iJAC atiende incidencias de hardware y software en equipos Mac con garantía.").valid).toBe(false);
+  });
+
+  it("rejects a quantifier that widens a claim the evidence never made", () => {
+    expect(validate("iJAC resuelve todos los problemas de software, rendimiento y conectividad.").valid).toBe(false);
+  });
+
+  it("rejects a sentence carrying more unsupported words than a stray synonym", () => {
+    expect(validate("iJAC ofrece consultoría jurídica especializada para equipos Mac.").valid).toBe(false);
+  });
+
+  it("caps unsupported words even in a long sentence the share alone would permit", () => {
+    // Nineteen tokens with three unsupported: under a fifth, so only the absolute cap refuses
+    // it. Without that cap a long enough answer could accumulate invented vocabulary freely.
+    expect(validate("Sí, iJAC ofrece soporte técnico para PC, Mac y dispositivos Apple, atendiendo incidentes de hardware y software, realizando mantenimiento preventivo y correctivo, configuración inicial y solución de errores.").valid).toBe(false);
   });
 });
 

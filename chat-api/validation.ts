@@ -26,7 +26,43 @@ const COMMON_WORDS = new Set([
   // Portuguese
   "com", "uma", "dos", "das", "assim", "incluindo", "alem", "mas", "porem", "quando", "onde",
   "ate", "seus", "suas", "estes", "sao",
+  // Affirmations. They answer the question without saying anything about the business, and a
+  // model asked a yes/no question opens with one almost every time.
+  "yes", "sim", "claro",
 ]);
+
+/**
+ * Words that create a commitment: a price, a guarantee, or a quantifier that widens a claim
+ * beyond what the evidence supports. Unlike ordinary vocabulary these are never tolerated as
+ * an unsupported token, however well grounded the rest of the sentence is — a fluent answer
+ * with one invented word here is exactly the expensive failure.
+ *
+ * Only checked against tokens the evidence does NOT contain, so an entry that genuinely states
+ * a price or a warranty can still have it repeated back.
+ */
+const RISK_WORDS = new Set([
+  // Price
+  "gratis", "gratuito", "gratuita", "gratuitos", "gratuitas", "free", "sincargo",
+  "precio", "precios", "preco", "precos", "price", "prices", "costo", "costos", "custo",
+  "custos", "cost", "costs", "tarifa", "tarifas", "fee", "fees", "descuento", "descuentos",
+  "desconto", "descontos", "discount", "promocion", "promocao", "promotion", "oferta",
+  // Commitments
+  "garantia", "garantias", "guarantee", "guaranteed", "warranty", "certificado", "certificada",
+  "certified", "oficial", "official", "autorizado", "autorizada", "authorized",
+  "inmediato", "inmediata", "imediato", "imediata", "immediate", "instantaneo", "instant",
+  // Quantifiers, which widen a claim the evidence never made
+  "todos", "todas", "todo", "toda", "all", "every", "siempre", "sempre", "always",
+  "cualquier", "qualquer", "any", "ilimitado", "ilimitada", "unlimited", "cualquiera",
+]);
+
+/**
+ * How much of a sentence may be unsupported vocabulary. A model paraphrases — it writes
+ * "ofrece" where the evidence says "brinda" — and demanding that every content word appear in
+ * the evidence rejects accurate answers outright. Both bounds apply: a short sentence cannot
+ * spend its whole budget on one invented word, and a long one cannot accumulate several.
+ */
+const MAX_UNSUPPORTED_SHARE = 0.2;
+const MAX_UNSUPPORTED_TOKENS = 2;
 
 /**
  * Minimum shared prefix that lets an inflected form match an evidence term. Spanish and
@@ -92,9 +128,27 @@ function sharedPrefixLength(left: string, right: string): number {
   return index;
 }
 
-/** Exact match, or an inflection of an evidence term long enough to be unambiguous. */
+/**
+ * One term is the other plus a plural suffix. Needed because the shared-prefix rule refuses
+ * anything under MIN_SHARED_PREFIX, which leaves short nouns unreachable: "macs" can never
+ * match the alias "mac". Requiring the shorter form to be a whole prefix keeps "reparto" from
+ * pairing with "reparo".
+ */
+function isPluralPair(token: string, candidate: string): boolean {
+  const [longer, shorter] = token.length >= candidate.length ? [token, candidate] : [candidate, token];
+  // No stem floor is needed: both sides come from tokens(), which already discards anything
+  // shorter than three characters, so a one or two letter stem cannot reach here.
+  if (!longer.startsWith(shorter)) return false;
+  const suffix = longer.slice(shorter.length);
+  return suffix === "s" || suffix === "es";
+}
+
+/** Exact match, a plural of an evidence term, or an inflection long enough to be unambiguous. */
 function isKnownToken(token: string, known: ReadonlySet<string>): boolean {
   if (known.has(token)) return true;
+  for (const candidate of known) {
+    if (isPluralPair(token, candidate)) return true;
+  }
   if (token.length < MIN_SHARED_PREFIX) return false;
   for (const candidate of known) {
     if (candidate.length >= MIN_SHARED_PREFIX && sharedPrefixLength(token, candidate) >= MIN_SHARED_PREFIX) {
@@ -110,7 +164,18 @@ function hasGrounding(answer: string, entries: readonly ApprovedKnowledgeEntry[]
     .every((sentence) => entries.some((entry) => {
       const known = tokens(evidenceText(entry, language));
       if ([...sentence].some((token) => NEGATION_TOKENS.has(token))) return false;
-      if ([...sentence].some((token) => !isKnownToken(token, known) && !COMMON_WORDS.has(token))) return false;
+
+      const unsupported = [...sentence].filter(
+        (token) => !isKnownToken(token, known) && !COMMON_WORDS.has(token),
+      );
+      // Tolerance covers vocabulary, never substance: one invented price outweighs any amount
+      // of surrounding evidence, so a claim-bearing word fails the sentence on its own.
+      if (unsupported.some((token) => RISK_WORDS.has(token))) return false;
+      if (unsupported.length > MAX_UNSUPPORTED_TOKENS) return false;
+      // Strictly under the share, so a short sentence cannot spend its whole budget on one
+      // invented word: "iJAC atiende el reparto de equipos Mac" is four known tokens and a
+      // different service. A sentence must reach six tokens before it can afford any.
+      if (unsupported.length >= sentence.size * MAX_UNSUPPORTED_SHARE) return false;
       return [...sentence].filter((token) => isKnownToken(token, known)).length >= 2;
     }));
 }
