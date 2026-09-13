@@ -23,8 +23,8 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 | 3 | Groq account, privacy terms, model choice | Account owner | ✅ Met — model verified 2026-08-29; ZDR and spend limit set 2026-09-06 |
 | 4 | KV store account and quota | Account owner | ✅ Met — Upstash Redis verified 2026-09-06 |
 | 5 | DNS for `api.ijac.com.ar` | Domain owner | ✅ Met — resolving over TLS 2026-09-12 |
-| 6 | Preview smoke evidence | Release owner | ❌ Not met — unblocked, ready to run |
-| 7 | Secret and log inspection in production | Release owner | ⚠️ Repo clean, Groq ZDR on; Vercel logs unverifiable until deployed |
+| 6 | Preview smoke evidence | Release owner | ✅ Met — full checklist passed 2026-09-13 |
+| 7 | Secret and log inspection in production | Release owner | ✅ Met — runtime logs inspected 2026-09-13 |
 
 Nothing ships until every row is met. Until then the website runs deterministically, which is
 its current production behaviour and is unaffected.
@@ -280,34 +280,81 @@ state until gate 6.
 
 ## 6. Preview smoke evidence
 
-**Blocked by gate 5.** Cannot be attempted until the API is reachable and configured.
+**Met on 2026-09-13.** Every check in the runbook checklist was run against the live API at
+`https://api.ijac.com.ar` and passed.
 
-Run the smoke checks in the runbook against a preview deployment, using that preview's **exact**
-origin added temporarily to `CHAT_API_ALLOWED_ORIGINS` and removed afterwards. Keep the output
-with the release record.
+| Check | Result |
+|---|---|
+| Preflight from an allowed origin | 204, exact origin echoed, never `*` |
+| Disallowed origin | 403, no `answer` field |
+| Extra request field | `INVALID_REQUEST`, rejected before any provider call |
+| Off-script question | `UNKNOWN` |
+| Price question | `UNKNOWN`, which renders the WhatsApp handoff |
+| Spanish, English and Portuguese | `SUCCESS`, citing only the approved entry |
+| Kill switch set, then removed | `SUCCESS` → `DISABLED` → `SUCCESS`, no redeploy |
+| Vercel runtime logs | request line only; no prompt, answer or IP |
+| Built `out/` | no `groq`, `gsk-`, `UPSTASH` or server symbol |
+| Website with `NEXT_PUBLIC_CHAT_AI_ENABLED` unset | no `api.ijac.com.ar` in the bundle |
 
-The checks that matter most, because they are the ones that fail closed in production rather
-than in a test: an off-script question returns `UNKNOWN`; a disallowed origin returns 403; and
-all three languages cite only approved `ijac.com.ar` sources.
+Testing ran against production rather than a preview, and that was safe rather than a shortcut:
+the live website is the static build on Hostinger and was built without `NEXT_PUBLIC_CHAT_API_URL`,
+so no visitor has a code path that reaches the API. The only callers were the checks themselves.
+That also removed the need to add a preview origin to `CHAT_API_ALLOWED_ORIGINS` and remember to
+take it out again.
+
+### The defect this gate caught
+
+**The validator rejected every correct answer the model produced.** All three languages, every
+time. The Portuguese answer carried nineteen evidence hits and was refused over the word "sim".
+A chatbot that had passed every earlier gate would have handed every visitor to WhatsApp.
+
+The grounding check required every content word to appear in the evidence. Models paraphrase —
+the evidence says "brinda", the model writes "ofrece" — so an accurate answer failed on its own
+vocabulary. Three separate causes: affirmations were missing from the function words; plurals of
+short evidence terms were unreachable, since the shared-prefix rule refuses anything under six
+characters and "macs" is four; and synonyms cannot be bridged by prefix matching at all.
+
+A sentence may now carry up to two unsupported words, strictly under a fifth of its length, and
+the system prompt asks the model to reuse the evidence's wording rather than paraphrase it. The
+prompt is what keeps the tolerance sufficient: measured against the live model, answers now
+reproduce approved claims almost verbatim and barely spend the allowance.
+
+**Tolerance covers vocabulary, never substance.** Prices, guarantees and quantifiers are refused
+outright however well grounded the rest of the sentence is — and only when absent from the
+evidence, so an entry that genuinely states a price can still have it repeated back.
+
+**Known gap, deliberately left open.** Retrieval has the morphology problem the validator had:
+"¿Reparan MacBooks?" scores below the threshold and never reaches the model, so a question a
+real visitor would ask returns the handoff card. It fails safe, which is why it did not block
+this gate, but it should be fixed before the widget is switched on for visitors.
 
 ## 7. Secret and log inspection in production
 
-**Partially met.** The repository side is verified and re-runnable:
+**Met on 2026-09-13.** All three sides are verified.
 
-- No secret-shaped literals in tracked files; no `.env` tracked; `.gitignore` covers `.env*`.
-- Build artifacts contain zero occurrences of `groq`, `gsk-`, `GROQ_API_KEY`, `clientKeySecret`
-  or `UPSTASH`, and none of the server symbols.
-- Zero `console.*` calls exist in `chat-api/`, `src/app/components/chat/` or `packages/`, so
-  there is no code path by which a prompt, answer or raw IP could reach a log sink.
+**Repository.** No secret-shaped literals in tracked files, no `.env` tracked, `.gitignore`
+covers `.env*`. The built `out/` contains zero occurrences of `groq`, `gsk-`, `GROQ_API_KEY`,
+`clientKeySecret` or `UPSTASH`, and none of the server symbols.
 
-**The Groq side is settled.** Zero Data Retention is enabled on the account (gate 3), so Groq
-retains nothing rather than logging inputs and outputs for up to 30 days. This is verifiable from
-the setting itself rather than inferred from a policy document.
+**Groq.** Zero Data Retention is enabled on the account, so Groq retains nothing rather than
+logging inputs and outputs for up to 30 days. See gate 3.
 
-**Still required after deployment:** confirm the Vercel runtime logs contain no prompt, answer or
-raw IP address.
-Only aggregate telemetry may persist: `outcome`, `sourceIds`, `language`, `latencyBand`,
-`errorCategory`, expiring after 30 days.
+**Vercel runtime.** Logs from live requests carry the request line and nothing else — no prompt,
+no answer, no IP address. This is structural rather than incidental: there are zero `console.*`
+calls anywhere in `chat-api/`, `packages/` or `src/app/components/chat/`, so no code path exists
+by which a prompt, answer or raw address could reach a log sink. Re-run the check with:
+
+```bash
+grep -rn "console\." --include=*.ts --include=*.tsx chat-api packages src/app/components/chat | grep -v "\.test\."
+```
+
+Only aggregate telemetry is ever assembled — `outcome`, `sourceIds`, `language`, `latencyBand`,
+`errorCategory` — and `latencyBand` is a bucket rather than a timing, so even that cannot
+fingerprint a request. Nothing currently writes it anywhere.
+
+The cost of that discipline showed up in this release: a validation rejection and a
+retrieval miss both settle to `UNKNOWN` and are indistinguishable from outside, so diagnosing
+gate 6 required reproducing the pipeline locally. That is the accepted trade, not an oversight.
 
 ---
 
@@ -315,12 +362,29 @@ Only aggregate telemetry may persist: `outcome`, `sourceIds`, `language`, `laten
 
 Release requires all seven. Record who approved what and when.
 
+All seven are met. The rows below are the owner's record; fill in the approval column to sign
+the release off.
+
 | Gate | Approved by | Date | Evidence |
 |---|---|---|---|
-| 1 Knowledge base | | | |
-| 2 Localized copy | | | |
-| 3 Groq account and terms | | | |
-| 4 KV store and client | | | |
-| 5 DNS | | | |
-| 6 Preview smoke | | | |
-| 7 Secrets and logs | | | |
+| 1 Knowledge base | | 2026-08-27 | 8 entries approved, retrieval coverage pinned by tests |
+| 2 Localized copy | | 2026-08-27 | Handoff strings asserted character-for-character |
+| 3 Groq account and terms | | 2026-08-29 / 09-06 | Model probe; ZDR enabled; $25 spend limit |
+| 4 KV store and client | | 2026-09-06 | REST credentials exercised, read-write confirmed |
+| 5 DNS | | 2026-09-12 | `api.ijac.com.ar` over a Let's Encrypt certificate |
+| 6 Preview smoke | | 2026-09-13 | Full runbook checklist against the live API |
+| 7 Secrets and logs | | 2026-09-13 | Repo, Groq ZDR, and Vercel runtime logs all clean |
+
+## After sign-off
+
+The gates cover the API. Switching the chatbot on for visitors is a separate, reversible step,
+and it is the only one that changes what the public sees:
+
+1. Merge the change to `main`, then set the Vercel project's production branch back to `main` —
+   it currently tracks the feature branch so that gates 5 to 7 could be met before the merge.
+2. Rebuild the website with `NEXT_PUBLIC_CHAT_AI_ENABLED=true` and
+   `NEXT_PUBLIC_CHAT_API_URL=https://api.ijac.com.ar`, then upload `out/` to Hostinger.
+3. Archive the OpenSpec change.
+
+Until step 2, the widget answers deterministically and never calls the API — which is what makes
+every gate above safe to have verified against production.
