@@ -93,6 +93,9 @@ function systemPrompt(language: SupportedLanguage): string {
   return [
     "You answer visitor questions about iJAC IT Solutions.",
     "Use only the supplied evidence. Never introduce names, prices, hours, qualifiers, URLs, or claims that are absent from it.",
+    // The validator grounds an answer by matching its words against the evidence, so a synonym
+    // reads as an unsupported claim. Echoing the evidence keeps accurate answers acceptable.
+    "Reuse the wording of the evidence. Do not replace its terms with synonyms.",
     "Cite only the evidence ids you actually used.",
     `Write the answer in ${languageNames[language]}.`,
     "If the evidence does not support an answer, set supported to false and leave the answer empty.",
