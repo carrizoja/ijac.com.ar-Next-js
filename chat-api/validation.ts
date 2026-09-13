@@ -1,5 +1,6 @@
 import { chatResponseSchema, type ChatResponse, type SupportedLanguage } from "../packages/contracts/chat.js";
 import { approvedKnowledgeEntrySchema, type ApprovedKnowledgeEntry } from "../packages/knowledge/types.js";
+import { termsMatch } from "../packages/knowledge/morphology.js";
 import type { RetrievalMatch } from "../packages/knowledge/retriever.js";
 
 const URL_PATTERN = /https?:\/\/[^\s)]+/gi;
@@ -64,14 +65,6 @@ const RISK_WORDS = new Set([
 const MAX_UNSUPPORTED_SHARE = 0.2;
 const MAX_UNSUPPORTED_TOKENS = 2;
 
-/**
- * Minimum shared prefix that lets an inflected form match an evidence term. Spanish and
- * Portuguese inflect heavily, so a literal match rejects grounded answers: "macbooks" for the
- * alias "macbook", "repara" or "reparan" for "reparación". Six is short enough to cover those
- * and long enough to keep unrelated words apart — "reparto" shares only five with "reparación".
- */
-const MIN_SHARED_PREFIX = 6;
-
 export interface GroundedValidation {
   valid: boolean;
   response: ChatResponse;
@@ -121,39 +114,15 @@ function hasRoleInversion(answer: string, entries: readonly ApprovedKnowledgeEnt
   }));
 }
 
-function sharedPrefixLength(left: string, right: string): number {
-  const limit = Math.min(left.length, right.length);
-  let index = 0;
-  while (index < limit && left[index] === right[index]) index += 1;
-  return index;
-}
-
 /**
- * One term is the other plus a plural suffix. Needed because the shared-prefix rule refuses
- * anything under MIN_SHARED_PREFIX, which leaves short nouns unreachable: "macs" can never
- * match the alias "mac". Requiring the shorter form to be a whole prefix keeps "reparto" from
- * pairing with "reparo".
+ * Shares its rule with retrieval, so a word that surfaced an entry is also credited when the
+ * answer is checked against it. Drifting apart would let the chatbot find an answer and then
+ * refuse to give it.
  */
-function isPluralPair(token: string, candidate: string): boolean {
-  const [longer, shorter] = token.length >= candidate.length ? [token, candidate] : [candidate, token];
-  // No stem floor is needed: both sides come from tokens(), which already discards anything
-  // shorter than three characters, so a one or two letter stem cannot reach here.
-  if (!longer.startsWith(shorter)) return false;
-  const suffix = longer.slice(shorter.length);
-  return suffix === "s" || suffix === "es";
-}
-
-/** Exact match, a plural of an evidence term, or an inflection long enough to be unambiguous. */
 function isKnownToken(token: string, known: ReadonlySet<string>): boolean {
   if (known.has(token)) return true;
   for (const candidate of known) {
-    if (isPluralPair(token, candidate)) return true;
-  }
-  if (token.length < MIN_SHARED_PREFIX) return false;
-  for (const candidate of known) {
-    if (candidate.length >= MIN_SHARED_PREFIX && sharedPrefixLength(token, candidate) >= MIN_SHARED_PREFIX) {
-      return true;
-    }
+    if (termsMatch(token, candidate)) return true;
   }
   return false;
 }
