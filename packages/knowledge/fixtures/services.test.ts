@@ -90,7 +90,34 @@ describe("approved knowledge retrieval coverage", () => {
     expect(result.matches[0].entry.id, question).toBe(expectedId);
   });
 
+  /**
+   * Scoring compared terms exactly, so a visitor writing the plural or a conjugated verb fell
+   * below the threshold and never reached the model: "¿Reparan MacBooks?" scored zero against
+   * the alias "macbook" and the alias "reparación". The answer was approved and available; the
+   * question simply never found it.
+   */
+  it.each([
+    ["¿Reparan MacBooks?", "soporte-tecnico-pc-mac-apple"],
+    ["Do you repair MacBooks?", "soporte-tecnico-pc-mac-apple"],
+    ["Vocês reparam MacBooks?", "soporte-tecnico-pc-mac-apple"],
+    ["¿Instalan cableados de red?", "redes-wifi-cableado"],
+    ["¿Arman PCs para juegos?", "armado-pcs-hardware"],
+  ])("retrieves the inflected question %s as %s", (question, expectedId) => {
+    const result = retrieveKnowledge(question, approvedServiceEntries);
+
+    expect(result.belowThreshold, question).toBe(false);
+    expect(result.matches[0].entry.id, question).toBe(expectedId);
+  });
+
   it("still returns nothing for a question the site does not cover", () => {
     expect(retrieveKnowledge("¿Quién ganó el mundial de 1998?", approvedServiceEntries).belowThreshold).toBe(true);
+  });
+
+  it.each([
+    "¿Hacen reparto de mercadería?",
+    "¿Venden seguros para el hogar?",
+    "Do you cater weddings?",
+  ])("still fails closed for %s, which merely resembles an approved term", (question) => {
+    expect(retrieveKnowledge(question, approvedServiceEntries).belowThreshold, question).toBe(true);
   });
 });

@@ -1,3 +1,4 @@
+import { termsMatch } from "./morphology.js";
 import { approvedKnowledgeEntrySchema, type ApprovedKnowledgeEntry, type KnowledgeEntry } from "./types.js";
 
 export const DEFAULT_RETRIEVAL_LIMIT = 3;
@@ -32,8 +33,11 @@ export function normalizeQuery(query: string): string[] {
 
 function countMatchingTerms(queryTerms: string[], values: readonly (string | readonly string[])[]): number {
   const valueTerms = values.flatMap((value) => typeof value === "string" ? tokenize(value) : value.flatMap(tokenize));
+  // Inflections and plurals count, so a visitor writing "¿Reparan MacBooks?" reaches the entry
+  // whose alias is "macbook". A false match here only surfaces an entry for the model to weigh,
+  // and grounding still refuses anything the evidence does not support.
   return queryTerms.reduce(
-    (total, term) => total + valueTerms.filter((valueTerm) => valueTerm === term).length,
+    (total, term) => total + valueTerms.filter((valueTerm) => termsMatch(valueTerm, term)).length,
     0,
   );
 }

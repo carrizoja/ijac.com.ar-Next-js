@@ -105,6 +105,12 @@ describe("answers the deployed model actually produces", () => {
     expect(validate("Yes, iJAC offers technical support for PCs, Macs, and Apple devices.", "en").valid).toBe(true);
   });
 
+  it("credits the plural itself, not the tolerance budget that would otherwise absorb it", () => {
+    // Three tokens, so a single unsupported word is already over the share. Only "macs"
+    // matching the alias "mac" can carry this; dropping plural matching must fail it.
+    expect(validate("iJAC repara Macs.", "es").valid).toBe(true);
+  });
+
   it("accepts a synonym when the rest of the sentence is densely grounded", () => {
     // "ofrece" and "atendiendo" are synonyms of evidence wording, not inflections of it.
     expect(validate("Sí, iJAC ofrece soporte técnico para PC, Mac y dispositivos Apple, atendiendo incidentes de hardware y software, realizando mantenimiento preventivo y correctivo, configuración inicial y resolución de errores.", "es").valid).toBe(true);
