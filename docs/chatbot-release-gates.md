@@ -323,10 +323,18 @@ reproduce approved claims almost verbatim and barely spend the allowance.
 outright however well grounded the rest of the sentence is — and only when absent from the
 evidence, so an entry that genuinely states a price can still have it repeated back.
 
-**Known gap, deliberately left open.** Retrieval has the morphology problem the validator had:
-"¿Reparan MacBooks?" scores below the threshold and never reaches the model, so a question a
-real visitor would ask returns the handoff card. It fails safe, which is why it did not block
-this gate, but it should be fixed before the widget is switched on for visitors.
+**A second defect this gate exposed, fixed before sign-off.** Retrieval had the morphology
+problem the validator had: "¿Reparan MacBooks?" scored zero against the alias "macbook" and the
+alias "reparación", fell below the threshold, and never reached the model. The answer was
+approved and available; the question could not find it. The two halves disagreed about what
+counts as the same word, which is the arrangement where the chatbot finds an answer and then
+refuses to give it. Both now share one rule in `packages/knowledge/morphology.ts`.
+
+Relaxing retrieval is far safer than relaxing grounding: a false match only surfaces an entry
+for the model to weigh, and grounding still refuses anything the evidence does not support. The
+threshold, the field weights and every grounding guard are unchanged, and unrelated questions
+still retrieve nothing — "¿Hacen reparto de mercadería?", "¿Venden seguros para el hogar?" and
+"Do you cater weddings?" are pinned as returning no evidence.
 
 ## 7. Secret and log inspection in production
 
