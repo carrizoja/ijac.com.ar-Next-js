@@ -260,6 +260,25 @@ function strictModeViolations(node: unknown, path = "#"): string[] {
   return problems;
 }
 
+describe("system prompt", () => {
+  /**
+   * The grounding validator tolerates only a little unsupported vocabulary, so an answer that
+   * paraphrases the evidence with synonyms is refused and the visitor is handed off. Steering
+   * the model to reuse the evidence's own wording is what keeps that tolerance sufficient —
+   * without it, release gate 6 saw accurate answers rejected in all three languages.
+   */
+  it("tells the model to reuse the evidence wording rather than paraphrase it", async () => {
+    const { impl, calls } = transport(() => completion(answer));
+    await createGroqProvider(config, { fetch: impl as unknown as typeof fetch })
+      .complete({ question: "What is managed IT support?", language: "en", evidence });
+
+    const system = (calls[0].body.messages as Array<{ role: string; content: string }>)
+      .find((message) => message.role === "system");
+
+    expect(system?.content.toLowerCase()).toContain("reuse the wording");
+  });
+});
+
 describe("grounded answer response format", () => {
   it("satisfies strict json_schema mode so live calls are not rejected", () => {
     expect(strictModeViolations(responseFormat.json_schema.schema)).toEqual([]);
