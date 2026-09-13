@@ -11,3 +11,9 @@
 .next
 out
 node_modules
+
+# Test sources. Vercel typechecks every file it receives, so a spec importing vitest becomes a
+# build error in a package that has no test runner installed. They are not runtime code either.
+**/*.test.ts
+**/*.test.tsx
+**/testing/

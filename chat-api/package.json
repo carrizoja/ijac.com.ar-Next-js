@@ -6,6 +6,7 @@
   "dependencies": {
     "@ijac/contracts": "0.1.0",
     "@ijac/knowledge": "0.1.0",
+    "@types/node": "^20.19.43",
     "groq-sdk": "^1.6.0",
     "zod": "^4.1.8"
   }
