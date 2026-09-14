@@ -2,25 +2,47 @@ schema: spec-driven
 
 context: |
   Next.js 16.2.4 + React 19.2.5 + TypeScript 5 static-export site.
-  Tailwind CSS v4, shadcn/ui new-york style, lucide icons.
+  Tailwind CSS v4, shadcn/ui new-york style, lucide icons, dark mode only.
   Output: 'export' to out/; deployed to Hostinger as static files.
   No API routes, Server Actions, middleware, or ISR.
-  Site locale es_AR; agent replies in English per AGENTS.md.
-  Path alias @/* -> ./src/*; components live in src/app/components/ui.
-  Existing OpenSpec domains: home-featured-services, invalid-route-recovery.
+  npm workspaces: packages/* and chat-api (Vercel serverless AI chat API).
+  Site locale es_AR; agent artifacts remain English per AGENTS.md/CLAUDE.md.
+  Path alias @/* -> ./src/*; components live in src/app/components/ and src/app/components/ui/.
+  No i18n library installed yet.
+
+projects:
+  - path: "."
+    stack: "Next.js 16.2.4 + React 19.2.5 + TypeScript 5 + Tailwind CSS v4"
+    test_command: "npm test"
+    framework: vitest
+  - path: "chat-api"
+    stack: "Vercel serverless TypeScript API (Zod, Groq SDK)"
+    test_command: "npm test"
+    framework: vitest
+  - path: "packages/contracts"
+    stack: "Shared Zod schemas"
+    test_command: "npm test"
+    framework: vitest
+  - path: "packages/knowledge"
+    stack: "RAG/knowledge retriever"
+    test_command: "npm test"
+    framework: vitest
 
 rules:
   proposal:
     - Include rollback plan for risky changes
     - Respect static-export constraints (no server runtime)
+    - Account for ES NF/EN localization scope and i18n library selection
   specs:
     - Use Given/When/Then for scenarios
     - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
     - Site copy is Spanish; artifacts remain English
+    - Cover metadata, structured data, sitemap, and routing impacts for each locale
   design:
     - Include sequence diagrams for complex flows
     - Document architecture decisions with rationale
     - Prefer client components for interactivity; no server actions
+    - Evaluate i18n approach against static-export and Hostinger constraints
   tasks:
     - Group by phase, use hierarchical numbering
     - Keep tasks completable in one session
@@ -29,7 +51,8 @@ rules:
     guidelines:
       - Follow existing code patterns
       - Keep components in src/app/components unless the surrounding style uses @/* aliases
-      - Maintain Spanish site copy and accessibility labels
+      - Maintain Spanish site copy and accessibility labels unless explicitly localizing
+      - Preserve existing uncommitted implementation work
     tdd: true
     test_command: "npm test"
   verify:
