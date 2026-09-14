@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const isFirstCard = (index: number) => index === 0;
@@ -14,20 +15,26 @@ export const Card = React.memo(
     setHovered,
   }: {
     card: {
+      slug: string;
       title: string;
       src: string;
       desc: string;
       alt: string;
+      href?: string;
     };
     index: number;
     hovered: number | null;
     setHovered: React.Dispatch<React.SetStateAction<number | null>>;
   }) => (
-    <div
+    <Link
+      href={card.href ?? `/services/${card.slug}`}
+      aria-label={card.title}
       onMouseEnter={() => setHovered(index)}
       onMouseLeave={() => setHovered(null)}
+      onFocus={() => setHovered(index)}
+      onBlur={() => setHovered(null)}
       className={cn(
-        "rounded-lg relative bg-gray-100 dark:bg-neutral-900 overflow-hidden h-60 md:h-96 w-full transition-all duration-300 ease-out",
+        "rounded-lg relative bg-gray-100 dark:bg-neutral-900 overflow-hidden h-60 md:h-96 w-full transition-all duration-300 ease-out hover:ring-2 hover:ring-emerald-400/70 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-400 focus-visible:ring-offset-4 focus-visible:ring-offset-black",
         hovered !== null && hovered !== index && "blur-sm scale-[0.98]"
       )}
     >
@@ -54,17 +61,19 @@ export const Card = React.memo(
           </h4>
         </div>
       </div>
-    </div>
+    </Link>
   )
 );
 
 Card.displayName = "Card";
 
 type Card = {
+  slug: string;
   title: string;
   src: string;
 desc: string;
-  alt: string;
+	alt: string;
+	href?: string;
 };
 
 export function FocusCards({ cards }: { cards: Card[] }) {

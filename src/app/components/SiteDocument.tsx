@@ -1,14 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
-import "./globals.css";
-import { NavbarIjac } from "./components/Navbarijac";
-import { HamburgerMenu } from "./components/HamburgerMenu";
-import Footer from "./components/Footer";
-import { AIChat } from "./components/AIChat";
-import { PerformanceMonitor } from "./components/PerformanceMonitor";
-import { CookieConsent } from "./components/CookieConsent";
-import { ClientRedirect } from "./components/ClientRedirect";
+import type { Locale } from "@/i18n/routing";
+import { getSeoAlternates } from "@/i18n/seo";
+import { NavbarIjac } from "./Navbarijac";
+import { HamburgerMenu } from "./HamburgerMenu";
+import Footer from "./Footer";
+import { AIChat } from "./AIChat";
+import { PerformanceMonitor } from "./PerformanceMonitor";
+import { CookieConsent } from "./CookieConsent";
+import { ClientRedirect } from "./ClientRedirect";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,12 +27,12 @@ const spaceGrotesk = Space_Grotesk({
   adjustFontFallback: true,
 });
 
-export const viewport: Viewport = {
+export const siteViewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
 };
 
-export const metadata: Metadata = {
+export const spanishMetadata: Metadata = {
   title: {
     default: "Desarrollo Web y Servicio Técnico en CABA | iJac IT Solutions",
     template: "%s | iJac IT Solutions"
@@ -68,9 +69,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL('https://ijac.com.ar'),
-  alternates: {
-    canonical: '/',
-  },
+  alternates: getSeoAlternates('/', 'es'),
   openGraph: {
     title: "iJac IT Solutions",
     description: "Hacemos ingeniería para un mundo más inteligente. Desarrollo web, Apps, WebApps y consultoría IT a nivel global.",
@@ -106,13 +105,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default function SiteDocument({
   children,
+  locale,
 }: {
   children: React.ReactNode;
+  locale: Locale;
 }) {
   return (
-    <html lang="es" className="dark">
+    <html lang={locale} className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

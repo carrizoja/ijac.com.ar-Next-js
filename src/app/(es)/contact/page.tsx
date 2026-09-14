@@ -1,10 +1,12 @@
 import { Metadata } from 'next'
-import { Breadcrumbs } from '../components/Breadcrumbs'
-import { PrimaryButton } from '../components/ui/PrimaryButton'
-import { business } from '../../data/business'
+import { Breadcrumbs } from '../../components/Breadcrumbs'
+import { FAQ } from '../../components/FAQ'
+import { PrimaryButton } from '../../components/ui/PrimaryButton'
+import { business } from '../../../data/business'
+import { getSeoAlternates } from '@/i18n/seo'
 
 export const metadata: Metadata = {
-  title: 'Contacto iJac IT Solutions | IT Consulting & Support en Buenos Aires',
+  title: 'Contacto | IT Consulting & Support en Buenos Aires',
   description: 'Contactá a iJac IT Solutions para obtener servicios profesionales de consultoría y soporte IT en Buenos Aires, Argentina. Obtén asistencia experta hoy.',
   keywords: 'contacto iJac, soporte IT Buenos Aires, contacto consultoría técnica, servicios IT Argentina, soporte tecnológico empresarial',
   openGraph: {
@@ -17,9 +19,7 @@ export const metadata: Metadata = {
     title: 'Contactá a iJac IT Solutions | Expertos en Soluciones IT',
     description: 'Ponete en contacto con iJac IT Solutions para obtener servicios profesionales de consultoría y soporte IT en Buenos Aires.',
   },
-  alternates: {
-    canonical: 'https://ijac.com.ar/contact'
-  }
+  alternates: getSeoAlternates('/contact', 'es'),
 }
 
 const breadcrumbItems = [
@@ -57,13 +57,14 @@ export default function ContactPage() {
           <h1 className="text-4xl font-bold mb-8 font-heading">Contactanos</h1>
           <p className="text-lg mb-8">Ponete en contacto con nuestro equipo</p>
 
+          <FAQ />
           <div className="max-w-md w-full space-y-4">
             <div className="p-6 border rounded-lg">
               <h2 className="text-xl font-semibold mb-4 font-heading">Información de Contacto</h2>
               <div className="space-y-2">
                  <p><strong>Email:</strong> <a href={`mailto:${business.email}`} title="Enviar correo electrónico a iJAC" className="text-blue-600 hover:text-blue-800">{business.email}</a></p>
                  <p><strong>Teléfono:</strong> <a href={`tel:${business.phoneHref}`} title="Llamar a iJAC" className="text-blue-600 hover:text-blue-800">{business.phoneDisplay}</a></p>
-                <p><strong>Dirección:</strong> Buenos Aires, Argentina</p>
+                <p><strong>Dirección:</strong> Colombres 195, Almagro, Buenos Aires, Argentina</p>
               </div>
             </div>
             

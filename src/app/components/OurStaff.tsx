@@ -4,9 +4,12 @@ import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { staffMembers } from '../../data/staff.js';
+import { staffContent } from '@/i18n/home/staff';
+import type { Locale } from '@/i18n/routing';
 
 
-export function OurStaff() {
+export function OurStaff({ locale = 'es' }: { locale?: Locale }) {
+  const content = staffContent[locale];
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -59,14 +62,13 @@ export function OurStaff() {
           variants={titleVariants}
         >
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Nuestro
+            {content.headingPart1}
             <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent ml-3">
-              Equipo
+              {content.headingPart2}
             </span>
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Un staff de profesionales especializados y comprometidos con la excelencia 
-            y la innovación tecnológica para hacer realidad tus proyectos.
+            {content.description}
           </p>
         </motion.div>
 

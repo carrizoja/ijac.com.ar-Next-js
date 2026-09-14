@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata: Metadata = {
+export const notFoundMetadata: Metadata = {
+  metadataBase: new URL("https://ijac.com.ar"),
   title: "Página no encontrada",
   description:
     "La página que buscas no existe o fue movida. Volvé al inicio de iJac IT Solutions.",
