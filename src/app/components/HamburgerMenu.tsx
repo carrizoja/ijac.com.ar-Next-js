@@ -4,19 +4,39 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { LanguageToggle } from "./LanguageToggle";
+import {
+  getHomeSectionHref,
+  getHomeSectionId,
+  getLocaleFromPath,
+  getNavHref,
+  isHomeSectionAvailable,
+  localizePath,
+  type HomeSection,
+} from "@/i18n/routing";
+import { getContactNavLink, navigationContent } from "@/i18n/chrome/navigation";
+import { footerContent } from "@/i18n/chrome/footer";
 
 type MenuItem =
-  | { kind: "link"; label: string; href: string }
-  | { kind: "section"; label: string; section: string };
+  | { kind: "link"; label: string; href: string; external?: boolean }
+  | { kind: "section"; label: string; section: HomeSection };
 
 export function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
+  const navCopy = navigationContent[locale];
+  const footerCopy = footerContent[locale];
+  const homePath = localizePath("/", locale);
+  const contactLink = getContactNavLink(locale);
 
   // Function to handle smooth scrolling to sections
-  const scrollToSection = (sectionId: string) => {
-    if (pathname !== "/") {
-      window.location.assign(`/#${sectionId}`);
+  const scrollToSection = (section: HomeSection) => {
+    const sectionId = getHomeSectionId(section, locale);
+    if (!sectionId) return;
+
+    if (pathname !== homePath) {
+      window.location.assign(getHomeSectionHref(section, locale) ?? homePath);
       setIsOpen(false);
       return;
     }
@@ -32,11 +52,14 @@ export function HamburgerMenu() {
   };
 
   const menuItems: MenuItem[] = [
-    { kind: "link", label: "Servicios", href: "/services" },
-    { kind: "section", label: "Nosotros", section: "nosotros" },
-    { kind: "section", label: "Testimonios", section: "testimonios" },
-    { kind: "section", label: "FAQ", section: "faq" },
-    { kind: "section", label: "Contacto", section: "contacto" },
+    { kind: "link", label: navCopy.servicesLabel, href: getNavHref("services", "/services", locale) },
+    ...(isHomeSectionAvailable("about", locale)
+      ? [{ kind: "section" as const, label: navCopy.aboutLabel, section: "about" as const }]
+      : []),
+    ...(isHomeSectionAvailable("testimonials", locale)
+      ? [{ kind: "section" as const, label: navCopy.testimonialsLabel, section: "testimonials" as const }]
+      : []),
+    { kind: "link", label: navCopy.contactLabel, href: contactLink.href, external: contactLink.external },
   ];
 
   return (
@@ -47,6 +70,9 @@ export function HamburgerMenu() {
           {/* Hamburger Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? navCopy.closeMenuLabel : navCopy.openMenuLabel}
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
             className="relative w-10 h-10 flex flex-col justify-center items-center bg-gray-50 dark:bg-neutral-900 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-300 shadow-lg border border-gray-200 dark:border-white/[0.2]"
           >
             {/* Hamburger Lines */}
@@ -95,6 +121,7 @@ export function HamburgerMenu() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="mobile-navigation"
             className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 border-l border-gray-200 dark:border-gray-700/50 z-[95] shadow-2xl"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
@@ -123,6 +150,8 @@ export function HamburgerMenu() {
                       {item.kind === "link" ? (
                         <Link
                           href={item.href}
+                          target={item.external ? "_blank" : undefined}
+                          rel={item.external ? "noopener noreferrer" : undefined}
                           onClick={() => setIsOpen(false)}
                           className="group relative block w-full text-left py-3 px-6 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-white/80 dark:hover:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/30 hover:border-gray-400 dark:hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
                         >
@@ -165,6 +194,10 @@ export function HamburgerMenu() {
                 </ul>
               </nav>
 
+              <div className="mb-6 flex justify-center">
+                <LanguageToggle onNavigate={() => setIsOpen(false)} />
+              </div>
+
               {/* Footer Section */}
               <motion.div
                 className="mt-auto pb-8"
@@ -189,7 +222,7 @@ export function HamburgerMenu() {
                 <div className="flex justify-center space-x-4 mb-6">
                   <a
                     href="https://www.instagram.com/ijacsi/"
-                    title="Seguinos en Instagram"
+                    title={footerCopy.instagramTitle}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform duration-300"
@@ -200,7 +233,7 @@ export function HamburgerMenu() {
                   </a>
                   <a
                     href="https://www.facebook.com/ijacsolucionesinformaticas"
-                    title="Seguinos en Facebook"
+                    title={footerCopy.facebookTitle}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform duration-300"

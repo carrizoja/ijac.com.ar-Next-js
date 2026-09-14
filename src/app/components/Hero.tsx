@@ -4,8 +4,12 @@ import Image from "next/image";
 import { HeroHighlight } from "./ui/hero-highlight";
 import { TypewriterEffectSmoothDemo } from "./TypeWriterEffectSmooth";
 import { PrimaryButton } from "./ui/PrimaryButton";
+import { business } from "../../data/business";
+import { heroContent } from "@/i18n/home/hero";
+import type { Locale } from "@/i18n/routing";
 
-export function Hero() {
+export function Hero({ locale = "es" }: { locale?: Locale }) {
+  const content = heroContent[locale];
   return (
     <HeroHighlight>
       <motion.h1
@@ -23,7 +27,7 @@ export function Hero() {
         }}
         className="mt-4 md:mt-16 mb-8 md:mb-16 text-md px-4 md:text-3xl lg:text-4xl font-heading font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto overflow-hidden"
       >
-        Soluciones Informáticas y Desarrollo Web
+        {content.heading}
       </motion.h1>
       <motion.div className="mb-8 md:mb-16">
         {/* Logo */}
@@ -76,9 +80,9 @@ export function Hero() {
         </motion.h2>
       </motion.div>
 
-      <TypewriterEffectSmoothDemo />
+      <TypewriterEffectSmoothDemo words={content.typewriter} />
       <motion.div className="mt-8 md:mt-12">
-          <PrimaryButton text="Contactanos" colorVariant="purple" />
+          <PrimaryButton text={content.cta} colorVariant="purple" href={locale === "en" ? business.whatsappUrl : undefined} />
       </motion.div>
     
     </HeroHighlight>

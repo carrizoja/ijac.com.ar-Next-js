@@ -8,10 +8,12 @@ export const MenuItem = ({
   item,
   onClick,
   href = "#",
+  external = false,
 }: {
   item: string;
   onClick?: () => void;
   href?: string;
+  external?: boolean;
 }) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (onClick) {
@@ -25,6 +27,8 @@ export const MenuItem = ({
       <Link 
         href={href}
         title={typeof item === 'string' ? item : ''}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
         className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
         onClick={handleClick}
       >

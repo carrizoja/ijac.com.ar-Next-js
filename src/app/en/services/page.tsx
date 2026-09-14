@@ -1,53 +1,60 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Breadcrumbs } from "../components/Breadcrumbs";
-import { PrimaryButton } from "../components/ui/PrimaryButton";
-import { SecondaryButton } from "../components/ui/SecondaryButton";
-import { services } from "../../data/services";
+import { Breadcrumbs } from "../../components/Breadcrumbs";
+import { PrimaryButton } from "../../components/ui/PrimaryButton";
+import { SecondaryButton } from "../../components/ui/SecondaryButton";
+import { getServiceCopyForLocale } from "@/i18n/services/catalog";
+import { getNavHref } from "@/i18n/routing";
+import { getSeoAlternates } from "@/i18n/seo";
+import { getServiceSlugs } from "../../../data/services.js";
 
 export const metadata: Metadata = {
-  title: "Servicios IT, Desarrollo Web y Soporte Tecnico en CABA | iJac IT Solutions",
+  title: "IT Services, Web Development and Technical Support in Buenos Aires | iJac IT Solutions",
   description:
-    "Conoce todos los servicios de iJac IT Solutions: soporte tecnico PC y Mac, desarrollo web, ciberseguridad, redes, UX UI, IA, branding y mas en Buenos Aires.",
+    "Discover every iJac IT Solutions service: PC and Mac technical support, web development, cybersecurity, networking, UX/UI, AI, branding, and more in Buenos Aires.",
   keywords: [
-    "servicios IT Buenos Aires",
-    "soporte tecnico PC y Mac CABA",
-    "desarrollo web Buenos Aires",
-    "ciberseguridad para empresas",
-    "instalacion de redes wifi",
-    "diseno UX UI",
-    "inteligencia artificial para empresas",
-    "marketing digital y branding",
+    "IT services Buenos Aires",
+    "PC and Mac technical support",
+    "web development Buenos Aires",
+    "cybersecurity for businesses",
+    "wifi network installation",
+    "UX UI design",
+    "artificial intelligence for businesses",
+    "digital marketing and branding",
   ],
-  alternates: {
-    canonical: "https://ijac.com.ar/services",
-  },
+  alternates: getSeoAlternates("/services", "en"),
   openGraph: {
-    title: "Servicios de iJac IT Solutions",
+    title: "Services | iJac IT Solutions",
     description:
-      "Explora los servicios de tecnologia de iJac IT Solutions: soporte tecnico, desarrollo web, ciberseguridad, redes, UX UI, datos e IA.",
-    url: "https://ijac.com.ar/services",
+      "Explore iJac IT Solutions' technology services: technical support, web development, cybersecurity, networking, UX/UI, data, and AI.",
+    url: "https://ijac.com.ar/en/services",
     siteName: "iJac IT Solutions",
     type: "website",
   },
   twitter: {
-    title: "Servicios de iJac IT Solutions",
+    title: "Services | iJac IT Solutions",
     description:
-      "Descubre todos los servicios IT de iJac IT Solutions y encuentra la solucion adecuada para tu empresa o proyecto.",
+      "Discover every iJac IT Solutions service and find the right solution for your business or project.",
   },
 };
 
 const breadcrumbItems = [
-  { name: "Home", href: "/" },
-  { name: "Servicios", href: "/services" },
+  { name: "Home", href: "/en" },
+  { name: "Services", href: "/en/services" },
 ];
 
-export default function ServicesPage() {
+const services = getServiceSlugs().map(
+  (slugEs) => getServiceCopyForLocale(slugEs, "en")!,
+);
+
+const contactHref = getNavHref("contact", "/contact", "en");
+
+export default function EnglishServicesPage() {
   const servicesJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Servicios de iJac IT Solutions",
+    name: "iJac IT Solutions Services",
     itemListElement: services.map((service, index) => ({
       "@type": "Service",
       position: index + 1,
@@ -60,7 +67,7 @@ export default function ServicesPage() {
         url: "https://ijac.com.ar",
       },
       image: service.src,
-      url: `https://ijac.com.ar/services/${service.slug}`,
+      url: `https://ijac.com.ar/en/services/${service.slug}`,
     })),
   };
 
@@ -74,30 +81,30 @@ export default function ServicesPage() {
       <main className="min-h-screen bg-black text-white">
         <section className="px-4 pt-28 pb-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-6xl">
-            <Breadcrumbs items={breadcrumbItems} />
+            <Breadcrumbs items={breadcrumbItems} locale="en" />
 
             <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black px-6 py-10 shadow-2xl sm:px-8 lg:px-12 lg:py-14">
               <p className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-sm text-emerald-200">
-                Soluciones tecnológicas para empresas, profesionales y equipos
+                Technology solutions for businesses, professionals, and teams
               </p>
               <h1 className="max-w-4xl text-4xl font-bold font-heading text-white sm:text-5xl lg:text-6xl">
-                Servicios IT pensados para mejorar tu operación y tu presencia digital
+                IT services built to improve your operations and your digital presence
               </h1>
               <p className="mt-6 max-w-3xl text-base leading-8 text-neutral-300 sm:text-lg">
-                En iJac IT Solutions reunimos soporte técnico, desarrollo web, redes,
-                ciberseguridad, diseño UX UI, analítica y branding para resolver
-                necesidades reales con una sola mirada técnica. Explora cada servicio y
-                descubre cómo podemos ayudarte según el momento de tu negocio.
+                At iJac IT Solutions we bring together technical support, web development,
+                networking, cybersecurity, UX/UI design, analytics, and branding to solve
+                real needs with a single technical perspective. Explore each service and
+                discover how we can help based on where your business is today.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <PrimaryButton
-                  text="Solicitar asesoramiento"
-                  href="/contact"
+                  text="Request guidance"
+                  href={contactHref}
                   colorVariant="green"
                   className="justify-start"
                 />
-                <SecondaryButton text="Ver resumen en el inicio" href="/#servicios" />
+                <SecondaryButton text="See the summary on the homepage" href="/en#services" />
               </div>
             </div>
           </div>
@@ -123,10 +130,13 @@ export default function ServicesPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
                     <p className="mb-3 text-sm uppercase tracking-[0.22em] text-emerald-300">
-                      Servicio {String(index + 1).padStart(2, "0")}
+                      Service {String(index + 1).padStart(2, "0")}
                     </p>
                     <h2 className="text-2xl font-bold font-heading text-white sm:text-3xl">
-                      <Link href={`/services/${service.slug}`} className="transition hover:text-emerald-200">
+                      <Link
+                        href={`/en/services/${service.slug}`}
+                        className="transition hover:text-emerald-200"
+                      >
                         {service.title}
                       </Link>
                     </h2>
@@ -146,7 +156,7 @@ export default function ServicesPage() {
                   <div className="mt-6 grid gap-6">
                     <div>
                       <h3 className="text-lg font-semibold font-heading text-white">
-                        Alcance del servicio
+                        Service scope
                       </h3>
                       <p className="mt-3 text-sm leading-7 text-neutral-400 sm:text-base">
                         {service.desc}
@@ -155,7 +165,7 @@ export default function ServicesPage() {
 
                     <div>
                       <h3 className="text-lg font-semibold font-heading text-white">
-                        Que incluye
+                        What&apos;s included
                       </h3>
                       <ul className="mt-3 space-y-3 text-sm leading-7 text-neutral-300 sm:text-base">
                         {service.highlights.map((highlight) => (
@@ -169,11 +179,11 @@ export default function ServicesPage() {
 
                     <div className="flex flex-col gap-3 sm:flex-row">
                       <PrimaryButton
-                        text="Ver pagina del servicio"
-                        href={`/services/${service.slug}`}
+                        text="View service page"
+                        href={`/en/services/${service.slug}`}
                         colorVariant="green"
                       />
-                      <SecondaryButton text="Pedir asesoramiento" href="/contact" />
+                      <SecondaryButton text="Request guidance" href={contactHref} />
                     </div>
                   </div>
                 </div>
@@ -186,18 +196,19 @@ export default function ServicesPage() {
           <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 rounded-3xl border border-white/10 bg-gradient-to-r from-neutral-900 via-neutral-900 to-neutral-800 p-8 sm:p-10 lg:flex-row lg:items-center">
             <div>
               <h2 className="text-3xl font-bold font-heading text-white">
-                Necesitas una solucion a medida?
+                Need a tailored solution?
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-8 text-neutral-300">
-                Cuéntanos tu necesidad y te ayudamos a definir el servicio, alcance y enfoque tecnico mas conveniente para tu proyecto o empresa.
+                Tell us what you need and we&apos;ll help you define the service, scope,
+                and technical approach that best fits your project or business.
               </p>
             </div>
 
             <Link
-              href="/contact"
+              href={contactHref}
               className="inline-flex items-center justify-center rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-black transition hover:bg-emerald-300"
             >
-              Hablar con iJac
+              Talk to iJac
             </Link>
           </div>
         </section>

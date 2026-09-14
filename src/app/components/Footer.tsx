@@ -2,8 +2,14 @@
 import React from "react";
 
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { getLocaleFromPath } from "@/i18n/routing";
+import { footerContent } from "@/i18n/chrome/footer";
 
 const Footer = () => {
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
+  const copy = footerContent[locale];
   const currentYear = new Date().getFullYear();
 
   return (
@@ -31,7 +37,7 @@ const Footer = () => {
             <div className="flex space-x-4">
               <a
                 href="https://www.instagram.com/ijacsi/"
-                title="Seguinos en Instagram"
+                title={copy.instagramTitle}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative w-10 h-10 bg-gray-800/50 hover:bg-pink-600 rounded-full flex items-center justify-center transition-all duration-500 ease-out hover:scale-110 hover:shadow-lg hover:shadow-pink-500/25 hover:-translate-y-1"
@@ -47,7 +53,7 @@ const Footer = () => {
               </a>
               <a
                 href="https://www.facebook.com/ijacsolucionesinformaticas"
-                title="Seguinos en Facebook"
+                title={copy.facebookTitle}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative w-10 h-10 bg-gray-800/50 hover:bg-blue-600 rounded-full flex items-center justify-center transition-all duration-500 ease-out hover:scale-110 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-1"
@@ -71,13 +77,13 @@ const Footer = () => {
             {/* Copyright */}
             <div className="text-center">
               <p className="text-sm text-gray-400">
-                © {currentYear} iJac. Todos los derechos reservados.
+                {copy.copyright(currentYear)}
               </p>
               <p className="text-xs text-gray-500 mt-1">
-                Powered by{" "}
+                {copy.poweredBy}{" "}
                 <a
                   href="https://josecarrizo-dev.com"
-                  title="Visitar portafolio de José Carrizo"
+                  title={copy.portfolioTitle}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-semibold hover:from-purple-400 hover:to-pink-400 transition-all duration-300"

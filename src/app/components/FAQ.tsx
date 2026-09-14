@@ -1,34 +1,17 @@
-import { business } from "../../data/business";
+import { faqContent, resolveFaqAnswer } from "@/i18n/faq";
+import type { Locale } from "@/i18n/routing";
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
+export function FAQ({ locale = "es" }: { locale?: Locale }) {
+  const content = faqContent[locale];
+  const items = content.items.map((item) => ({
+    question: item.question,
+    answer: resolveFaqAnswer(item.answer),
+  }));
 
-const faqData: FAQItem[] = [
-  {
-    question: "¿Qué servicios de IT ofrece iJac?",
-    answer: "iJac IT Solutions ofrece servicios completos de consultoría IT, soporte técnico de pc y mac, asistencias remotas, desarrollo web, webApps, aplicaciones móviles, gestión de infraestructura y soluciones tecnológicas personalizadas para empresas en Argentina y a nivel global."
-  },
-  {
-    question: "¿Cualquier tipo de empresa puede contactar a iJac?",
-    answer: "Sí, trabajamos con empresas de todos los tamaños, desde startups hasta grandes corporaciones o, también, emprendedores o particulares adaptando nuestras soluciones tecnológicas a las necesidades específicas de cada cliente."
-  },
-  {
-    question: "¿Cuál es el horario de atención?",
-    answer: `Nuestro horario de atención es ${business.hours.display.toLocaleLowerCase("es")} (GMT-3).`
-  },
-  {
-    question: "¿Cuál es el tiempo de respuesta para consultas?",
-    answer: `El tiempo de respuesta depende del tipo de consulta. Para coordinar la atención, escribinos a ${business.email} o por WhatsApp al ${business.phoneDisplay}.`
-  }
-];
-
-export function FAQ() {
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqData.map(faq => ({
+    "mainEntity": items.map(faq => ({
       "@type": "Question",
       "name": faq.question,
       "acceptedAnswer": {
@@ -47,10 +30,10 @@ export function FAQ() {
       <section className="py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-xl md:text-4xl font-bold font-heading text-center mb-12">
-            Preguntas Frecuentes
+            {content.heading}
           </h2>
           <div className="space-y-6">
-            {faqData.map((faq, index) => (
+            {items.map((faq, index) => (
               <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                 <h3 className="text-xl font-semibold mb-3 font-heading">
                   {faq.question}
