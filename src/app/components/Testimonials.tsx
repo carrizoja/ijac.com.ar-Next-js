@@ -21,6 +21,8 @@ import "swiper/css/effect-flip";
 
 // Import testimonials data
 import { testimonials } from "../../data/testimonials.js";
+import { testimonialsContent } from "@/i18n/home/testimonials";
+import type { Locale } from "@/i18n/routing";
 
 interface Testimonial {
   id: number;
@@ -34,7 +36,8 @@ interface Testimonial {
   sourceUrl: string;
 }
 
-const TestimonialsSection = () => {
+const TestimonialsSection = ({ locale = "es" }: { locale?: Locale }) => {
+  const content = testimonialsContent[locale];
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => (
       <span
@@ -51,7 +54,7 @@ const TestimonialsSection = () => {
   return (
     <div className="my-8 w-full max-w-4xl mx-auto px-4">
       <h2 className="text-lg sm:text-lg lg:text-4xl font-bold font-heading text-gray-900 dark:text-white mb-8 text-center">
-        Lo que dicen nuestros clientes
+        {content.heading}
       </h2>
       <Swiper
         // install Swiper modules
@@ -77,7 +80,7 @@ const TestimonialsSection = () => {
               href={testimonial.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`Ver la reseña de ${testimonial.name} en Google (se abre en una pestaña nueva)`}
+              aria-label={content.reviewLinkLabel(testimonial.name, testimonial.source)}
               className="block bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl shadow-lg p-4 sm:p-6 min-h-[360px] w-full max-w-md mx-auto border border-gray-700/50 transition-colors hover:border-blue-400/70 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-400 focus-visible:ring-offset-4 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
             >
               <div className="flex flex-col items-center text-center h-full">
@@ -101,7 +104,7 @@ const TestimonialsSection = () => {
                 <div
                   className="flex justify-center mb-2 md:mb-3"
                   role="img"
-                  aria-label={`${testimonial.rating} de 5 estrellas`}
+                  aria-label={content.ratingLabel(testimonial.rating, 5)}
                 >
                   {renderStars(testimonial.rating)}
                 </div>
@@ -118,7 +121,7 @@ const TestimonialsSection = () => {
                     {testimonial.reviewDate}
                   </p>
                   <p className="mt-2 text-blue-400 text-sm font-semibold">
-                    Reseña de {testimonial.source}
+                    {content.sourceLabel(testimonial.source)}
                     <span aria-hidden="true"> ↗</span>
                   </p>
                 </div>

@@ -1,10 +1,10 @@
-import { Hero } from "./components/Hero";
-import Testimonials from "./components/Testimonials";
-import { Services } from "./components/Services";
-import { Contact } from "./components/Contact";
-import { About } from "./components/About";
-import { StructuredData } from "./components/StructuredData";
-import { FAQ } from "./components/FAQ";
+import { Hero } from "../components/Hero";
+import Testimonials from "../components/Testimonials";
+import { Services } from "../components/Services";
+import { Contact } from "../components/Contact";
+import { About } from "../components/About";
+import { StructuredData } from "../components/StructuredData";
+import { RemoteSupportBanner } from "../components/RemoteSupportBanner";
 
 export default function Home() {
   return (
@@ -16,14 +16,12 @@ export default function Home() {
       <section id="servicios">
         <Services />
       </section>
+      <RemoteSupportBanner />
       <section id="nosotros">
         <About />
       </section>
       <section id="testimonios">
         <Testimonials />
-      </section>
-      <section id="faq">
-        <FAQ />
       </section>
       <section id="contacto">
         <Contact />

@@ -1,9 +1,22 @@
+import type { Locale } from "@/i18n/routing";
+
 interface BreadcrumbItem {
   name: string;
   href: string;
 }
 
-export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
+const linkTitle: Record<Locale, (name: string) => string> = {
+  es: (name) => `Ir a ${name}`,
+  en: (name) => `Go to ${name}`,
+};
+
+export function Breadcrumbs({
+  items,
+  locale = "es",
+}: {
+  items: BreadcrumbItem[];
+  locale?: Locale;
+}) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -42,7 +55,7 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
               ) : (
                 <a 
                   href={item.href} 
-                  title={`Ir a ${item.name}`}
+                  title={linkTitle[locale](item.name)}
                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                 >
                   {item.name}

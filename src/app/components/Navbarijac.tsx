@@ -4,7 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, MenuItem } from "./ui/navbar-menu";
+import { LanguageToggle } from "./LanguageToggle";
 import { cn } from "@/lib/utils";
+import {
+  getHomeSectionHref,
+  getHomeSectionId,
+  getLocaleFromPath,
+  getNavHref,
+  isHomeSectionAvailable,
+  localizePath,
+  type HomeSection,
+} from "@/i18n/routing";
+import { getContactNavLink, navigationContent } from "@/i18n/chrome/navigation";
 
 export function NavbarIjac() {
   return (
@@ -16,11 +27,18 @@ export function NavbarIjac() {
 
 function Navbar({ className }: { className?: string }) {
   const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
+  const copy = navigationContent[locale];
+  const homePath = localizePath("/", locale);
+  const contactLink = getContactNavLink(locale);
 
   // Function to handle smooth scrolling to sections
-  const scrollToSection = (sectionId: string) => {
-    if (pathname !== "/") {
-      window.location.href = `/#${sectionId}`;
+  const scrollToSection = (section: HomeSection) => {
+    const sectionId = getHomeSectionId(section, locale);
+    if (!sectionId) return;
+
+    if (pathname !== homePath) {
+      window.location.assign(getHomeSectionHref(section, locale) ?? homePath);
       return;
     }
 
@@ -36,7 +54,7 @@ function Navbar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed top-4 inset-x-0 max-w-xl mx-auto z-[100]",
+        "fixed top-4 inset-x-0 max-w-2xl mx-auto z-[100]",
         className
       )}
     >
@@ -44,7 +62,7 @@ function Navbar({ className }: { className?: string }) {
         <div className="flex flex-row items-center gap-2">
           {/* Logo */}
           <div className="flex justify-center">
-            <Link href="/" title="Ir al inicio" className="flex items-center mr-4">
+            <Link href={homePath} title={copy.logoTitle} className="flex items-center mr-4">
               <Image
                 src="/ijac-logo.png"
                 alt="IJAC Logo"
@@ -56,34 +74,34 @@ function Navbar({ className }: { className?: string }) {
               />
             </Link>
           </div>
-          
+
           {/* Navigation Links */}
           <div className="flex flex-row gap-x-2 justify-center items-center">
             <MenuItem
-              item="Servicios"
-              href="/services"
+              item={copy.servicesLabel}
+              href={getNavHref("services", "/services", locale)}
             />
+            {isHomeSectionAvailable("about", locale) && (
+              <MenuItem
+                item={copy.aboutLabel}
+                href={getHomeSectionHref("about", locale)}
+                onClick={() => scrollToSection("about")}
+              />
+            )}
+            {isHomeSectionAvailable("testimonials", locale) && (
+              <MenuItem
+                item={copy.testimonialsLabel}
+                href={getHomeSectionHref("testimonials", locale)}
+                onClick={() => scrollToSection("testimonials")}
+              />
+            )}
             <MenuItem
-              item="Nosotros"
-              href="/#nosotros"
-              onClick={() => scrollToSection("nosotros")}
-            />
-            <MenuItem
-              item="Testimonios"
-              href="/#testimonios"
-              onClick={() => scrollToSection("testimonios")}
-            />
-            <MenuItem
-              item="FAQ"
-              href="/#faq"
-              onClick={() => scrollToSection("faq")}
-            />
-            <MenuItem
-              item="Contacto"
-              href="/#contacto"
-              onClick={() => scrollToSection("contacto")}
+              item={copy.contactLabel}
+              href={contactLink.href}
+              external={contactLink.external}
             />
           </div>
+          <LanguageToggle />
         </div>
       </Menu>
     </div>

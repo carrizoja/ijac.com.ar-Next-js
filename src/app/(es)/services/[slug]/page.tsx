@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Breadcrumbs } from "../../components/Breadcrumbs";
-import { PrimaryButton } from "../../components/ui/PrimaryButton";
-import { getServiceBySlug, getServiceSlugs } from "../../../data/services";
+import { Breadcrumbs } from "../../../components/Breadcrumbs";
+import { PrimaryButton } from "../../../components/ui/PrimaryButton";
+import { getServiceBySlug, getServiceSlugs } from "../../../../data/services";
+import { getSeoAlternates } from "@/i18n/seo";
 
 type ServicePageProps = {
   params: Promise<{ slug: string }>;
@@ -22,18 +23,16 @@ export async function generateMetadata({
 
   if (!service) {
     return {
-      title: "Servicio no encontrado | iJac IT Solutions",
+      title: "Servicio no encontrado",
     };
   }
 
   const url = `https://ijac.com.ar/services/${service.slug}`;
 
   return {
-    title: `${service.title} | iJac IT Solutions`,
+    title: service.title,
     description: service.seoIntro,
-    alternates: {
-      canonical: url,
-    },
+    alternates: getSeoAlternates(`/services/${service.slug}`, "es"),
     openGraph: {
       title: service.title,
       description: service.seoIntro,

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { BackButton } from '../components/BackButton';
+import { BackButton } from '../../components/BackButton';
 
 export const metadata: Metadata = {
   title: 'Términos y Condiciones',
