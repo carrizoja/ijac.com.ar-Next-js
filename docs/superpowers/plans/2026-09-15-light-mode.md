@@ -644,6 +644,8 @@ function unpairedClasses(file: string): string[] {
   for (const match of source.matchAll(/className="([^"]*)"/g)) {
     const value = match[1];
     for (const token of value.split(/\s+/)) {
+      // A dark: variant is the light-mode counterpart, not an offender.
+      if (token.startsWith("dark:")) continue;
       if (!DARK_ONLY.test(token)) continue;
       if (value.includes(`dark:${token}`)) continue;
       offenders.push(token);
