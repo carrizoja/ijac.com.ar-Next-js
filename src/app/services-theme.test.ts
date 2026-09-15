@@ -23,6 +23,8 @@ function unpairedClasses(file: string): string[] {
 describe.each([
   "src/app/(es)/services/page.tsx",
   "src/app/en/services/page.tsx",
+  "src/app/(es)/services/[slug]/page.tsx",
+  "src/app/en/services/[slug]/page.tsx",
 ])("%s", (file) => {
   it("pairs every dark-only colour with a light counterpart", () => {
     expect(unpairedClasses(file)).toEqual([]);
