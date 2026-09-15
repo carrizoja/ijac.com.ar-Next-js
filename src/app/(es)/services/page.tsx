@@ -76,7 +76,7 @@ export default function ServicesPage() {
             <Breadcrumbs items={breadcrumbItems} />
 
             <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-gradient-to-br from-white via-neutral-50 to-white shadow-2xl dark:border-white/10 dark:from-neutral-900 dark:via-neutral-950 dark:to-black px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
-              <p className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-sm text-emerald-200">
+              <p className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-sm text-emerald-700 dark:text-emerald-200">
                 Soluciones tecnológicas para empresas, profesionales y equipos
               </p>
               <h1 className="max-w-4xl text-4xl font-bold font-heading text-neutral-900 dark:text-white sm:text-5xl lg:text-6xl">
@@ -136,7 +136,7 @@ export default function ServicesPage() {
                 </div>
 
                 <div className="p-6 sm:p-8 lg:p-10">
-                  <div className="rounded-2xl border border-neutral-200 dark:border-white/8 bg-white/[0.03] p-5 sm:p-6">
+                  <div className="rounded-2xl border border-neutral-200 dark:border-white/8 bg-neutral-50 dark:bg-white/[0.03] p-5 sm:p-6">
                     <p className="text-base leading-8 text-neutral-700 dark:text-neutral-300">
                       {service.fullDescription}
                     </p>

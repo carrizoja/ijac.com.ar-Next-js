@@ -28,6 +28,49 @@ export function storeTheme(theme: Theme): void {
   }
 }
 
+/** Every mounted toggle subscribes; a write wakes all of them at once. */
+const themeListeners = new Set<() => void>();
+
+export function subscribeToTheme(onStoreChange: () => void): () => void {
+  themeListeners.add(onStoreChange);
+
+  return () => {
+    themeListeners.delete(onStoreChange);
+  };
+}
+
+/**
+ * Storage is the single source of truth, so two toggles mounted at once read
+ * the same value and no in-memory copy can drift from it. The value is a
+ * string, so repeated reads are referentially stable for useSyncExternalStore.
+ */
+export function getThemeSnapshot(): Theme {
+  return readStoredTheme();
+}
+
+/** The document ships class="dark", so the server render has to agree. */
+export function getServerThemeSnapshot(): Theme {
+  return "dark";
+}
+
+/**
+ * Persists the preference, applies it to the document, and notifies every
+ * subscriber. The class is driven by re-reading the store rather than by the
+ * requested value: if the write was rejected there is no preference to honour
+ * and the site stays on the dark default instead of drifting out of sync with
+ * the control that claims to own it.
+ */
+export function setTheme(theme: Theme): void {
+  storeTheme(theme);
+
+  const applied = getThemeSnapshot();
+  document.documentElement.classList.toggle("dark", applied === "dark");
+
+  for (const listener of themeListeners) {
+    listener();
+  }
+}
+
 /**
  * Inlined into <head> and run before first paint. The document ships with
  * class="dark", so a first visit needs no correction and cannot flash; only a
