@@ -101,6 +101,14 @@ function Navbar({ className }: { className?: string }) {
               external={contactLink.external}
             />
           </div>
+
+          {/* Hairline sized to the labels, not to the toggle's 44px touch
+              target, so the language switch reads as a separate control
+              rather than a fifth nav item. */}
+          <span
+            aria-hidden="true"
+            className="mx-2 h-5 w-px shrink-0 bg-gray-300 dark:bg-white/10"
+          />
           <LanguageToggle />
         </div>
       </Menu>
