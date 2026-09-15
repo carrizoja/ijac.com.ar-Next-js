@@ -27,9 +27,9 @@ describe("sitemap", () => {
   it("includes the English home, contact, and services listing", () => {
     const urls = sitemap().map((entry) => entry.url);
 
-    expect(urls).toContain("https://ijac.com.ar/en");
-    expect(urls).toContain("https://ijac.com.ar/en/contact");
-    expect(urls).toContain("https://ijac.com.ar/en/services");
+    expect(urls).toContain("https://ijac.com.ar/en/");
+    expect(urls).toContain("https://ijac.com.ar/en/contact/");
+    expect(urls).toContain("https://ijac.com.ar/en/services/");
   });
 
   it("includes all 8 English service detail URLs, derived from the catalog", () => {
@@ -38,19 +38,19 @@ describe("sitemap", () => {
 
     expect(englishSlugs).toHaveLength(8);
     for (const slug of englishSlugs) {
-      expect(urls).toContain(`https://ijac.com.ar/en/services/${slug}`);
+      expect(urls).toContain(`https://ijac.com.ar/en/services/${slug}/`);
     }
   });
 
   it("declares reciprocal hreflang alternates on the Spanish and English homes", () => {
     const entries = sitemap();
-    const esHome = entries.find((entry) => entry.url === "https://ijac.com.ar");
-    const enHome = entries.find((entry) => entry.url === "https://ijac.com.ar/en");
+    const esHome = entries.find((entry) => entry.url === "https://ijac.com.ar/");
+    const enHome = entries.find((entry) => entry.url === "https://ijac.com.ar/en/");
 
     expect(esHome?.alternates?.languages).toEqual({
-      es: "https://ijac.com.ar",
-      en: "https://ijac.com.ar/en",
-      "x-default": "https://ijac.com.ar",
+      es: "https://ijac.com.ar/",
+      en: "https://ijac.com.ar/en/",
+      "x-default": "https://ijac.com.ar/",
     });
     expect(enHome?.alternates?.languages).toEqual(esHome?.alternates?.languages);
   });
@@ -58,16 +58,16 @@ describe("sitemap", () => {
   it("declares reciprocal hreflang alternates on a Spanish/English service detail pair", () => {
     const entries = sitemap();
     const esDetail = entries.find(
-      (entry) => entry.url === "https://ijac.com.ar/services/diseno-ux-ui",
+      (entry) => entry.url === "https://ijac.com.ar/services/diseno-ux-ui/",
     );
     const enDetail = entries.find(
-      (entry) => entry.url === "https://ijac.com.ar/en/services/ux-ui-design",
+      (entry) => entry.url === "https://ijac.com.ar/en/services/ux-ui-design/",
     );
 
     expect(esDetail?.alternates?.languages).toEqual({
-      es: "https://ijac.com.ar/services/diseno-ux-ui",
-      en: "https://ijac.com.ar/en/services/ux-ui-design",
-      "x-default": "https://ijac.com.ar/services/diseno-ux-ui",
+      es: "https://ijac.com.ar/services/diseno-ux-ui/",
+      en: "https://ijac.com.ar/en/services/ux-ui-design/",
+      "x-default": "https://ijac.com.ar/services/diseno-ux-ui/",
     });
     expect(enDetail?.alternates?.languages).toEqual(esDetail?.alternates?.languages);
   });
