@@ -67,7 +67,7 @@ Both root layouts (`(es)` and `en`) share `SiteDocument`, so this lands in one p
 
 Two surfaces need a light design invented: the **services listing** and the **service detail** page. Each is one design shared across both locales, since the ES and EN files duplicate the same layout.
 
-One more is a mechanical completion rather than a new design: `Testimonials`, which has just three unpaired classes. It follows the table below without further design decisions.
+`Testimonials` needs **no change**. Its heading is already paired (`text-gray-900 dark:text-white`), its wrapper sets no ground of its own, and its three remaining dark-only classes sit inside a deliberately dark gradient card where white text is correct on either ground. The class-counting audit that flagged it did not know what those colours sat on.
 
 `NotFoundContent` is **excluded** and stays dark in both themes. An earlier draft of this spec called it mechanical; that was wrong. It is a bespoke dark composition — radial glow gradients with hardcoded near-black stops, a white-on-dark grid behind a fade mask, a cyan `-webkit-text-stroke` numeral and a deep drop shadow. None of that translates by swapping colour classes, and every effect depends on a dark ground, which places it under decision 1 alongside Contact, the banner and the footer.
 
@@ -85,14 +85,14 @@ The accent stays because it reads on both grounds, which is what keeps the two t
 
 - `resolveTheme` — unit tested directly; no DOM needed.
 - `ThemeToggle` — render, toggle, persistence, and accessible name in both locales.
-- Redesigned pages — assert every dark class has a light counterpart. This is the real regression risk: a missed pair means invisible text, and it is invisible in the dark theme the developer is looking at.
+- The two redesigned services pages — assert every dark class has a light counterpart. This is the real regression risk: a missed pair means invisible text, and it is invisible in the dark theme the developer is looking at.
 - Existing suite must stay green. Spanish and English rendered copy must not change; this is a theming change only.
 
 ## Scope
 
-**Changes:** `SiteDocument.tsx`, `Navbarijac.tsx`, `HamburgerMenu.tsx`, `globals.css`, the two services pages ×2 locales, `Testimonials.tsx`, plus the three new files above.
+**Changes:** `SiteDocument.tsx`, `Navbarijac.tsx`, `HamburgerMenu.tsx`, `globals.css`, the two services pages ×2 locales, plus the three new files above.
 
-**Untouched:** the 20 theme-ready files, all copy and i18n modules, routing, sitemap, structured data.
+**Untouched:** the theme-ready files including `Testimonials.tsx`, all copy and i18n modules, routing, sitemap, structured data.
 
 **Excluded:** `WhatsApp.tsx` is mounted nowhere and is dead code. Contact, `RemoteSupportBanner`, `Footer` and `NotFoundContent` stay dark by decision 1, not by omission.
 
