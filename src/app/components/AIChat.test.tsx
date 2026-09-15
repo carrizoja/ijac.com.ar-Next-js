@@ -7,6 +7,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AIChat } from "./AIChat";
 import type { ChatTelemetryDetail } from "./chat/chatTelemetry";
 
+const navigation = vi.hoisted(() => ({ pathname: "/" }));
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => navigation.pathname,
+}));
+
 vi.mock("motion/react", async () => {
   const React = await import("react");
   const createMotionComponent = (tag: string) => {
@@ -44,6 +50,10 @@ vi.mock("motion/react", async () => {
 
 let telemetry: ChatTelemetryDetail[];
 let telemetryListener: EventListener;
+
+beforeEach(() => {
+  navigation.pathname = "/";
+});
 
 async function advanceResponse() {
   await act(async () => {
@@ -683,5 +693,66 @@ describe("AIChat contact handoff", () => {
     const { dialog } = await ask("¿Qué servicios ofrecen?");
 
     expect(within(dialog).queryByRole("link", { name: /WhatsApp/ })).toBeNull();
+  });
+});
+
+describe("AIChat English locale", () => {
+  beforeEach(() => {
+    navigation.pathname = "/en";
+  });
+
+  it("renders English chrome and speaks English throughout the deterministic flow", async () => {
+    render(<AIChat />);
+    const user = userEvent.setup();
+    const launcher = screen.getByRole("button", { name: "Open virtual assistant chat" });
+
+    await user.click(launcher);
+    const dialog = screen.getByRole("dialog", { name: "iJAC Assistant" });
+
+    expect(within(dialog).getByRole("textbox", { name: "Type your question" })).toHaveFocus();
+    expect(
+      within(dialog).getByRole("button", { name: "What are your business hours?" }),
+    ).toBeInTheDocument();
+
+    await user.click(
+      within(dialog).getByRole("button", { name: "What are your business hours?" }),
+    );
+    await advanceResponse();
+
+    expect(within(dialog).getByRole("log", { name: "Conversation" })).toHaveTextContent(
+      "Our business hours are",
+    );
+
+    await user.click(within(dialog).getByRole("button", { name: "Close chat" }));
+    expect(launcher).toHaveAccessibleName("Open virtual assistant chat");
+  });
+
+  it("passes English as the language to the chat client for an unmatched question", async () => {
+    const client = {
+      ask: vi.fn(async (_question: string, _language: string, signal?: AbortSignal) => {
+        if (signal?.aborted) throw Object.assign(new Error("aborted"), { name: "AbortError" });
+        return {
+          apiVersion: "v1",
+          code: "UNKNOWN",
+          supported: false,
+          language: "en",
+        };
+      }),
+    };
+    render(<AIChat chatClient={client as never} />);
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "Open virtual assistant chat" }));
+    const dialog = screen.getByRole("dialog", { name: "iJAC Assistant" });
+
+    await user.type(
+      within(dialog).getByRole("textbox", { name: "Type your question" }),
+      "What is your uptime guarantee?",
+    );
+    await user.click(within(dialog).getByRole("button", { name: "Send message" }));
+    await advanceResponse();
+
+    expect(client.ask).toHaveBeenCalledOnce();
+    expect(client.ask.mock.calls[0][0]).toBe("What is your uptime guarantee?");
+    expect(client.ask.mock.calls[0][1]).toBe("en");
   });
 });

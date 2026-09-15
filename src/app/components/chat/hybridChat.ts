@@ -5,6 +5,17 @@ import {
   type ChatIntent,
   type ConversationContext,
 } from "./chatEngine";
+import type { Locale } from "../../../i18n/routing";
+
+/**
+ * chatEngine only has deterministic intents for Spanish and English. A
+ * Portuguese visitor keeps Spanish-style matching (today's prior behavior)
+ * rather than matching nothing at all; unmatched input still reaches the
+ * grounded API, which does cover Portuguese.
+ */
+function toChatEngineLocale(language: SupportedLanguage): Locale {
+  return language === "en" ? "en" : "es";
+}
 
 /** Owner-approved handoff copy. These strings are contractual — do not reword. */
 export const UNKNOWN_COPY: Record<SupportedLanguage, string> = {
@@ -49,7 +60,7 @@ export async function resolveChatTurn(
   deps: HybridChatDeps,
   signal?: AbortSignal,
 ): Promise<ChatTurn> {
-  const deterministic = getChatResponse(input, context);
+  const deterministic = getChatResponse(input, context, toChatEngineLocale(deps.language));
 
   const asDeterministic = (): ChatTurn => ({
     intent: deterministic.intent,
