@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import type { ConversationContext } from "./chat/chatEngine";
 import { emitChatTelemetry } from "./chat/chatTelemetry";
 import { createChatApiClient, type ChatApiClient } from "./chat/chatApi";
 import { resolveChatTurn, type ChatSourceLink } from "./chat/hybridChat";
 import { business } from "../../data/business";
+import { getLocaleFromPath } from "../../i18n/routing";
+import { chatWidgetContent } from "../../i18n/chat";
 
 interface Message {
   id: string;
@@ -16,9 +19,6 @@ interface Message {
   sources?: ChatSourceLink[];
   contactHandoff?: boolean;
 }
-
-/** The widget speaks the site's locale; the API localizes its own cards to match. */
-const CHAT_LANGUAGE = "es" as const;
 
 /**
  * Built once from build-time env. When the flag is off or no URL is configured this is null,
@@ -34,21 +34,6 @@ interface AIChatProps {
   chatClient?: ChatApiClient | null;
 }
 
-const quickQuestions = [
-  "¿Qué servicios ofrecen?",
-  "Quiero una cotización",
-  "Necesito soporte técnico",
-  "¿Cuál es el horario de atención?",
-  "¿Cómo los contacto?",
-];
-
-const initialMessage: Message = {
-  id: "message-1",
-  text: "¡Hola! Soy el asistente virtual de iJAC IT Solutions. Puedo orientarte sobre nuestros servicios, cotizaciones y soporte. ¿En qué puedo ayudarte?",
-  isUser: false,
-  timestamp: new Date(),
-};
-
 const focusableSelector = [
   'a[href]:not([tabindex="-1"])',
   'button:not([disabled]):not([tabindex="-1"])',
@@ -59,8 +44,19 @@ const focusableSelector = [
 ].join(",");
 
 export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
+  const content = chatWidgetContent[locale];
+
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([initialMessage]);
+  const [messages, setMessages] = useState<Message[]>(() => [
+    {
+      id: "message-1",
+      text: content.initialMessage,
+      isUser: false,
+      timestamp: new Date(),
+    },
+  ]);
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const contextRef = useRef<ConversationContext>(null);
@@ -196,7 +192,7 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
       void resolveChatTurn(
         text,
         contextRef.current,
-        { client: chatClient, language: CHAT_LANGUAGE },
+        { client: chatClient, language: locale },
         controller.signal,
       )
         .then((turn) => {
@@ -259,7 +255,7 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
         className="fixed bottom-4 right-4 z-[1000] flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2 sm:bottom-6 sm:right-6 sm:h-14 sm:w-14"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        aria-label={isOpen ? "Cerrar chat" : "Abrir chat de asistente virtual"}
+        aria-label={isOpen ? content.closeLabel : content.openLabel}
         aria-expanded={isOpen}
         aria-controls="ijac-chat-dialog"
       >
@@ -322,13 +318,13 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
                 <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-green-400" />
               </div>
               <div className="min-w-0 flex-1">
-                <h2 id="ijac-chat-title" className="font-semibold">Asistente iJAC</h2>
-                <p className="text-sm opacity-90">Orientación automática</p>
+                <h2 id="ijac-chat-title" className="font-semibold">{content.dialogTitle}</h2>
+                <p className="text-sm opacity-90">{content.dialogSubtitle}</p>
               </div>
               <button
                 type="button"
                 onClick={closeChat}
-                aria-label="Cerrar chat"
+                aria-label={content.closeLabel}
                 className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 <svg aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -337,7 +333,7 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
               </button>
             </div>
 
-            <div role="log" aria-live="polite" aria-relevant="additions" aria-busy={isTyping} aria-label="Conversación" tabIndex={0} className="flex-1 space-y-4 overflow-y-auto p-4">
+            <div role="log" aria-live="polite" aria-relevant="additions" aria-busy={isTyping} aria-label={content.conversationLogLabel} tabIndex={0} className="flex-1 space-y-4 overflow-y-auto p-4">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
@@ -380,14 +376,14 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
                       </p>
                     )}
                     <p className="mt-1 text-xs opacity-70">
-                      {message.timestamp.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}
+                      {message.timestamp.toLocaleTimeString(content.timeLocale, { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
                 </motion.div>
               ))}
               {isTyping && (
                 <div role="status" className="flex justify-start">
-                  <span className="sr-only">El asistente está preparando una respuesta</span>
+                  <span className="sr-only">{content.typingStatusText}</span>
                   <div aria-hidden="true" className="flex space-x-1 rounded-lg rounded-bl-none bg-gray-100 p-3 dark:bg-neutral-800">
                     {[0, 1, 2].map((dot) => (
                       <span key={dot} className="h-2 w-2 animate-bounce rounded-full bg-gray-400" style={{ animationDelay: `${dot * 0.1}s` }} />
@@ -400,9 +396,9 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
 
             {messages.length === 1 && (
               <div className="border-t border-gray-200 p-4 dark:border-gray-700">
-                <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">Preguntas frecuentes:</p>
+                <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">{content.quickQuestionsLabel}</p>
                 <div className="flex flex-wrap gap-2">
-                  {quickQuestions.map((question) => (
+                  {content.quickQuestions.map((question) => (
                     <button
                       key={question}
                       type="button"
@@ -424,7 +420,7 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
                 submitMessage(inputText);
               }}
             >
-              <label htmlFor="ijac-chat-input" className="sr-only">Escribí tu pregunta</label>
+              <label htmlFor="ijac-chat-input" className="sr-only">{content.inputLabel}</label>
               <div className="flex gap-2">
                 <input
                   ref={inputRef}
@@ -433,13 +429,13 @@ export function AIChat({ chatClient = configuredClient }: AIChatProps = {}) {
                   value={inputText}
                   onChange={(event) => setInputText(event.target.value)}
                   readOnly={isTyping}
-                  placeholder="Escribí tu pregunta..."
+                  placeholder={content.inputPlaceholder}
                   autoComplete="off"
                   className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 dark:border-gray-600 dark:bg-neutral-800 dark:text-white"
                 />
                 <button
                   type="submit"
-                  aria-label="Enviar mensaje"
+                  aria-label={content.sendLabel}
                   disabled={!inputText.trim() || isTyping}
                   className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-white transition-colors hover:bg-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:bg-gray-300"
                 >
