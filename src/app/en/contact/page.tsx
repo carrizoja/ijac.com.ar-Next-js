@@ -5,6 +5,7 @@ import { PrimaryButton } from "../../components/ui/PrimaryButton";
 import { business } from "../../../data/business";
 import { businessHoursDisplayEn } from "@/i18n/faq";
 import { getSeoAlternates } from "@/i18n/seo";
+import { getWhatsAppUrl } from "@/i18n/whatsapp";
 
 export const metadata: Metadata = {
   title: "Contact iJac IT Solutions | IT Consulting & Support in Buenos Aires",
@@ -81,7 +82,7 @@ export default function EnglishContactPage() {
               <div className="mt-4">
                 <PrimaryButton
                   text="WhatsApp"
-                  href={business.whatsappUrl}
+                  href={getWhatsAppUrl("en")}
                   colorVariant="green"
                   className="justify-start"
                   target="_blank"

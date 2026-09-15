@@ -4,6 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { business } from "@/data/business";
+import { getWhatsAppUrl } from "@/i18n/whatsapp";
 import EnglishContactPage, { metadata } from "./page";
 
 describe("English contact page", () => {
@@ -82,6 +83,6 @@ describe("English contact page", () => {
     render(<EnglishContactPage />);
 
     const whatsappLink = screen.getByRole("link", { name: "WhatsApp" });
-    expect(whatsappLink).toHaveAttribute("href", business.whatsappUrl);
+    expect(whatsappLink).toHaveAttribute("href", getWhatsAppUrl("en"));
   });
 });

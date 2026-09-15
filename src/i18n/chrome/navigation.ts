@@ -1,6 +1,6 @@
-import { business } from "@/data/business";
 
 import { getNavHref, localizePath, type Locale } from "../routing";
+import { getWhatsAppUrl } from "../whatsapp";
 
 interface NavigationContent {
   logoTitle: string;
@@ -49,6 +49,6 @@ export function getContactNavLink(locale: Locale): ContactNavLink {
   const href = getNavHref("contact", "/contact", locale);
 
   return href === localizePath("/", locale)
-    ? { href: business.whatsappUrl, external: true }
+    ? { href: getWhatsAppUrl(locale), external: true }
     : { href, external: false };
 }

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { business } from "@/data/business";
+import { getWhatsAppUrl } from "@/i18n/whatsapp";
 
 const routingOverride = vi.hoisted(() => ({ forceDeadEnd: false }));
 
@@ -44,7 +44,7 @@ describe("getContactNavLink", () => {
     routingOverride.forceDeadEnd = true;
 
     expect(getContactNavLink("en")).toEqual({
-      href: business.whatsappUrl,
+      href: getWhatsAppUrl("en"),
       external: true,
     });
   });

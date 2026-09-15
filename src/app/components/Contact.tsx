@@ -4,6 +4,7 @@ import { PrimaryButton } from "./ui/PrimaryButton";
 import { business } from "../../data/business";
 import { contactContent } from "@/i18n/home/contact";
 import type { Locale } from "@/i18n/routing";
+import { getWhatsAppUrl } from "@/i18n/whatsapp";
 
 export function Contact({ locale = "es" }: { locale?: Locale }) {
   const content = contactContent[locale];
@@ -43,7 +44,7 @@ export function Contact({ locale = "es" }: { locale?: Locale }) {
       title: content.cards.whatsapp.title,
       info: business.phoneDisplay,
       subInfo: content.cards.whatsapp.subInfo,
-      href: business.whatsappUrl,
+      href: getWhatsAppUrl(locale),
       bgGradient: "from-green-500 to-emerald-500"
     },
     {

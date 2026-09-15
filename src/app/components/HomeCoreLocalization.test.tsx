@@ -3,7 +3,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { business } from "../../data/business";
+import { getWhatsAppUrl } from "@/i18n/whatsapp";
 
 vi.mock("motion/react", () => ({
   motion: new Proxy({}, {
@@ -30,7 +30,7 @@ describe("English Home conversion sections", () => {
 
     expect(screen.getByRole("heading", { level: 1, name: /IT Solutions and Web Development/i })).toBeInTheDocument();
     expect(screen.getByText("We engineer a smarter world.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Contact us" })).toHaveAttribute("href", business.whatsappUrl);
+    expect(screen.getByRole("link", { name: "Contact us" })).toHaveAttribute("href", getWhatsAppUrl("en"));
   });
 
   it("localizes featured service cards while linking to the English service detail pages", () => {
@@ -52,7 +52,7 @@ describe("English Home conversion sections", () => {
     expect(screen.getByText(/not affiliated with or endorsed by TeamViewer/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Ask about remote support" })).toHaveAttribute(
       "href",
-      business.whatsappUrl,
+      getWhatsAppUrl("en"),
     );
   });
 });
