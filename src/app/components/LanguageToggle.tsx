@@ -57,27 +57,34 @@ export function LanguageToggle({ onNavigate }: LanguageToggleProps) {
         aria-label={accessibleName}
         aria-current={isCurrent ? "page" : undefined}
         onClick={onNavigate}
-        className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900 ${
+        className={`group inline-flex min-h-11 items-center px-1 text-sm font-semibold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900 ${
           isCurrent
-            ? "bg-cyan-700 text-white"
-            : "text-gray-800 hover:bg-gray-200 dark:text-gray-100 dark:hover:bg-neutral-700"
+            ? "text-gray-900 dark:text-white"
+            : "text-gray-600 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-100"
         }`}
       >
-        {text}
+        {/* The label sits in its own positioning context so the underline hugs
+            the glyphs while the anchor keeps a 44px touch target. */}
+        <span className="relative">
+          {text}
+          <span
+            aria-hidden="true"
+            className={`absolute -bottom-1 left-0 h-0.5 w-full origin-center bg-green-500 transition-transform duration-300 ease-out ${
+              isCurrent ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+            }`}
+          />
+        </span>
       </a>
     );
   };
 
   return (
-    <div
-      role="group"
-      aria-label={copy.group}
-      className="flex items-center rounded-lg border border-gray-300 bg-white/70 p-0.5 dark:border-gray-600 dark:bg-neutral-800/70"
-    >
+    <div role="group" aria-label={copy.group} className="flex items-center gap-2">
       {link("es", "ES", currentLocale === "es" ? copy.current : copy.alternate)}
-      <span aria-hidden="true" className="text-gray-500 dark:text-gray-400">
-        /
-      </span>
+      <span
+        aria-hidden="true"
+        className="h-[3px] w-[3px] shrink-0 rounded-full bg-gray-400 dark:bg-neutral-700"
+      />
       {link("en", "EN", currentLocale === "en" ? copy.current : copy.alternate)}
     </div>
   );

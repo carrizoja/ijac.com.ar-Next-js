@@ -54,6 +54,16 @@ describe("LanguageToggle", () => {
     );
   });
 
+  it("exposes only the two language links, keeping the separator decorative", () => {
+    render(<LanguageToggle />);
+
+    const group = screen.getByRole("group", { name: "Selector de idioma" });
+    const links = screen.getAllByRole("link");
+
+    expect(links).toHaveLength(2);
+    expect(group).toHaveTextContent(/^ESEN$/);
+  });
+
   it("localizes its labels and marks English as current on the English route", () => {
     navigation.pathname = "/en";
     window.history.replaceState({}, "", "/en?campaign=spring#top");
