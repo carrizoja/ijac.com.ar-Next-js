@@ -10,6 +10,7 @@ import { AIChat } from "./AIChat";
 import { PerformanceMonitor } from "./PerformanceMonitor";
 import { CookieConsent } from "./CookieConsent";
 import { ClientRedirect } from "./ClientRedirect";
+import { themeBootstrapScript } from "../lib/theme";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -115,6 +116,13 @@ export default function SiteDocument({
   return (
     <html lang={locale} className="dark">
       <head>
+        {/*
+          Runs before first paint. The document ships with class="dark", so a
+          first-time visitor needs no correction and cannot flash; only a
+          returning visitor who chose light is switched, pre-paint. Must stay
+          inline and synchronous — a deferred script runs after the paint.
+        */}
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
