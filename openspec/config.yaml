@@ -8,7 +8,10 @@ context: |
   npm workspaces: packages/* and chat-api (Vercel serverless AI chat API).
   Site locale es_AR; agent artifacts remain English per AGENTS.md/CLAUDE.md.
   Path alias @/* -> ./src/*; components live in src/app/components/ and src/app/components/ui/.
-  No i18n library installed yet.
+  Bilingual: Spanish at unprefixed URLs, English under /en, both statically exported.
+  No i18n library; localization is hand-rolled in src/i18n/ (routing helpers plus
+  per-locale copy modules). availableEnglishPaths in src/i18n/routing.ts is the
+  switch that promotes a nav item from a home anchor to a real translated page.
 
 projects:
   - path: "."
@@ -32,7 +35,7 @@ rules:
   proposal:
     - Include rollback plan for risky changes
     - Respect static-export constraints (no server runtime)
-    - Account for ES NF/EN localization scope and i18n library selection
+    - Keep both locales in step: a new route needs its /en counterpart or an explicit reason it has none
   specs:
     - Use Given/When/Then for scenarios
     - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
