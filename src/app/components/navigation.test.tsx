@@ -87,6 +87,21 @@ describe("primary navigation", () => {
     );
     expect(screen.getByRole("group", { name: "Selector de idioma" })).toBeInTheDocument();
   });
+
+  it("offers the theme toggle on the desktop navbar", () => {
+    render(<NavbarIjac />);
+    expect(
+      screen.getByRole("button", { name: "Cambiar a modo claro" }),
+    ).toBeInTheDocument();
+  });
+
+  it("offers the theme toggle in the mobile drawer", () => {
+    render(<HamburgerMenu />);
+    fireEvent.click(screen.getByRole("button", { name: "Abrir menú de navegación" }));
+    expect(
+      screen.getByRole("button", { name: "Cambiar a modo claro" }),
+    ).toBeInTheDocument();
+  });
 });
 
 describe("English primary navigation", () => {

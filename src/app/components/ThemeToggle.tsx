@@ -21,6 +21,10 @@ export function ThemeToggle({ onToggle }: ThemeToggleProps) {
   const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
+    // One-time sync from localStorage (an external system) on mount, after
+    // the server-matching "dark" render above — not a reactive loop, so the
+    // cascading-render concern the rule guards against does not apply here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(readStoredTheme());
   }, []);
 
