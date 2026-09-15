@@ -70,19 +70,19 @@ export default function ServicesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesJsonLd) }}
       />
 
-      <main className="min-h-screen bg-black text-white">
+      <main className="min-h-screen bg-background text-neutral-900 dark:bg-black dark:text-white">
         <section className="px-4 pt-28 pb-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-6xl">
             <Breadcrumbs items={breadcrumbItems} />
 
-            <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black px-6 py-10 shadow-2xl sm:px-8 lg:px-12 lg:py-14">
+            <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-gradient-to-br from-white via-neutral-50 to-white shadow-2xl dark:border-white/10 dark:from-neutral-900 dark:via-neutral-950 dark:to-black px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
               <p className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-sm text-emerald-200">
                 Soluciones tecnológicas para empresas, profesionales y equipos
               </p>
-              <h1 className="max-w-4xl text-4xl font-bold font-heading text-white sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-4xl text-4xl font-bold font-heading text-neutral-900 dark:text-white sm:text-5xl lg:text-6xl">
                 Servicios IT pensados para mejorar tu operación y tu presencia digital
               </h1>
-              <p className="mt-6 max-w-3xl text-base leading-8 text-neutral-300 sm:text-lg">
+              <p className="mt-6 max-w-3xl text-base leading-8 text-neutral-700 dark:text-neutral-300 sm:text-lg">
                 En iJac IT Solutions reunimos soporte técnico, desarrollo web, redes,
                 ciberseguridad, diseño UX UI, analítica y branding para resolver
                 necesidades reales con una sola mirada técnica. Explora cada servicio y
@@ -108,9 +108,9 @@ export default function ServicesPage() {
               <article
                 key={service.slug}
                 id={service.slug}
-                className="grid overflow-hidden rounded-3xl border border-white/10 bg-neutral-950/80 shadow-xl lg:grid-cols-[1.1fr_1.4fr]"
+                className="grid overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm dark:border-white/10 dark:bg-neutral-950/80 dark:shadow-none lg:grid-cols-[1.1fr_1.4fr]"
               >
-                <div className="relative min-h-[280px] border-b border-white/10 lg:min-h-full lg:border-b-0 lg:border-r">
+                <div className="relative min-h-[280px] border-b border-neutral-200 dark:border-white/10 lg:min-h-full lg:border-b-0 lg:border-r">
                   <Image
                     src={service.src}
                     alt={service.alt}
@@ -124,39 +124,39 @@ export default function ServicesPage() {
                     <p className="mb-3 text-sm uppercase tracking-[0.22em] text-emerald-300">
                       Servicio {String(index + 1).padStart(2, "0")}
                     </p>
-                    <h2 className="text-2xl font-bold font-heading text-white sm:text-3xl">
+                    <h2 className="text-2xl font-bold font-heading text-neutral-900 dark:text-white sm:text-3xl">
                       <Link href={`/services/${service.slug}`} className="transition hover:text-emerald-200">
                         {service.title}
                       </Link>
                     </h2>
-                    <p className="mt-3 max-w-xl text-sm leading-7 text-neutral-200 sm:text-base">
+                    <p className="mt-3 max-w-xl text-sm leading-7 text-neutral-800 dark:text-neutral-200 sm:text-base">
                       {service.seoIntro}
                     </p>
                   </div>
                 </div>
 
                 <div className="p-6 sm:p-8 lg:p-10">
-                  <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-5 sm:p-6">
-                    <p className="text-base leading-8 text-neutral-300">
+                  <div className="rounded-2xl border border-neutral-200 dark:border-white/8 bg-white/[0.03] p-5 sm:p-6">
+                    <p className="text-base leading-8 text-neutral-700 dark:text-neutral-300">
                       {service.fullDescription}
                     </p>
                   </div>
 
                   <div className="mt-6 grid gap-6">
                     <div>
-                      <h3 className="text-lg font-semibold font-heading text-white">
+                      <h3 className="text-lg font-semibold font-heading text-neutral-900 dark:text-white">
                         Alcance del servicio
                       </h3>
-                      <p className="mt-3 text-sm leading-7 text-neutral-400 sm:text-base">
+                      <p className="mt-3 text-sm leading-7 text-neutral-600 dark:text-neutral-400 sm:text-base">
                         {service.desc}
                       </p>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold font-heading text-white">
+                      <h3 className="text-lg font-semibold font-heading text-neutral-900 dark:text-white">
                         Que incluye
                       </h3>
-                      <ul className="mt-3 space-y-3 text-sm leading-7 text-neutral-300 sm:text-base">
+                      <ul className="mt-3 space-y-3 text-sm leading-7 text-neutral-700 dark:text-neutral-300 sm:text-base">
                         {service.highlights.map((highlight) => (
                           <li key={highlight} className="flex gap-3">
                             <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
@@ -182,12 +182,12 @@ export default function ServicesPage() {
         </section>
 
         <section className="px-4 pb-24 sm:px-6 lg:px-8">
-          <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 rounded-3xl border border-white/10 bg-gradient-to-r from-neutral-900 via-neutral-900 to-neutral-800 p-8 sm:p-10 lg:flex-row lg:items-center">
+          <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 rounded-3xl border border-neutral-200 bg-gradient-to-r from-white via-neutral-50 to-neutral-800 dark:border-white/10 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800 p-8 sm:p-10 lg:flex-row lg:items-center">
             <div>
-              <h2 className="text-3xl font-bold font-heading text-white">
+              <h2 className="text-3xl font-bold font-heading text-neutral-900 dark:text-white">
                 Necesitas una solucion a medida?
               </h2>
-              <p className="mt-3 max-w-2xl text-base leading-8 text-neutral-300">
+              <p className="mt-3 max-w-2xl text-base leading-8 text-neutral-700 dark:text-neutral-300">
                 Cuéntanos tu necesidad y te ayudamos a definir el servicio, alcance y enfoque tecnico mas conveniente para tu proyecto o empresa.
               </p>
             </div>
