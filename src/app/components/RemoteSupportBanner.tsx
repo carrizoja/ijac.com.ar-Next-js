@@ -1,7 +1,7 @@
-import { business } from "../../data/business";
 import { PrimaryButton } from "./ui/PrimaryButton";
 import { remoteSupportContent } from "@/i18n/home/remote-support";
 import type { Locale } from "@/i18n/routing";
+import { getWhatsAppUrl } from "@/i18n/whatsapp";
 
 export function RemoteSupportBanner({ locale = "es" }: { locale?: Locale }) {
   const content = remoteSupportContent[locale];
@@ -40,7 +40,7 @@ export function RemoteSupportBanner({ locale = "es" }: { locale?: Locale }) {
 
           <PrimaryButton
             text={content.cta}
-            href={business.whatsappUrl}
+            href={getWhatsAppUrl(locale)}
             target="_blank"
             rel="noopener noreferrer"
             colorVariant="cyan"

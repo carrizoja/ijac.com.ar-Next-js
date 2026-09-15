@@ -4,6 +4,7 @@ import { FAQ } from '../../components/FAQ'
 import { PrimaryButton } from '../../components/ui/PrimaryButton'
 import { business } from '../../../data/business'
 import { getSeoAlternates } from '@/i18n/seo'
+import { getWhatsAppUrl } from "@/i18n/whatsapp";
 
 export const metadata: Metadata = {
   title: 'Contacto | IT Consulting & Support en Buenos Aires',
@@ -76,7 +77,7 @@ export default function ContactPage() {
               <div className="mt-4">
                     <PrimaryButton
               text="WhatsApp"
-              href={business.whatsappUrl}
+              href={getWhatsAppUrl("es")}
               colorVariant="green"
               className="justify-start"
               target="_blank"
