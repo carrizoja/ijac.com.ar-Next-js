@@ -9,7 +9,7 @@ import { RemoteSupportBanner } from "../components/RemoteSupportBanner";
 export default function Home() {
   return (
     <>
-      <StructuredData />
+      <StructuredData locale="es" />
       <section id="home">
         <Hero />
       </section>

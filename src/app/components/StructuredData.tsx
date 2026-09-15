@@ -1,11 +1,14 @@
 import { business } from "../../data/business";
+import { structuredDataContent } from "@/i18n/structured-data";
+import type { Locale } from "@/i18n/routing";
 
-export function StructuredData() {
+export function StructuredData({ locale = "es" }: { locale?: Locale }) {
+  const copy = structuredDataContent[locale];
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "iJac IT Solutions",
-    "description": "Soluciones informáticas profesionales, desarrollo web y consultoría IT a nivel global con sede en Buenos Aires",
+    "description": copy.organizationDescription,
     "url": "https://ijac.com.ar",
     "logo": "https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png",
     "contactPoint": {
@@ -29,8 +32,8 @@ export function StructuredData() {
     ],
     "offers": {
       "@type": "Service",
-      "serviceType": "Soluciones Informáticas",
-      "description": "Desarrollo web, Apps, WebApps, sistemas empresariales, consultoría IT, soporte técnico pc mac, ciberseguridad y data science"
+      "serviceType": copy.serviceType,
+      "description": copy.offerDescription
     }
   };
 
@@ -38,7 +41,7 @@ export function StructuredData() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "iJac IT Solutions",
-    "description": "Soluciones informáticas profesionales en Buenos Aires con alcance global",
+    "description": copy.localBusinessDescription,
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Almagro",
@@ -56,7 +59,6 @@ export function StructuredData() {
     "url": "https://ijac.com.ar",
     "priceRange": "$$",
     "openingHours": business.hours.schema,
-    "servesCuisine": "Technology Services",
     "image": "https://res.cloudinary.com/dovghglgj/image/upload/v1755013017/ijac/logo_ijac_neg_hnsnrp.png"
   };
 
