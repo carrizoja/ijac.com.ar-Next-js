@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, MenuItem } from "./ui/navbar-menu";
 import { LanguageToggle } from "./LanguageToggle";
+import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 import {
   getHomeSectionHref,
@@ -110,6 +111,7 @@ function Navbar({ className }: { className?: string }) {
             className="mx-2 h-5 w-px shrink-0 bg-gray-300 dark:bg-white/10"
           />
           <LanguageToggle />
+          <ThemeToggle />
         </div>
       </Menu>
     </div>

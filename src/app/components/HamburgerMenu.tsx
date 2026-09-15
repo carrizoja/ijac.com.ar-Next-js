@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { LanguageToggle } from "./LanguageToggle";
+import { ThemeToggle } from "./ThemeToggle";
 import {
   getHomeSectionHref,
   getHomeSectionId,
@@ -194,8 +195,9 @@ export function HamburgerMenu() {
                 </ul>
               </nav>
 
-              <div className="mb-6 flex justify-center">
+              <div className="mb-6 flex items-center justify-center gap-3">
                 <LanguageToggle onNavigate={() => setIsOpen(false)} />
+                <ThemeToggle />
               </div>
 
               {/* Footer Section */}
