@@ -111,12 +111,12 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-12">
                 <Link
                   href="/services"
-                  className="mb-5 inline-flex w-fit items-center gap-2 text-sm text-emerald-300 transition hover:text-emerald-200"
+                  className="mb-5 inline-flex w-fit items-center gap-2 text-sm text-emerald-700 dark:text-emerald-300 transition hover:text-emerald-800 dark:hover:text-emerald-200"
                 >
                   <span aria-hidden="true">←</span>
                   Volver a servicios
                 </Link>
-                <p className="mb-4 inline-flex w-fit rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-sm text-emerald-200">
+                <p className="mb-4 inline-flex w-fit rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-sm text-emerald-700 dark:text-emerald-200">
                   Solucion especializada
                 </p>
                 <h1 className="text-4xl font-bold font-heading text-neutral-900 dark:text-white sm:text-5xl">

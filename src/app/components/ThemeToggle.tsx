@@ -1,11 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 
 import { getLocaleFromPath } from "@/i18n/routing";
 import { themeContent } from "@/i18n/theme";
-import { readStoredTheme, storeTheme, type Theme } from "../lib/theme";
+import {
+  getServerThemeSnapshot,
+  getThemeSnapshot,
+  setTheme,
+  subscribeToTheme,
+} from "../lib/theme";
 
 interface ThemeToggleProps {
   /** Lets the mobile drawer close itself after a choice. */
@@ -16,30 +21,17 @@ export function ThemeToggle({ onToggle }: ThemeToggleProps) {
   const pathname = usePathname();
   const copy = themeContent[getLocaleFromPath(pathname)];
 
-  // Must start dark so server and client markup agree; the stored preference
-  // is read after mount. The document itself is already correct by then.
-  const [theme, setTheme] = useState<Theme>("dark");
-
-  useEffect(() => {
-    // One-time sync from localStorage (an external system) on mount, after
-    // the server-matching "dark" render above — not a reactive loop, so the
-    // cascading-render concern the rule guards against does not apply here.
-    // This codebase's convention for reading an external source without an
-    // effect is useSyncExternalStore (see LanguageToggle.tsx), which avoids
-    // this same class of hydration mismatch with no lint suppression. It
-    // isn't used here because localStorage fires no same-tab "storage" event
-    // the way LanguageToggle's browser-navigation events do — porting would
-    // need a small custom notify-on-write store for a value that only ever
-    // changes via this one button, which isn't worth it for that gain.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTheme(readStoredTheme());
-  }, []);
+  // The navbar and the drawer each mount a toggle at the same time, so the
+  // preference cannot live in component state: both read the one store, and
+  // the server snapshot stays "dark" to match the shipped class="dark".
+  const theme = useSyncExternalStore(
+    subscribeToTheme,
+    getThemeSnapshot,
+    getServerThemeSnapshot,
+  );
 
   const apply = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    document.documentElement.classList.toggle("dark", next === "dark");
-    storeTheme(next);
-    setTheme(next);
+    setTheme(theme === "dark" ? "light" : "dark");
     onToggle?.();
   };
 

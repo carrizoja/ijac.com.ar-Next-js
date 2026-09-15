@@ -53,4 +53,27 @@ describe("ThemeToggle", () => {
     fireEvent.click(screen.getByRole("button", { name: "Cambiar a modo claro" }));
     expect(onToggle).toHaveBeenCalledTimes(1);
   });
+
+  it("reflects a returning visitor's stored light preference on mount", () => {
+    window.localStorage.setItem(THEME_STORAGE_KEY, "light");
+
+    render(<ThemeToggle />);
+
+    expect(screen.getByRole("button", { name: "Cambiar a modo oscuro" })).toBeInTheDocument();
+  });
+
+  it("keeps every mounted toggle in sync when one of them is clicked", () => {
+    // The navbar and the drawer both mount a toggle at the same time, hidden
+    // by CSS at different widths. Clicking either one must move both.
+    render(
+      <>
+        <ThemeToggle />
+        <ThemeToggle />
+      </>,
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Cambiar a modo claro" })[0]);
+
+    expect(screen.getAllByRole("button", { name: "Cambiar a modo oscuro" })).toHaveLength(2);
+  });
 });
