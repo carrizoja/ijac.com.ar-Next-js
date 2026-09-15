@@ -67,7 +67,9 @@ Both root layouts (`(es)` and `en`) share `SiteDocument`, so this lands in one p
 
 Two surfaces need a light design invented: the **services listing** and the **service detail** page. Each is one design shared across both locales, since the ES and EN files duplicate the same layout.
 
-Two more are mechanical completions rather than new designs: `NotFoundContent` (seven unpaired classes, conventional layout) and `Testimonials` (already half-paired). They follow the table below without further design decisions.
+One more is a mechanical completion rather than a new design: `Testimonials`, which has just three unpaired classes. It follows the table below without further design decisions.
+
+`NotFoundContent` is **excluded** and stays dark in both themes. An earlier draft of this spec called it mechanical; that was wrong. It is a bespoke dark composition — radial glow gradients with hardcoded near-black stops, a white-on-dark grid behind a fade mask, a cyan `-webkit-text-stroke` numeral and a deep drop shadow. None of that translates by swapping colour classes, and every effect depends on a dark ground, which places it under decision 1 alongside Contact, the banner and the footer.
 
 | Element | Dark (today) | Light |
 | --- | --- | --- |
@@ -88,11 +90,11 @@ The accent stays because it reads on both grounds, which is what keeps the two t
 
 ## Scope
 
-**Changes:** `SiteDocument.tsx`, `Navbarijac.tsx`, `HamburgerMenu.tsx`, `globals.css`, the two services pages ×2 locales, `NotFoundContent.tsx`, `Testimonials.tsx`, plus the three new files above.
+**Changes:** `SiteDocument.tsx`, `Navbarijac.tsx`, `HamburgerMenu.tsx`, `globals.css`, the two services pages ×2 locales, `Testimonials.tsx`, plus the three new files above.
 
 **Untouched:** the 20 theme-ready files, all copy and i18n modules, routing, sitemap, structured data.
 
-**Excluded:** `WhatsApp.tsx` is mounted nowhere and is dead code. Contact, `RemoteSupportBanner` and `Footer` stay dark by decision 1, not by omission.
+**Excluded:** `WhatsApp.tsx` is mounted nowhere and is dead code. Contact, `RemoteSupportBanner`, `Footer` and `NotFoundContent` stay dark by decision 1, not by omission.
 
 ## Risks
 
