@@ -6,6 +6,7 @@ import { RemoteSupportBanner } from "../components/RemoteSupportBanner";
 import { About } from "../components/About";
 import Testimonials from "../components/Testimonials";
 import { Contact } from "../components/Contact";
+import { StructuredData } from "../components/StructuredData";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ijac.com.ar"),
@@ -32,6 +33,7 @@ export const metadata: Metadata = {
 export default function EnglishHomePage() {
   return (
     <>
+      <StructuredData locale="en" />
       <section id="home"><Hero locale="en" /></section>
       <section id="services"><Services locale="en" /></section>
       <RemoteSupportBanner locale="en" />

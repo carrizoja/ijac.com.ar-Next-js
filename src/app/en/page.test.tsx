@@ -20,9 +20,21 @@ vi.mock("../components/Contact", () => ({
   Contact: ({ locale }: { locale?: string }) => <div data-testid="contact" data-locale={locale}>English Contact</div>,
 }));
 
+vi.mock("../components/StructuredData", () => ({
+  StructuredData: ({ locale }: { locale?: string }) => (
+    <div data-testid="structured-data" data-locale={locale} />
+  ),
+}));
+
 import EnglishHomePage, { metadata } from "./page";
 
 describe("English Home page", () => {
+  it("emits English structured data for the business", () => {
+    render(<EnglishHomePage />);
+
+    expect(screen.getByTestId("structured-data")).toHaveAttribute("data-locale", "en");
+  });
+
   it("renders the real localized Home sections in conversion order", () => {
     render(<EnglishHomePage />);
 
