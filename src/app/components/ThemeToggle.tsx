@@ -24,6 +24,13 @@ export function ThemeToggle({ onToggle }: ThemeToggleProps) {
     // One-time sync from localStorage (an external system) on mount, after
     // the server-matching "dark" render above — not a reactive loop, so the
     // cascading-render concern the rule guards against does not apply here.
+    // This codebase's convention for reading an external source without an
+    // effect is useSyncExternalStore (see LanguageToggle.tsx), which avoids
+    // this same class of hydration mismatch with no lint suppression. It
+    // isn't used here because localStorage fires no same-tab "storage" event
+    // the way LanguageToggle's browser-navigation events do — porting would
+    // need a small custom notify-on-write store for a value that only ever
+    // changes via this one button, which isn't worth it for that gain.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(readStoredTheme());
   }, []);
