@@ -1,9 +1,13 @@
 import { Metadata } from 'next';
+import { getSeoAlternates } from '@/i18n/seo';
 import { BackButton } from '../../components/BackButton';
 
 export const metadata: Metadata = {
   title: 'Política de Privacidad',
   description: 'Política de privacidad y tratamiento de datos personales de iJAC IT Solutions',
+  // Spanish-only and noindex: without its own alternates this page
+  // inherits the root layout's and claims the home page as canonical.
+  alternates: getSeoAlternates('/politica-de-privacidad', 'es'),
   robots: {
     index: false,
     follow: false,
