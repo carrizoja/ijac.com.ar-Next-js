@@ -124,12 +124,12 @@ export default function ServicesPage() {
                     <p className="mb-3 text-sm uppercase tracking-[0.22em] text-emerald-300">
                       Servicio {String(index + 1).padStart(2, "0")}
                     </p>
-                    <h2 className="text-2xl font-bold font-heading text-neutral-900 dark:text-white sm:text-3xl">
+                    <h2 className="text-2xl font-bold font-heading text-white sm:text-3xl">
                       <Link href={`/services/${service.slug}`} className="transition hover:text-emerald-200">
                         {service.title}
                       </Link>
                     </h2>
-                    <p className="mt-3 max-w-xl text-sm leading-7 text-neutral-800 dark:text-neutral-200 sm:text-base">
+                    <p className="mt-3 max-w-xl text-sm leading-7 text-neutral-200 sm:text-base">
                       {service.seoIntro}
                     </p>
                   </div>
@@ -182,7 +182,7 @@ export default function ServicesPage() {
         </section>
 
         <section className="px-4 pb-24 sm:px-6 lg:px-8">
-          <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 rounded-3xl border border-neutral-200 bg-gradient-to-r from-white via-neutral-50 to-neutral-800 dark:border-white/10 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800 p-8 sm:p-10 lg:flex-row lg:items-center">
+          <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 rounded-3xl border border-neutral-200 bg-gradient-to-r from-white via-neutral-50 to-neutral-100 dark:border-white/10 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800 p-8 sm:p-10 lg:flex-row lg:items-center">
             <div>
               <h2 className="text-3xl font-bold font-heading text-neutral-900 dark:text-white">
                 Necesitas una solucion a medida?
