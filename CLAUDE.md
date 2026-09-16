@@ -51,15 +51,31 @@ This is a **statically-exported Next.js 16 site** for iJac IT Solutions (https:/
 
 ### Page structure
 
-The site is a single anchor‑navigated page plus three legal/contact pages:
+The site is bilingual. Spanish is unprefixed (`/`), English lives under `/en`. There is
+**no single `src/app/layout.tsx`** — each locale has its own root layout so the static HTML
+carries the correct build-time `<html lang>`:
 
-- `src/app/page.tsx` — composes Hero / Services / About / Testimonials / FAQ / Contact, each wrapped in a `<section id="...">` so the navbar can scroll to them. The section IDs (`servicios`, `nosotros`, `testimonios`, `faq`, `contacto`) are part of the public URL contract — `ClientRedirect` and `Navbarijac` both reference them.
-- `src/app/contact/page.tsx`, `src/app/politica-de-privacidad/`, `src/app/terminos-y-condiciones/` — standalone routes.
-- `src/app/layout.tsx` — root layout. Forces `<html className="dark">` (the site is dark‑mode only), wires Inter + Space Grotesk via `next/font`, injects Google Analytics via `next/script`, and renders the chrome (NavbarIjac for ≥700px, HamburgerMenu below, Footer, AIChat, CookieConsent).
+- `src/app/(es)/layout.tsx` — Spanish root layout. `(es)` is a route group, so it adds nothing to the URL. Uses `spanishMetadata` from `SiteDocument`.
+- `src/app/en/layout.tsx` — English root layout. Only sets `metadataBase`; English pages supply their own metadata.
+- `src/app/components/SiteDocument.tsx` — the shared `<html>`/`<body>` both layouts render with a `locale` prop. It owns fonts (Inter + Space Grotesk via `next/font`), the theme bootstrap script, Google Analytics, and the chrome (NavbarIjac at ≥760px, HamburgerMenu below, Footer, AIChat, CookieConsent, ClientRedirect, PerformanceMonitor). Change document-wide concerns here, not in a layout.
+- `src/app/global-not-found.tsx` — the 404 is a complete document (`experimental.globalNotFound` in `next.config.ts`), rendered through `SiteDocument` with `locale="es"`.
+
+Routes (Spanish under `src/app/(es)/`, English under `src/app/en/`):
+
+- `page.tsx` — anchor-navigated home (Hero / Services / About / Testimonials / FAQ / Contact), each in a `<section id="...">`. Section IDs are locale-specific and part of the public URL contract: Spanish `servicios`, `nosotros`, `testimonios`, `contacto`; English `services`, `about`, `testimonials`, `contact`. The map lives in `homeSectionIds` in `src/i18n/routing.ts`; `ClientRedirect` and the navigation resolve hrefs through it.
+- `services/page.tsx` and `services/[slug]/page.tsx` — services listing and detail pages. English slugs differ from the canonical Spanish ones; the mapping is in `src/i18n/services/catalog.ts`.
+- `contact/page.tsx` — both locales.
+- `politica-de-privacidad/`, `terminos-y-condiciones/` — Spanish only.
+
+### Localization
+
+- `src/i18n/routing.ts` — locale helpers (`getLocaleFromPath`, `localizePath`, `getLocaleHref`, `getNavHref`, `availableEnglishPaths`). Locale is always derived from the URL (`usePathname()` in client components); there is no locale storage or middleware.
+- Copy lives in `src/i18n/` as `Record<Locale, …>` modules (`chrome/`, `home/`, `services/`, `faq.ts`, `chat.ts`, `theme.ts`, `seo.ts`, `structured-data.ts`). New user-facing text goes there, not inline in components.
+- When adding an English route, also add it to `availableEnglishPaths` so the language toggle links to it instead of falling back to `/en`.
 
 ### Legacy URL handling
 
-`src/app/components/ClientRedirect.tsx` is mounted in the root layout and runs on every navigation. It maps legacy paths (`/services`, `/about`, `/wp-admin`, `*.html`, `*.php`, …) to either the anchor sections on `/` or to `/`. This is how the static export handles inbound links from the old WordPress site — when adding new section IDs or routes, update the `redirectMap` so old URLs keep resolving.
+`src/app/components/ClientRedirect.tsx` is mounted in `SiteDocument` and runs on every navigation. It maps legacy paths (`/about`, `/servicios`, `/wp-admin`, `*.html`, `*.php`, …) to the anchor sections or pages of the home, keeping the visitor inside their locale (`/en/servicios` → `/en/services`). This is how the static export handles inbound links from the old WordPress site — when adding new section IDs or routes, update the `redirectMap` so old URLs keep resolving.
 
 ### Styling
 
@@ -67,6 +83,16 @@ The site is a single anchor‑navigated page plus three legal/contact pages:
 - Fonts: Inter (`--font-inter`, body) and Space Grotesk (`--font-space-grotesk`, headings) loaded via `next/font/google`; SphereFez declared via `@font-face` from `/public/fonts/`. Use the `font-heading` / `font-body` utility classes from `globals.css`.
 - shadcn/ui is configured (`components.json`, "new-york" style, lucide icons, `@/components/ui` alias) but components live under `src/app/components/ui/` rather than `src/components/ui/` — the shadcn alias resolves there because of the `@/* → ./src/*` path mapping plus how files are referenced. New shadcn components added via the CLI may land in a different path; verify before importing.
 - `cn()` helper at `src/app/lib/utils.tsx` (clsx + tailwind-merge).
+
+### Light / dark theme
+
+Dark is the default; light is an opt-in remembered per visitor. Design rationale: `docs/superpowers/specs/2026-09-15-light-mode-design.md`.
+
+- `SiteDocument` always ships `<html class="dark">`. An inline, synchronous `themeBootstrapScript` in `<head>` removes the class before first paint only when `localStorage['ijac-theme'] === 'light'`. First visits are always dark — the OS `prefers-color-scheme` is deliberately ignored. Keep that script inline; a deferred script would flash.
+- `src/app/lib/theme.ts` — storage and application logic. `localStorage` is the single source of truth, read through `useSyncExternalStore`; every access is wrapped because storage can throw, and the failure mode is "stays dark".
+- `src/app/components/ThemeToggle.tsx` — sun/moon icon button, mounted in both NavbarIjac and HamburgerMenu. Labels come from `src/i18n/theme.ts`.
+- Theming uses the `.dark` class (Tailwind `dark:` variant), not `data-theme`. **Every dark-only color class needs a light counterpart** (`text-gray-900 dark:text-white`); a missed pair is invisible text that you won't notice while developing in dark.
+- Intentionally dark in both themes: Contact, `RemoteSupportBanner`, `Footer`, and `NotFoundContent` (their glass/glow effects need a dark ground). Don't "fix" them to light.
 
 ### Path alias
 
@@ -76,13 +102,13 @@ The site is a single anchor‑navigated page plus three legal/contact pages:
 
 Three coordinated pieces — keep them in sync when business info changes:
 
-1. `src/app/layout.tsx` — `metadata` (title template, OG, Twitter, keywords, `metadataBase`).
-2. `src/app/components/StructuredData.tsx` — JSON‑LD `Organization` + `LocalBusiness` schema (phone, address, geo). Rendered from `page.tsx`.
-3. `src/app/sitemap.ts` + `src/app/robots.ts` — must list any new public routes.
+1. `spanishMetadata` in `src/app/components/SiteDocument.tsx` (title template, OG, Twitter, keywords, `metadataBase`), plus per-page English metadata. `src/i18n/seo.ts` builds the hreflang `alternates`.
+2. `src/app/components/StructuredData.tsx` — JSON‑LD `Organization` + `LocalBusiness` schema (phone, address, geo), taking a `locale` prop; localized fields come from `src/i18n/structured-data.ts`. Rendered from both home pages.
+3. `src/app/sitemap.ts` + `src/app/robots.ts` — must list any new public routes. The sitemap emits reciprocal ES/EN pairs with shared hreflang alternates, and URLs need the trailing slash.
 
 ### Analytics & performance
 
-- GA4 (`G-8NYPRQK16F`) is hardcoded in `layout.tsx` via `next/script` with `strategy="lazyOnload"`.
+- GA4 (`G-8NYPRQK16F`) is hardcoded in `SiteDocument.tsx` via `next/script` with `strategy="lazyOnload"`.
 - `PerformanceMonitor.tsx` reports Core Web Vitals (LCP/FID/CLS/FCP/TTFB) to GA via `gtag('event', ...)`. It runs only when `window.gtag` exists, so it's a no‑op without consent/GA loaded.
 - `CookieConsent.tsx` handles GDPR‑style consent banner.
 
