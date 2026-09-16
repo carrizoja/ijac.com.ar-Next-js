@@ -65,12 +65,21 @@ function Navbar({ className }: { className?: string }) {
           <div className="flex justify-center">
             <Link href={homePath} title={copy.logoTitle} className="flex items-center mr-4">
               <Image
+                src="/logo_ijac_pos.png"
+                alt="IJAC Logo"
+                title="IJAC IT Solutions Logo"
+                width={218}
+                height={177}
+                className="w-12 h-auto dark:hidden hover:scale-110 transition-transform duration-300"
+                priority
+              />
+<Image
                 src="/ijac-logo.png"
                 alt="IJAC Logo"
                 title="IJAC IT Solutions Logo"
                 width={320}
                 height={315}
-                className="w-10 h-auto hover:scale-110 transition-transform duration-300"
+                className="hidden dark:block w-10 h-auto hover:scale-110 transition-transform duration-300"
                 priority
               />
             </Link>
