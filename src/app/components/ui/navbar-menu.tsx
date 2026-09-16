@@ -56,7 +56,7 @@ export const Menu = ({
 }) => {
   return (
     <nav
-      className="relative rounded-xl border border-transparent dark:bg-neutral-900 dark:border-white/[0.2] bg-gray-50 shadow-input flex justify-center items-center space-x-2 px-4 py-4 mx-auto w-4/5"
+      className="relative rounded-xl border border-transparent dark:bg-neutral-900 dark:border-white/[0.2] bg-gray-50 shadow-input flex justify-center items-center space-x-2 px-4 py-4 mx-auto w-[92%]"
     >
       {children}
     </nav>
