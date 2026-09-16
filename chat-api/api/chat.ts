@@ -18,9 +18,11 @@ const app = createChatApp(process.env);
  * below is written against the Web API, so the wrong shape deploys cleanly and then throws on
  * every request. Node is the default runtime, so no `config` export is needed to select it.
  */
-export default {
+const handler = {
   async fetch(request: Request): Promise<Response> {
     if (!app.ok) return new Response(null, { status: 503 });
     return app.handler(request);
   },
 };
+
+export default handler;
