@@ -19,6 +19,21 @@ describe("RemoteSupportBanner", () => {
     expect(screen.getByText(/sin importar la ciudad o el país/i)).toBeInTheDocument();
   });
 
+  it("shows the TeamViewer illustration as an optimized, decorative Cloudinary image", () => {
+    const { container } = render(<RemoteSupportBanner />);
+
+    const image = container.querySelector("img");
+    expect(image).not.toBeNull();
+    expect(image).toHaveAttribute(
+      "src",
+      "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,w_960/v1789576479/ijac/teamviewer_jnywg9.png",
+    );
+    expect(image).toHaveAttribute("alt", "");
+    expect(image).toHaveAttribute("width", "1672");
+    expect(image).toHaveAttribute("height", "941");
+    expect(container.querySelector("svg")).toBeNull();
+  });
+
   it("links the support CTA to the established WhatsApp destination", () => {
     render(<RemoteSupportBanner />);
 

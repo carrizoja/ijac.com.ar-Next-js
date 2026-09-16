@@ -1,7 +1,12 @@
+import Image from "next/image";
 import { PrimaryButton } from "./ui/PrimaryButton";
 import { remoteSupportContent } from "@/i18n/home/remote-support";
 import type { Locale } from "@/i18n/routing";
 import { getWhatsAppUrl } from "@/i18n/whatsapp";
+
+/** Static export disables the next/image optimizer, so Cloudinary does the resizing. */
+const TEAMVIEWER_ILLUSTRATION =
+  "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,w_960/v1789576479/ijac/teamviewer_jnywg9.png";
 
 export function RemoteSupportBanner({ locale = "es" }: { locale?: Locale }) {
   const content = remoteSupportContent[locale];
@@ -49,19 +54,18 @@ export function RemoteSupportBanner({ locale = "es" }: { locale?: Locale }) {
         </div>
 
         <div aria-hidden="true" className="relative mx-auto w-full max-w-md py-6">
-          <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full border border-sky-300/20 bg-sky-500/10 shadow-[0_0_80px_rgba(14,142,233,0.35)]" />
-          <div className="relative mx-auto w-[82%] rounded-xl border border-white/20 bg-gradient-to-b from-slate-800 to-slate-950 p-2 shadow-2xl">
-            <div className="grid aspect-[16/10] place-items-center overflow-hidden rounded-lg border border-sky-400/20 bg-[radial-gradient(circle_at_center,rgba(14,142,233,0.28),#020617_68%)]">
-              <div className="grid h-20 w-20 place-items-center rounded-2xl border border-sky-200/40 bg-sky-500 shadow-[0_0_35px_rgba(56,189,248,0.5)]">
-                <svg viewBox="0 0 48 48" className="h-11 w-11 text-white" fill="none">
-                  <path d="M8 24h32M8 24l7-7M8 24l7 7M40 24l-7-7M40 24l-7 7" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div className="relative mx-auto h-3 w-[96%] rounded-b-xl border-x border-b border-white/15 bg-gradient-to-b from-slate-600 to-slate-900" />
-          <div className="relative mx-auto h-1.5 w-[38%] rounded-b-full bg-slate-700" />
-          <div className="mt-7 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200">
+          <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-500/10 shadow-[0_0_80px_rgba(14,142,233,0.35)]" />
+          {/* The illustration ships on its own near-black ground; the radial mask fades its
+              edges into the banner so no rectangle shows against the gradient. */}
+          <Image
+            src={TEAMVIEWER_ILLUSTRATION}
+            alt=""
+            width={1672}
+            height={941}
+            unoptimized
+            className="relative h-auto w-full [mask-image:radial-gradient(closest-side,black_45%,transparent)]"
+          />
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200">
             <span className="h-2 w-2 rounded-full bg-emerald-400" />
             {content.status}
           </div>
