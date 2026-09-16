@@ -63,10 +63,10 @@ function Navbar({ className }: { className?: string }) {
         <div className="flex flex-row items-center gap-2">
           {/* Logo */}
           <div className="flex justify-center">
-            <Link href={homePath} title={copy.logoTitle} className="flex items-center mr-4">
+            <Link href={homePath} title={copy.logoTitle} aria-label={copy.logoTitle} className="flex items-center mr-4">
               <Image
                 src="/logo_ijac_pos.png"
-                alt="IJAC Logo"
+                alt=""
                 title="IJAC IT Solutions Logo"
                 width={218}
                 height={177}
@@ -75,7 +75,7 @@ function Navbar({ className }: { className?: string }) {
               />
 <Image
                 src="/ijac-logo.png"
-                alt="IJAC Logo"
+                alt=""
                 title="IJAC IT Solutions Logo"
                 width={320}
                 height={315}

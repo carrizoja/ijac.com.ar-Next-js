@@ -65,9 +65,37 @@ export function HamburgerMenu() {
 
   return (
     <>
-      {/* Fixed Header with Hamburger Button Only */}
-      <div className="fixed top-4 right-4 z-[100]">
-        <div className="flex items-center justify-end">
+      {/* Fixed Header: brand on the left, menu control on the right */}
+      <div className="fixed top-4 inset-x-4 z-[100]">
+        <div className="flex items-center justify-between">
+          {/* Logo — same light/dark pairing as the desktop navbar, since this
+              bar sits on the page ground and goes light in light mode. */}
+          <Link
+            href={homePath}
+            title={navCopy.logoTitle}
+            aria-label={navCopy.logoTitle}
+            className="flex h-10 items-center rounded-lg border border-gray-200 bg-gray-50 px-2.5 shadow-lg transition-colors hover:bg-gray-100 dark:border-white/[0.2] dark:bg-neutral-900 dark:hover:bg-neutral-800"
+          >
+            <Image
+              src="/logo_ijac_pos.png"
+              alt=""
+              title="IJAC IT Solutions Logo"
+              width={218}
+              height={177}
+              className="w-[34px] h-auto dark:hidden"
+              priority
+            />
+            <Image
+              src="/ijac-logo.png"
+              alt=""
+              title="IJAC IT Solutions Logo"
+              width={320}
+              height={315}
+              className="hidden dark:block w-7 h-auto"
+              priority
+            />
+          </Link>
+
           {/* Hamburger Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -211,7 +239,7 @@ export function HamburgerMenu() {
                 <div className="flex justify-center mb-6">
                   <Image
                     src="/logo_ijac_pos.png"
-                    alt="IJAC Logo"
+                    alt=""
                     title="IJAC IT Solutions Logo"
                     width={218}
                     height={177}
@@ -220,7 +248,7 @@ export function HamburgerMenu() {
                   />
 <Image
                     src="/ijac-logo.png"
-                    alt="IJAC Logo"
+                    alt=""
                     title="IJAC IT Solutions Logo"
                     width={320}
                     height={315}
