@@ -55,15 +55,15 @@ function Navbar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed top-4 inset-x-0 max-w-2xl mx-auto z-[100]",
+        "fixed top-4 inset-x-0 max-w-3xl mx-auto z-[100]",
         className
       )}
     >
       <Menu>
         <div className="flex flex-row items-center gap-2">
           {/* Logo */}
-          <div className="flex justify-center">
-            <Link href={homePath} title={copy.logoTitle} aria-label={copy.logoTitle} className="flex shrink-0 items-center mr-4">
+          <div className="flex shrink-0 justify-center">
+            <Link href={homePath} title={copy.logoTitle} aria-label={copy.logoTitle} className="flex shrink-0 items-center px-2">
               <Image
                 src="/logo_ijac_pos.png"
                 alt=""
