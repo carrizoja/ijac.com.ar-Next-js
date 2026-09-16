@@ -63,7 +63,7 @@ function Navbar({ className }: { className?: string }) {
         <div className="flex flex-row items-center gap-2">
           {/* Logo */}
           <div className="flex justify-center">
-            <Link href={homePath} title={copy.logoTitle} aria-label={copy.logoTitle} className="flex items-center mr-4">
+            <Link href={homePath} title={copy.logoTitle} aria-label={copy.logoTitle} className="flex shrink-0 items-center mr-4">
               <Image
                 src="/logo_ijac_pos.png"
                 alt=""
