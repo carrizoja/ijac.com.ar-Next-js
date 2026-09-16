@@ -47,12 +47,24 @@ export function Hero({ locale = "es" }: { locale?: Locale }) {
           className="flex justify-center mb-3 md:mb-4"
         >
           <Image
+            src="/logo_ijac_pos.png"
+            alt="iJAC IT Solutions Logo"
+            title="iJAC IT Solutions Logo"
+            width={218}
+            height={177}
+            className="w-[97px] h-auto md:w-[116px] lg:w-[136px] dark:hidden"
+            priority={true}
+            loading="eager"
+            quality={90}
+            sizes="(max-width: 768px) 80px, (max-width: 1024px) 96px, 112px"
+          />
+<Image
             src="/ijac-logo.png"
             alt="iJAC IT Solutions Logo"
             title="iJAC IT Solutions Logo"
             width={320}
             height={315}
-            className="w-20 h-auto md:w-24 lg:w-28"
+            className="hidden dark:block w-20 h-auto md:w-24 lg:w-28"
             priority={true}
             loading="eager"
             quality={90}
