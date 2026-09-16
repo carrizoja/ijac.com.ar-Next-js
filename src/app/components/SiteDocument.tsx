@@ -150,10 +150,10 @@ export default function SiteDocument({
         <PerformanceMonitor />
         <ClientRedirect />
         <div className="min-h-screen overflow-x-hidden">
-          <div className="hidden min-[700px]:block">
+          <div className="hidden min-[760px]:block">
             <NavbarIjac />
           </div>
-          <div className="block min-[700px]:hidden">
+          <div className="block min-[760px]:hidden">
             <HamburgerMenu />
           </div>
           {children}

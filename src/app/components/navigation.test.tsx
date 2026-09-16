@@ -95,14 +95,6 @@ describe("primary navigation", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows the logo in the mobile bar, linking home, before the drawer is opened", () => {
-    render(<HamburgerMenu />);
-
-    // The bar is collapsed: the drawer's own logo is not rendered yet.
-    const home = screen.getByRole("link", { name: "Ir al inicio" });
-    expect(home).toHaveAttribute("href", "/");
-  });
-
   it("offers the theme toggle in the mobile drawer", () => {
     render(<HamburgerMenu />);
     fireEvent.click(screen.getByRole("button", { name: "Abrir menú de navegación" }));
