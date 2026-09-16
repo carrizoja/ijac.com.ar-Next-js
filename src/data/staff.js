@@ -5,7 +5,7 @@ export const staffMembers = [
     position: "Systems Engineer",
     initials: "JC",
     color: "from-blue-500 to-purple-600",
-    avatar: "https://res.cloudinary.com/dovghglgj/image/upload/v1755356331/ijac/Staff/ijac/ijac_jse_usqpbq.jpg"
+    avatar: "https://res.cloudinary.com/dovghglgj/image/upload/v1789578387/ijac/Staff/ijac/perfil2020op2_f0ao5o.png"
   },
   {
     id: 2,

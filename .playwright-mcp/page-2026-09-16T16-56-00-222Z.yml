@@ -1,0 +1,247 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "Ir al inicio" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img "IJAC IT Solutions Logo" [ref=e8]
+        - generic [ref=e9]:
+          - link "Servicios" [ref=e11] [cursor=pointer]:
+            - /url: /services/
+          - link "Nosotros" [ref=e13] [cursor=pointer]:
+            - /url: /#nosotros
+          - link "Testimonios" [ref=e15] [cursor=pointer]:
+            - /url: /#testimonios
+          - link "Contacto" [ref=e17] [cursor=pointer]:
+            - /url: /contact/
+        - group "Selector de idioma" [ref=e19]:
+          - 'link "Idioma actual: Español" [ref=e20] [cursor=pointer]':
+            - /url: /
+            - generic [ref=e21]: ES
+          - link "Ver esta página en inglés" [ref=e24] [cursor=pointer]:
+            - /url: /en
+            - generic [ref=e25]: EN
+        - button "Cambiar a modo claro" [ref=e26]
+    - generic [ref=e31]:
+      - heading "Soluciones Informáticas y Desarrollo Web" [level=1] [ref=e32]
+      - generic [ref=e33]:
+        - img "iJAC IT Solutions Logo" [ref=e35]
+        - heading "iJac IT Solutions" [level=2] [ref=e36]
+      - generic [ref=e39]:
+        - generic:
+          - generic [ref=e40]: Hacemos
+          - generic [ref=e41]: ingeniería
+          - generic [ref=e42]: para
+          - generic [ref=e43]: un
+          - generic [ref=e44]: mundo
+          - generic [ref=e45]: más
+          - generic [ref=e46]: inteligente.
+      - button "Contactanos" [ref=e50] [cursor=pointer]
+    - generic [ref=e54]:
+      - heading "Nuestros Servicios de Tecnología" [level=2] [ref=e55]
+      - paragraph [ref=e56]: Descubre nuestros servicios destacados y visita la pagina de servicios para explorar el catalogo completo, con mas soluciones, detalles y alternativas para tu necesidad.
+      - generic [ref=e57]:
+        - link "Ciberseguridad y Protección de Datos para Empresas" [ref=e58] [cursor=pointer]:
+          - /url: /services/ciberseguridad-proteccion-datos/
+          - img "Ciberseguridad y protección de datos para empresas en Buenos Aires" [ref=e59]
+          - generic [ref=e61]:
+            - heading "Ciberseguridad y Protección de Datos para Empresas" [level=3] [ref=e62]
+            - heading "Control de Firewalls en equipos y routers - Monitoreo de Red Local - Administración de redes y Usuarios - Instalación de Antivirus y Anti Malware - Instalación de cámaras de seguridad" [level=4] [ref=e63]
+        - link "Desarrollo de Sitios Web y Aplicaciones Móviles" [ref=e64] [cursor=pointer]:
+          - /url: /services/desarrollo-web-apps/
+          - img "Desarrollo de sitios web y aplicaciones móviles en Buenos Aires" [ref=e65]
+          - generic [ref=e67]:
+            - heading "Desarrollo de Sitios Web y Aplicaciones Móviles" [level=3] [ref=e68]
+            - heading "Diseño y desarrollo de sitios web responsivos - Creación de aplicaciones web interactivas - Optimización SEO, SEM y GEO para motores de búsqueda - Mantenimiento y actualización de sitios existentes" [level=4] [ref=e69]
+        - link "Soporte Técnico para PC, Mac y Apple en Almagro - CABA" [ref=e70] [cursor=pointer]:
+          - /url: /services/soporte-tecnico-pc-mac-apple/
+          - img "Servicio técnico Apple, Mac y PC en Almagro CABA" [ref=e71]
+          - generic [ref=e73]:
+            - heading "Soporte Técnico para PC, Mac y Apple en Almagro - CABA" [level=3] [ref=e74]
+            - heading "Diagnóstico y resolución de problemas de hardware y software - Mantenimiento preventivo y correctivo - Asesoramiento técnico - Configuración de pcs y macbook pro, mac mini, imac, iphone y ipad" [level=4] [ref=e75]
+        - link "Instalación de Redes WiFi y Cableado Estructurado" [ref=e76] [cursor=pointer]:
+          - /url: /services/redes-wifi-cableado/
+          - img "Instalación de redes WiFi y cableado estructurado en Buenos Aires" [ref=e77]
+          - generic [ref=e79]:
+            - heading "Instalación de Redes WiFi y Cableado Estructurado" [level=3] [ref=e80]
+            - heading "Instalación de redes cableadas y WiFi - Configuración de routers y puntos de acceso - Monitoreo y optimización de redes - Solución de problemas de conectividad" [level=4] [ref=e81]
+      - link "Ver todos los servicios" [ref=e84] [cursor=pointer]:
+        - /url: /services/
+    - region [ref=e87]:
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - paragraph [ref=e92]: Soporte remoto profesional
+          - heading "Asistencia remota con TeamViewer, estés donde estés" [level=2] [ref=e93]
+          - paragraph [ref=e94]: iJAC utiliza licencias profesionales de TeamViewer para brindar soporte técnico remoto a personas y empresas, sin importar la ciudad o el país.
+          - paragraph [ref=e95]: Coordinamos cada asistencia por nuestros canales habituales y nos conectamos únicamente cuando lo necesitás.
+          - link "Consultar por soporte remoto" [ref=e97] [cursor=pointer]:
+            - /url: https://wa.me/541130862409?text=Hola%20iJAC%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20sus%20servicios
+        - generic [ref=e102]: Atención coordinada a distancia
+    - generic [ref=e106]:
+      - generic [ref=e107]:
+        - heading "Expertos en Transformación Digital" [level=2] [ref=e108]
+        - paragraph [ref=e109]: Somos una empresa líder en desarrollo web y soporte técnico en Argentina
+      - generic [ref=e110]:
+        - generic [ref=e111]:
+          - paragraph [ref=e114]: En iJac IT Solutions, somos una empresa de software en Argentina con sede en Almagro, Buenos Aires,especializada en brindar soluciones informáticas que impulsen el crecimiento de tu negocio.
+          - paragraph [ref=e115]: Nuestro equipo de especialistas trabaja para ofrecer servicios integrales, desde el diseño web hasta el soporte técnico en CABA, garantizando una consultoría IT de primer nivel adaptada al mercado argentino y regional.
+          - generic [ref=e116]:
+            - generic [ref=e117]:
+              - generic [ref=e118]: 0+
+              - paragraph [ref=e119]: Proyectos Completados
+            - generic [ref=e120]:
+              - generic [ref=e121]: 0%
+              - paragraph [ref=e122]: Satisfacción del Cliente
+        - generic [ref=e124]:
+          - heading "Nuestra Misión" [level=3] [ref=e125]
+          - paragraph [ref=e126]: Democratizar el acceso a la ingeniería de software en Argentina para que pymes, emprendedores y particulares cuenten con herramientas tecnológicas competitivas, seguras y de alta calidad.
+          - generic [ref=e127]:
+            - generic [ref=e128]: 🚀
+            - generic [ref=e130]:
+              - paragraph [ref=e131]: Innovación Constante
+              - paragraph [ref=e132]: Siempre a la vanguardia tecnológica
+      - generic [ref=e135]:
+        - generic [ref=e136]:
+          - heading "NuestroEquipo" [level=2] [ref=e137]
+          - paragraph [ref=e138]: Un staff de profesionales especializados y comprometidos con la excelencia y la innovación tecnológica para hacer realidad tus proyectos.
+        - generic [ref=e139]:
+          - generic [ref=e141]:
+            - img "José Carrizo" [ref=e144]
+            - generic [ref=e145]:
+              - heading "José Carrizo" [level=3] [ref=e146]
+              - paragraph [ref=e147]: Systems Engineer
+          - generic [ref=e152]:
+            - img "Alejandro Gutiérrez" [ref=e155]
+            - generic [ref=e156]:
+              - heading "Alejandro Gutiérrez" [level=3] [ref=e157]
+              - paragraph [ref=e158]: Graphic Designer
+          - generic [ref=e163]:
+            - img "Sofía Ceria" [ref=e166]
+            - generic [ref=e167]:
+              - heading "Sofía Ceria" [level=3] [ref=e168]
+              - paragraph [ref=e169]: UX/UI Tester Assistant
+          - generic [ref=e174]:
+            - img "Laura Bondoni" [ref=e177]
+            - generic [ref=e178]:
+              - heading "Laura Bondoni" [level=3] [ref=e179]
+              - paragraph [ref=e180]: Graphic Designer - UxUi
+          - generic [ref=e185]:
+            - img "Fernando Becerra" [ref=e188]
+            - generic [ref=e189]:
+              - heading "Fernando Becerra" [level=3] [ref=e190]
+              - paragraph [ref=e191]: BA- QA
+          - generic [ref=e196]:
+            - img "Facundo Argüello" [ref=e199]
+            - generic [ref=e200]:
+              - heading "Facundo Argüello" [level=3] [ref=e201]
+              - paragraph [ref=e202]: Help Desk - IT Support
+    - generic [ref=e207]:
+      - heading "Lo que dicen nuestros clientes" [level=2] [ref=e208]
+      - generic [ref=e210]:
+        - link "Ver la reseña de Teresa Mazzinghi en Google (se abre en una pestaña nueva)" [ref=e212] [cursor=pointer]:
+          - /url: https://www.google.com/search?q=iJac+IT+Solutions&stick=H4sIAAAAAAAA_-NgU1IxqEhMMTIzSDY2TzEwSDI3SkmzMqgwszAyM7RINTYzNzG0NDJZxCqY6ZWYrOAZohCcn1NakpmfVwwAds0hmTwAAAA&hl=en&mat=CWkwyxYrUb-hElYBTVDHnpR83i7F5XykXyrKvYbyIuGJiZ3mM6P4BmbAp-21ZWHFgMdfLFvKj7aJlTNYXqBtx4FFcV3rxqA__RgnjPZsM1PHGy54NxYr2vgXCi0eySzeYg&authuser=0
+          - generic [ref=e213]:
+            - img "Teresa Mazzinghi" [ref=e214]
+            - img "5 de 5 estrellas" [ref=e215]:
+              - generic [aria-hidden] [ref=e216]: ★
+              - generic [aria-hidden] [ref=e217]: ★
+              - generic [aria-hidden] [ref=e218]: ★
+              - generic [aria-hidden] [ref=e219]: ★
+              - generic [aria-hidden] [ref=e220]: ★
+            - blockquote [ref=e221]: “Excelente. Muy rápido, un genio y con buen precio. Además de todo lo que sabe!!! Recomiendo 100%”
+            - generic [ref=e222]:
+              - generic [ref=e223]: Teresa Mazzinghi
+              - paragraph [ref=e224]: 2 weeks ago
+              - paragraph [ref=e225]: Reseña de Google ↗
+        - link "Ver la reseña de Héctor Rodríguez en Google (se abre en una pestaña nueva)" [ref=e227] [cursor=pointer]:
+          - /url: https://www.google.com/search?q=iJac+IT+Solutions&stick=H4sIAAAAAAAA_-NgU1IxqEhMMTIzSDY2TzEwSDI3SkmzMqgwszAyM7RINTYzNzG0NDJZxCqY6ZWYrOAZohCcn1NakpmfVwwAds0hmTwAAAA&hl=en&mat=CWkwyxYrUb-hElYBTVDHnpR83i7F5XykXyrKvYbyIuGJiZ3mM6P4BmbAp-21ZWHFgMdfLFvKj7aJlTNYXqBtx4FFcV3rxqA__RgnjPZsM1PHGy54NxYr2vgXCi0eySzeYg&authuser=0
+          - generic [ref=e228]:
+            - img "Héctor Rodríguez" [ref=e229]
+            - img "5 de 5 estrellas" [ref=e230]:
+              - generic [aria-hidden] [ref=e231]: ★
+              - generic [aria-hidden] [ref=e232]: ★
+              - generic [aria-hidden] [ref=e233]: ★
+              - generic [aria-hidden] [ref=e234]: ★
+              - generic [aria-hidden] [ref=e235]: ★
+            - blockquote [ref=e236]: “Desde hace más de una década, cada vez que debí recurrir a iJac IT Solutions, me solucionaron el problema. Doy fe de su profesionalismo, eficiencia y seriedad. Lo recomiendo enfáticamente.”
+            - generic [ref=e237]:
+              - generic [ref=e238]: Héctor Rodríguez
+              - paragraph [ref=e239]: 3 weeks ago
+              - paragraph [ref=e240]: Reseña de Google ↗
+        - link "Ver la reseña de Juan Manuel Marchevsky en Google (se abre en una pestaña nueva)" [ref=e242] [cursor=pointer]:
+          - /url: https://www.google.com/search?q=iJac+IT+Solutions&stick=H4sIAAAAAAAA_-NgU1IxqEhMMTIzSDY2TzEwSDI3SkmzMqgwszAyM7RINTYzNzG0NDJZxCqY6ZWYrOAZohCcn1NakpmfVwwAds0hmTwAAAA&hl=en&mat=CWkwyxYrUb-hElYBTVDHnpR83i7F5XykXyrKvYbyIuGJiZ3mM6P4BmbAp-21ZWHFgMdfLFvKj7aJlTNYXqBtx4FFcV3rxqA__RgnjPZsM1PHGy54NxYr2vgXCi0eySzeYg&authuser=0
+          - generic [ref=e243]:
+            - img "Juan Manuel Marchevsky" [ref=e244]
+            - img "5 de 5 estrellas" [ref=e245]:
+              - generic [aria-hidden] [ref=e246]: ★
+              - generic [aria-hidden] [ref=e247]: ★
+              - generic [aria-hidden] [ref=e248]: ★
+              - generic [aria-hidden] [ref=e249]: ★
+              - generic [aria-hidden] [ref=e250]: ★
+            - blockquote [ref=e251]: “Quiero destacar la excelente experiencia que tuve con IJAC IT. Desde el primer contacto demostraron un alto nivel de profesionalismo, compromiso y conocimiento técnico. Entendieron rápidamente nuestras necesidades y ofrecieron soluciones claras, eficientes y bien pensadas. El equipo es muy atento, responde con rapidez y transmite confianza desde el primer momento. Además, se nota que trabajan con responsabilidad y buscan realmente aportar valor, no solo resolver problemas puntuales. Sin dudas, es una empresa recomendable para quienes buscan servicios IT de calidad. Muchas gracias!”
+            - generic [ref=e252]:
+              - generic [ref=e253]: Juan Manuel Marchevsky
+              - paragraph [ref=e254]: 19 weeks ago
+              - paragraph [ref=e255]: Reseña de Google ↗
+        - link "Ver la reseña de jose luis carmona en Google (se abre en una pestaña nueva)" [ref=e257] [cursor=pointer]:
+          - /url: https://www.google.com/search?q=iJac+IT+Solutions&stick=H4sIAAAAAAAA_-NgU1IxqEhMMTIzSDY2TzEwSDI3SkmzMqgwszAyM7RINTYzNzG0NDJZxCqY6ZWYrOAZohCcn1NakpmfVwwAds0hmTwAAAA&hl=en&mat=CWkwyxYrUb-hElYBTVDHnpR83i7F5XykXyrKvYbyIuGJiZ3mM6P4BmbAp-21ZWHFgMdfLFvKj7aJlTNYXqBtx4FFcV3rxqA__RgnjPZsM1PHGy54NxYr2vgXCi0eySzeYg&authuser=0
+          - generic [ref=e258]:
+            - img "jose luis carmona" [ref=e259]
+            - img "5 de 5 estrellas" [ref=e260]:
+              - generic [aria-hidden] [ref=e261]: ★
+              - generic [aria-hidden] [ref=e262]: ★
+              - generic [aria-hidden] [ref=e263]: ★
+              - generic [aria-hidden] [ref=e264]: ★
+              - generic [aria-hidden] [ref=e265]: ★
+            - blockquote [ref=e266]: “Quiero destacar el Servicio Técnico brindado desde hace años por el Ingeniero José Carrizo. Solucionando...aconsejando y mejorando todo lo referido a Computadoras....Tablets, etc. Mucha seriedad y resolución concreta..ante los inconvenientes que pueden surgir en el uso de equipos. Una persona y profesional. Muy CONFIABLE.”
+            - generic [ref=e267]:
+              - generic [ref=e268]: jose luis carmona
+              - paragraph [ref=e269]: 28 weeks ago
+              - paragraph [ref=e270]: Reseña de Google ↗
+    - generic [ref=e276]:
+      - generic [ref=e277]:
+        - heading "Contactanos" [level=2] [ref=e278]
+        - paragraph [ref=e279]: Estamos acá para ayudarte con tus necesidades tecnológicas. No dudes en contactarnos por cualquiera de estos medios.
+      - generic [ref=e280]:
+        - link [ref=e281] [cursor=pointer]:
+          - /url: https://maps.google.com/?q=Almagro,Buenos Aires,Argentina
+          - generic [ref=e287]:
+            - heading "Ubicación" [level=3] [ref=e288]
+            - paragraph [ref=e289]: Almagro, Buenos Aires
+            - paragraph [ref=e290]: Argentina
+        - link [ref=e292] [cursor=pointer]:
+          - /url: https://www.instagram.com/ijacsi/
+          - generic [ref=e297]:
+            - heading "Instagram" [level=3] [ref=e298]
+            - paragraph [ref=e299]: "@ijacsi"
+            - paragraph [ref=e300]: Seguinos en Instagram
+        - link [ref=e302] [cursor=pointer]:
+          - /url: https://wa.me/541130862409?text=Hola%20iJAC%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20sus%20servicios
+          - generic [ref=e307]:
+            - heading "WhatsApp" [level=3] [ref=e308]
+            - paragraph [ref=e309]: +54 11 3086-2409
+            - paragraph [ref=e310]: Escribinos por WhatsApp
+        - link [ref=e312] [cursor=pointer]:
+          - /url: https://www.facebook.com/ijacsolucionesinformaticas
+          - generic [ref=e317]:
+            - heading "Facebook" [level=3] [ref=e318]
+            - paragraph [ref=e319]: iJac IT Solutions
+            - paragraph [ref=e320]: Seguinos en Facebook
+      - button "¿Dudas? Mandanos un mail" [ref=e324] [cursor=pointer]
+    - button "Abrir chat de asistente virtual" [ref=e327]
+    - contentinfo [ref=e332]:
+      - generic [ref=e334]:
+        - generic [ref=e336]:
+          - img "IJAC Logo" [ref=e338]
+          - generic [ref=e339]:
+            - link "Seguinos en Instagram" [ref=e340] [cursor=pointer]:
+              - /url: https://www.instagram.com/ijacsi/
+            - link "Seguinos en Facebook" [ref=e344] [cursor=pointer]:
+              - /url: https://www.facebook.com/ijacsolucionesinformaticas
+        - generic [ref=e350]:
+          - paragraph [ref=e351]: © 2026 iJac. Todos los derechos reservados.
+          - paragraph [ref=e352]:
+            - text: Powered by
+            - link "José Carrizo" [ref=e353] [cursor=pointer]:
+              - /url: https://josecarrizo-dev.com
+  - button "Open Next.js Dev Tools" [ref=e359] [cursor=pointer]
