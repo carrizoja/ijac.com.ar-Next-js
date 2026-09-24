@@ -12,7 +12,9 @@
     "export": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev:chat": "tsx scripts/dev-chat-server.ts",
+    "test:chat": "tsx scripts/test-chatbot.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -45,6 +47,7 @@
     "eslint-config-next": "^16.2.4",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",
+    "tsx": "^4.23.13",
     "tw-animate-css": "^1.3.6",
     "typescript": "^5",
     "vitest": "^4.1.11"
