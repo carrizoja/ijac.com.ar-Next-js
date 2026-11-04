@@ -14,7 +14,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "dev:chat": "tsx scripts/dev-chat-server.ts",
-    "test:chat": "tsx scripts/test-chatbot.ts"
+    "test:chat": "tsx scripts/test-chatbot.ts",
+    "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

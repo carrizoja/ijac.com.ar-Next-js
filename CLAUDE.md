@@ -47,7 +47,7 @@ This is a **statically-exported Next.js 16 site** for iJac IT Solutions (https:/
 - `images.unoptimized: true` is required — the `next/image` optimizer would need a server. Remote image domains (Cloudinary, `assets.aceternity.com`) are still listed in `remotePatterns` so the components can keep using `<Image>` URLs cleanly.
 - Route segments that emit metadata files (`sitemap.ts`, `robots.ts`) declare `export const dynamic = 'force-static'` and `revalidate = false` so they're emitted as static `sitemap.xml` / `robots.txt`. New metadata routes must do the same.
 - Security headers are configured at the web server (Hostinger), **not** in `next.config.ts` — header config in next.config has no effect with static export.
-- After `npm run build`, deploy by uploading the **contents** of `out/` (not the folder itself) to `public_html/`. Details in `HOSTINGER-DEPLOYMENT.md`.
+- Deploy with `npm run deploy` (build + rsync dry run) and `npm run deploy -- --live` (real upload over SSH). Manual alternative: upload the **contents** of `out/` to `public_html/`. Details in `HOSTINGER-DEPLOYMENT.md`.
 
 ### Page structure
 

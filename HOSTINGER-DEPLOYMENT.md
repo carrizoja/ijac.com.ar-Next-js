@@ -43,6 +43,37 @@ export const dynamic = 'force-static'
 export const revalidate = false
 ```
 
+## 🚀 **Automated Deploy over SSH (recommended)**
+
+`npm run deploy` builds the site and syncs `out/` to `public_html/` with `rsync` over SSH.
+It is a **dry run by default**; add `--live` to upload:
+
+```bash
+npm run deploy            # build + preview what would change
+npm run deploy -- --live  # build + upload
+```
+
+`--delete` removes server files that are no longer in `out/` (old `_next` chunks).
+`.htaccess` and `.well-known/` are protected and never deleted.
+
+One-time setup:
+
+1. hPanel → Websites → ijac.com.ar → Advanced → **SSH Access** → enable.
+2. `ssh-keygen -t ed25519 -f ~/.ssh/hostinger_ijac -C "ijac-deploy"` and add the
+   `.pub` contents under **SSH keys** on the same page.
+3. Add the host alias to `~/.ssh/config` (values from the SSH Access page):
+
+   ```
+   Host ijac-hostinger
+       HostName <server IP>
+       Port 65002
+       User <hosting username>
+       IdentityFile ~/.ssh/hostinger_ijac
+       IdentitiesOnly yes
+   ```
+
+4. Test: `ssh ijac-hostinger "ls domains/ijac.com.ar/public_html | head"`.
+
 ## 📋 **Deployment Steps**
 
 ### **Step 1: Generate Static Files**
