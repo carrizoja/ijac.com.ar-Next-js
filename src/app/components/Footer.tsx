@@ -85,7 +85,7 @@ const Footer = () => {
             <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-emerald-300 mb-4">
               {copy.servicesHeading}
             </h3>
-            <ul className="space-y-2 text-sm text-gray-300">
+            <ul className="space-y-2 text-sm text-violet-100">
               {footerServices.map((service) => (
                 <li key={service.slugEs}>
                   <Link
@@ -104,7 +104,7 @@ const Footer = () => {
             <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-emerald-300 mb-4">
               {copy.contactHeading}
             </h3>
-            <address className="not-italic space-y-2 text-sm text-gray-300">
+            <address className="not-italic space-y-2 text-sm text-violet-100">
               <p>{copy.locationLabel}</p>
               <p>{copy.hoursLabel}</p>
               <p>
@@ -132,17 +132,17 @@ const Footer = () => {
           <div className="flex flex-col justify-between items-center space-y-4 md:space-y-0">
             {/* Copyright */}
             <div className="text-center">
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-violet-200">
                 {copy.copyright(currentYear)}
               </p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-violet-200 mt-1">
                 {copy.poweredBy}{" "}
                 <a
                   href="https://josecarrizo-dev.com"
                   title={copy.portfolioTitle}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-semibold hover:from-purple-400 hover:to-pink-400 transition-all duration-300"
+                  className="font-semibold text-emerald-300 underline-offset-4 transition-colors hover:text-emerald-200 hover:underline"
                 >
                   José Carrizo
                 </a>
