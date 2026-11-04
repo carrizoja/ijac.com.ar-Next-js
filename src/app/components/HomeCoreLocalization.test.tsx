@@ -50,7 +50,7 @@ describe("English Home conversion sections", () => {
     expect(screen.getByRole("heading", { name: /Remote assistance with TeamViewer/i })).toBeInTheDocument();
     expect(screen.getByText(/professional TeamViewer licenses/i)).toBeInTheDocument();
     expect(screen.getByText(/not affiliated with or endorsed by TeamViewer/i)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Ask about remote support" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Ask remote support" })).toHaveAttribute(
       "href",
       getWhatsAppUrl("en"),
     );

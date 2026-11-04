@@ -37,7 +37,7 @@ describe("RemoteSupportBanner", () => {
   it("links the support CTA to the established WhatsApp destination", () => {
     render(<RemoteSupportBanner />);
 
-    const cta = screen.getByRole("link", { name: /consultar por soporte remoto/i });
+    const cta = screen.getByRole("link", { name: /consultar soporte remoto/i });
     expect(cta).toHaveAttribute("href", business.whatsappUrl);
     expect(cta).toHaveAttribute("target", "_blank");
     expect(cta).toHaveAttribute("rel", "noopener noreferrer");
