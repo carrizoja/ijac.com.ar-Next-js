@@ -9,7 +9,7 @@ interface SecondaryButtonProps {
 }
 
 export const SecondaryButton = ({
-  text = "Ver mas",
+  text = "Ver más",
   href,
   onClick,
   className = "",

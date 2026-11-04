@@ -12,7 +12,7 @@ describe("services listing page copy", () => {
 
     expect(screen.getAllByRole("heading", { level: 3, name: "Qué incluye" })).toHaveLength(8);
     expect(
-      screen.getByRole("heading", { level: 2, name: "¿Necesitas una solución a medida?" }),
+      screen.getByRole("heading", { level: 2, name: "¿Necesitás una solución a medida?" }),
     ).toBeInTheDocument();
   });
 

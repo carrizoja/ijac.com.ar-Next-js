@@ -11,7 +11,7 @@ describe("English services home summary", () => {
 
   it("keeps the Spanish summary untouched", () => {
     expect(servicesContent.es.summary).toBe(
-      "Descubre nuestros servicios destacados y visita la pagina de servicios para explorar el catalogo completo, con mas soluciones, detalles y alternativas para tu necesidad.",
+      "Descubrí nuestros servicios destacados y visitá la página de servicios para explorar el catálogo completo, con más soluciones, detalles y alternativas para tu necesidad.",
     );
   });
 });

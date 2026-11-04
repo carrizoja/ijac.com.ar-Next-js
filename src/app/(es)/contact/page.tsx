@@ -8,7 +8,7 @@ import { getWhatsAppUrl } from "@/i18n/whatsapp";
 
 export const metadata: Metadata = {
   title: 'Contacto | IT Consulting & Support en Buenos Aires',
-  description: 'Contactá a iJac IT Solutions para obtener servicios profesionales de consultoría y soporte IT en Buenos Aires, Argentina. Obtén asistencia experta hoy.',
+  description: 'Contactá a iJac IT Solutions para obtener servicios profesionales de consultoría y soporte IT en Buenos Aires, Argentina. Obtené asistencia experta hoy.',
   keywords: 'contacto iJac, soporte IT Buenos Aires, contacto consultoría técnica, servicios IT Argentina, soporte tecnológico empresarial',
   openGraph: {
     title: 'Contacto iJac IT Solutions | Soporte IT Experto',

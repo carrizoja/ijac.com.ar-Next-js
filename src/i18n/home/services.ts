@@ -46,7 +46,7 @@ function buildEnglishCards(): Record<FeaturedServiceSlug, ServiceCardCopy> {
 export const servicesContent: Record<Locale, ServicesContent> = {
   es: {
     heading: "Nuestros Servicios de Tecnología",
-    summary: "Descubre nuestros servicios destacados y visita la pagina de servicios para explorar el catalogo completo, con mas soluciones, detalles y alternativas para tu necesidad.",
+    summary: "Descubrí nuestros servicios destacados y visitá la página de servicios para explorar el catálogo completo, con más soluciones, detalles y alternativas para tu necesidad.",
     cta: "Ver todos los servicios",
   },
   en: {

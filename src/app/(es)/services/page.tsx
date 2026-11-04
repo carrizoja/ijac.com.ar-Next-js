@@ -12,7 +12,7 @@ import { getServiceScopeItems } from "@/i18n/services/catalog";
 export const metadata: Metadata = {
   title: "Servicios IT y PC Gamer en Almagro, CABA",
   description:
-    "Conoce todos los servicios de iJac IT Solutions en Almagro, CABA: soporte técnico PC y Mac, armado de PC Gamer a medida, desarrollo web, ciberseguridad, redes WiFi, UX UI, IA y branding en Buenos Aires.",
+    "Conocé todos los servicios de iJac IT Solutions en Almagro, CABA: soporte técnico PC y Mac, armado de PC Gamer a medida, desarrollo web, ciberseguridad, redes WiFi, UX UI, IA y branding en Buenos Aires.",
   keywords: [
     "servicios IT Buenos Aires",
     "armado pc gamer en almagro",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Servicios de iJac IT Solutions en Almagro, CABA",
     description:
-      "Explora los servicios de tecnología de iJac IT Solutions: soporte técnico, armado de PC Gamer, desarrollo web, ciberseguridad, redes, UX UI, datos e IA.",
+      "Explorá los servicios de tecnología de iJac IT Solutions: soporte técnico, armado de PC Gamer, desarrollo web, ciberseguridad, redes, UX UI, datos e IA.",
     url: "https://ijac.com.ar/services",
     siteName: "iJac IT Solutions",
     type: "website",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   twitter: {
     title: "Servicios de iJac IT Solutions en Almagro, CABA",
     description:
-      "Descubre todos los servicios IT de iJac IT Solutions en Almagro y Buenos Aires: soporte técnico, armado de PC Gamer y desarrollo web.",
+      "Descubrí todos los servicios IT de iJac IT Solutions en Almagro y Buenos Aires: soporte técnico, armado de PC Gamer y desarrollo web.",
   },
 };
 
@@ -89,8 +89,8 @@ export default function ServicesPage() {
               <p className="mt-6 max-w-2xl text-pretty text-base leading-8 text-neutral-700 dark:text-neutral-300 sm:text-lg">
                 En iJac IT Solutions reunimos soporte técnico, desarrollo web, redes,
                 ciberseguridad, diseño UX UI, analítica y branding para resolver
-                necesidades reales con una sola mirada técnica. Explora cada servicio y
-                descubre cómo podemos ayudarte según el momento de tu negocio.
+                necesidades reales con una sola mirada técnica. Explorá cada servicio y
+                descubrí cómo podemos ayudarte según el momento de tu negocio.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -186,10 +186,10 @@ export default function ServicesPage() {
           <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 rounded-3xl border border-neutral-200 bg-gradient-to-r from-white via-neutral-50 to-neutral-100 dark:border-white/10 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800 p-8 sm:p-10 lg:flex-row lg:items-center">
             <div>
               <h2 className="text-3xl font-bold font-heading text-neutral-900 dark:text-white">
-                ¿Necesitas una solución a medida?
+                ¿Necesitás una solución a medida?
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-8 text-neutral-700 dark:text-neutral-300">
-                Cuéntanos tu necesidad y te ayudamos a definir el servicio, alcance y enfoque técnico más conveniente para tu proyecto o empresa.
+                Contanos tu necesidad y te ayudamos a definir el servicio, alcance y enfoque técnico más conveniente para tu proyecto o empresa.
               </p>
             </div>
 
