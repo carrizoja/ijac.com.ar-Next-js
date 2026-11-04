@@ -3,7 +3,7 @@ export const services = [
     slug: "ciberseguridad-proteccion-datos",
     title: "Ciberseguridad y Protección de Datos para Empresas",
     seoTitle: "Ciberseguridad para Empresas en Almagro, CABA",
-    src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755037796/ijac/services/cibersecurity_zvy0bl.jpg",
+    src: "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,c_limit,w_1600/v1755037796/ijac/services/cibersecurity_zvy0bl.jpg",
     desc: "Control de Firewalls en equipos y routers - Monitoreo de Red Local - Administración de redes y Usuarios - Instalación de Antivirus y Anti Malware - Instalación de cámaras de seguridad",
     seoIntro: "Fortalecemos la seguridad operativa de pymes y equipos de trabajo en Almagro, CABA y Buenos Aires con medidas concretas para prevenir accesos no autorizados, pérdida de información y caídas de servicio.",
     fullDescription:
@@ -38,7 +38,7 @@ export const services = [
     slug: "armado-pcs-hardware",
     title: "Armado de PC Gamer y Consultoría de Hardware en Almagro - CABA",
     seoTitle: "Armado de PC Gamer en Almagro, CABA",
-    src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755037802/ijac/services/gaming_lous5t.png",
+    src: "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,c_limit,w_1600/v1755037802/ijac/services/gaming_lous5t.png",
     desc: "Armado de PC Gamer a medida en Almagro - Ensamblaje profesional y gestión de cables - Instalación de Windows y drivers - Optimización de FPS y temperatura - Asesoramiento en compra de placas de video, procesadores AMD Ryzen e Intel Core",
     seoIntro: "Armamos tu PC Gamer a medida, workstation profesional o computadora de oficina en Almagro, CABA. Seleccionamos componentes compatibles (AMD Ryzen, Intel Core, NVIDIA GeForce RTX, Radeon) y configuramos todo para lograr máximo rendimiento real.",
     fullDescription:
@@ -83,7 +83,7 @@ export const services = [
     slug: "redes-wifi-cableado",
     title: "Instalación de Redes WiFi y Cableado Estructurado",
     seoTitle: "Redes WiFi y Cableado en Almagro, CABA",
-    src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755038219/ijac/services/lan_gaibxq.jpg",
+    src: "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,c_limit,w_1600/v1755038219/ijac/services/lan_gaibxq.jpg",
     desc: "Instalación de redes cableadas y WiFi - Configuración de routers y puntos de acceso - Monitoreo y optimización de redes - Solución de problemas de conectividad", 
     seoIntro: "Diseñamos redes estables para oficinas, locales y hogares en Almagro y toda CABA que necesitan buena cobertura, velocidad y orden en la infraestructura.",
     fullDescription:
@@ -113,7 +113,7 @@ export const services = [
     slug: "soporte-tecnico-pc-mac-apple",
     title: "Soporte Técnico para PC, Mac y Apple en Almagro - CABA",
     seoTitle: "Soporte Técnico PC y Mac en Almagro, CABA",
-    src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755040556/ijac/services/tech_oix929.jpg",
+    src: "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,c_limit,w_1600/v1755040556/ijac/services/tech_oix929.jpg",
     desc: "Diagnóstico y resolución de problemas de hardware y software - Mantenimiento preventivo y correctivo - Asesoramiento técnico - Configuración de pcs y macbook pro, mac mini, imac, iphone y ipad",
     seoIntro: "Brindamos asistencia técnica para equipos Windows, PC Gamer y Apple en Almagro, CABA, con enfoque en diagnóstico rápido, mantenimiento y continuidad operativa.",
     fullDescription:
@@ -149,7 +149,7 @@ export const services = [
     slug: "diseno-ux-ui",
     title: "Diseño Ux Ui",
     seoTitle: "Diseño UX/UI en Almagro, CABA",
-    src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755041656/ijac/services/uiux_om9ivu.jpg",
+    src: "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,c_limit,w_1600/v1755041656/ijac/services/uiux_om9ivu.jpg",
     desc: "Investigación de usuarios - Creación de wireframes y prototipos - Diseño de interfaces - Pruebas de usabilidad",
     seoIntro: "Diseñamos experiencias digitales claras, funcionales y consistentes para que cada producto sea fácil de entender y usar.",
     fullDescription:
@@ -171,7 +171,7 @@ export const services = [
     slug: "desarrollo-web-apps",
     title: "Desarrollo de Sitios Web y Aplicaciones Móviles",
     seoTitle: "Desarrollo Web a Medida en Almagro, CABA",
-    src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755042409/ijac/services/web_s2p9j4.jpg",
+    src: "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,c_limit,w_1600/v1755042409/ijac/services/web_s2p9j4.jpg",
     desc: "Diseño y desarrollo de sitios web responsivos - Creación de aplicaciones web interactivas - Optimización SEO, SEM y GEO para motores de búsqueda - Mantenimiento y actualización de sitios existentes",
     seoIntro: "Creamos sitios web profesionales, tiendas online y aplicaciones en Almagro, CABA, pensados para performance, escalabilidad y posicionamiento SEO en buscadores desde el inicio del proyecto.",
     fullDescription:
@@ -202,7 +202,7 @@ export const services = [
     slug: "data-science-inteligencia-artificial",
     title: "Data Science e Inteligencia Artificial (IA)",
     seoTitle: "Data Science e IA para Empresas en CABA",
-    src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755042704/ijac/services/data_w18v0u.png",
+    src: "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,c_limit,w_1600/v1755042704/ijac/services/data_w18v0u.png",
     desc: "Análisis de datos - Visualización de datos - Modelado predictivo - Implementación de soluciones de inteligencia artificial",
     seoIntro: "Transformamos datos en decisiones con tableros, modelos y automatizaciones orientadas a problemas reales del negocio.",
     fullDescription:
@@ -224,7 +224,7 @@ export const services = [
     slug: "branding-marketing-digital",
     title: "Branding y Estrategia de Marketing Digital",
     seoTitle: "Branding y Marketing Digital en Almagro, CABA",
-    src: "https://res.cloudinary.com/dovghglgj/image/upload/v1755042863/ijac/services/branding_tca2ar.png",
+    src: "https://res.cloudinary.com/dovghglgj/image/upload/f_auto,q_auto,c_limit,w_1600/v1755042863/ijac/services/branding_tca2ar.png",
     desc: "Desarrollo de identidad de marca - Diseño de logotipos - Creación de guías de estilo - Estrategias de posicionamiento de marca",
     seoIntro: "Definimos marcas más claras, memorables y preparadas para sostener una presencia digital coherente.",
     fullDescription:
