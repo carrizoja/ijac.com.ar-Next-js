@@ -6,6 +6,7 @@ import {
   getEnglishSlug,
   getServiceByLocaleSlug,
   getServiceCopyForLocale,
+  getServiceScopeItems,
   getServiceSlugsForLocale,
 } from "./catalog";
 
@@ -143,4 +144,33 @@ describe("service SEO titles", () => {
       }
     },
   );
+});
+
+describe("getServiceScopeItems", () => {
+  it("splits Spanish scope copy on its dash separators", () => {
+    expect(
+      getServiceScopeItems("Análisis de datos - Visualización de datos - Modelado predictivo", "es"),
+    ).toEqual(["Análisis de datos", "Visualización de datos", "Modelado predictivo"]);
+  });
+
+  it("splits English scope copy on commas and the final 'and', capitalizing each item", () => {
+    expect(
+      getServiceScopeItems(
+        "Firewall control, local network monitoring, malware protection, and security cameras.",
+        "en",
+      ),
+    ).toEqual([
+      "Firewall control",
+      "Local network monitoring",
+      "Malware protection",
+      "Security cameras",
+    ]);
+  });
+
+  it.each(["es", "en"] as const)("yields at least three items for every %s service", (locale) => {
+    for (const slugEs of getServiceSlugs()) {
+      const service = getServiceCopyForLocale(slugEs, locale)!;
+      expect(getServiceScopeItems(service.desc, locale).length, slugEs).toBeGreaterThanOrEqual(3);
+    }
+  });
 });

@@ -8,6 +8,11 @@ import { getServiceSlugsForLocale } from "@/i18n/services/catalog";
 import EnglishServicesPage, { metadata } from "./page";
 
 describe("English services listing page", () => {
+  it("keeps the full title within Google's ~60-character display", () => {
+    expect(String(metadata.title).length).toBeLessThanOrEqual(60);
+    expect(String(metadata.title)).toContain("Almagro");
+  });
+
   it("renders one article per English service slug, linking to its detail page", () => {
     const { container } = render(<EnglishServicesPage />);
     const englishSlugs = getServiceSlugsForLocale("en");

@@ -6,9 +6,10 @@ import { PrimaryButton } from "../../components/ui/PrimaryButton";
 import { SecondaryButton } from "../../components/ui/SecondaryButton";
 import { services } from "../../../data/services";
 import { getSeoAlternates } from "@/i18n/seo";
+import { getServiceScopeItems } from "@/i18n/services/catalog";
 
 export const metadata: Metadata = {
-  title: "Servicios IT, Desarrollo Web, Armado de PC Gamer y Soporte Técnico en Almagro, CABA",
+  title: "Servicios IT y PC Gamer en Almagro, CABA",
   description:
     "Conoce todos los servicios de iJac IT Solutions en Almagro, CABA: soporte técnico PC y Mac, armado de PC Gamer a medida, desarrollo web, ciberseguridad, redes WiFi, UX UI, IA y branding en Buenos Aires.",
   keywords: [
@@ -86,7 +87,7 @@ export default function ServicesPage() {
               <h1 className="max-w-4xl text-4xl font-bold font-heading text-neutral-900 dark:text-white sm:text-5xl lg:text-6xl">
                 Servicios IT pensados para mejorar tu operación y tu presencia digital
               </h1>
-              <p className="mt-6 max-w-3xl text-base leading-8 text-neutral-700 dark:text-neutral-300 sm:text-lg">
+              <p className="mt-6 max-w-2xl text-pretty text-base leading-8 text-neutral-700 dark:text-neutral-300 sm:text-lg">
                 En iJac IT Solutions reunimos soporte técnico, desarrollo web, redes,
                 ciberseguridad, diseño UX UI, analítica y branding para resolver
                 necesidades reales con una sola mirada técnica. Explora cada servicio y
@@ -114,7 +115,7 @@ export default function ServicesPage() {
                 id={service.slug}
                 className="grid overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm dark:border-white/10 dark:bg-neutral-950/80 dark:shadow-none lg:grid-cols-[1.1fr_1.4fr]"
               >
-                <div className="relative min-h-[280px] border-b border-neutral-200 dark:border-white/10 lg:min-h-full lg:border-b-0 lg:border-r">
+                <div className="relative flex min-h-[280px] flex-col justify-end border-b border-neutral-200 dark:border-white/10 lg:min-h-full lg:border-b-0 lg:border-r">
                   <Image
                     src={service.src}
                     alt={service.alt}
@@ -124,7 +125,7 @@ export default function ServicesPage() {
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 p-6">
+                  <div className="relative p-6 pt-28 lg:pt-6">
                     <p className="mb-3 text-sm uppercase tracking-[0.22em] text-emerald-300">
                       Servicio {String(index + 1).padStart(2, "0")}
                     </p>
@@ -133,34 +134,34 @@ export default function ServicesPage() {
                         {service.title}
                       </Link>
                     </h2>
-                    <p className="mt-3 max-w-xl text-sm leading-7 text-neutral-200 sm:text-base">
+                    <p className="mt-3 max-w-xl text-pretty text-sm leading-7 text-neutral-200 sm:text-base">
                       {service.seoIntro}
                     </p>
                   </div>
                 </div>
 
                 <div className="p-6 sm:p-8 lg:p-10">
-                  <div className="rounded-2xl border border-neutral-200 dark:border-white/8 bg-neutral-50 dark:bg-white/[0.03] p-5 sm:p-6">
-                    <p className="text-base leading-8 text-neutral-700 dark:text-neutral-300">
-                      {service.fullDescription}
-                    </p>
-                  </div>
+                  <p className="max-w-prose text-pretty text-base leading-8 text-neutral-700 dark:text-neutral-300">
+                    {service.fullDescription}
+                  </p>
 
                   <div className="mt-6 grid gap-6">
                     <div>
                       <h3 className="text-lg font-semibold font-heading text-neutral-900 dark:text-white">
                         Alcance del servicio
                       </h3>
-                      <p className="mt-3 text-sm leading-7 text-neutral-600 dark:text-neutral-400 sm:text-base">
-                        {service.desc}
-                      </p>
+                      <ul className="mt-3 grid list-disc text-pretty gap-x-8 gap-y-1 pl-5 text-sm leading-7 text-neutral-600 marker:text-emerald-500 dark:text-neutral-400 sm:grid-cols-2 sm:text-base">
+                        {getServiceScopeItems(service.desc, "es").map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
                     </div>
 
                     <div>
                       <h3 className="text-lg font-semibold font-heading text-neutral-900 dark:text-white">
-                        Que incluye
+                        Qué incluye
                       </h3>
-                      <ul className="mt-3 space-y-3 text-sm leading-7 text-neutral-700 dark:text-neutral-300 sm:text-base">
+                      <ul className="mt-3 space-y-3 text-pretty text-sm leading-7 text-neutral-700 dark:text-neutral-300 sm:text-base">
                         {service.highlights.map((highlight) => (
                           <li key={highlight} className="flex gap-3">
                             <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
@@ -172,7 +173,7 @@ export default function ServicesPage() {
 
                     <div className="flex flex-col gap-3 sm:flex-row">
                       <PrimaryButton
-                        text="Ver pagina del servicio"
+                        text="Ver página del servicio"
                         href={`/services/${service.slug}`}
                         colorVariant="green"
                       />
@@ -189,10 +190,10 @@ export default function ServicesPage() {
           <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 rounded-3xl border border-neutral-200 bg-gradient-to-r from-white via-neutral-50 to-neutral-100 dark:border-white/10 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800 p-8 sm:p-10 lg:flex-row lg:items-center">
             <div>
               <h2 className="text-3xl font-bold font-heading text-neutral-900 dark:text-white">
-                Necesitas una solucion a medida?
+                ¿Necesitas una solución a medida?
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-8 text-neutral-700 dark:text-neutral-300">
-                Cuéntanos tu necesidad y te ayudamos a definir el servicio, alcance y enfoque tecnico mas conveniente para tu proyecto o empresa.
+                Cuéntanos tu necesidad y te ayudamos a definir el servicio, alcance y enfoque técnico más conveniente para tu proyecto o empresa.
               </p>
             </div>
 

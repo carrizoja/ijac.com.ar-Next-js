@@ -274,3 +274,17 @@ export function getServiceByLocaleSlug(slug: string, locale: Locale): ServiceCop
 
   return getServiceCopyForLocale(slugEs, "en");
 }
+
+/**
+ * Splits a service's one-line scope copy into list items. Spanish copy separates items
+ * with " - "; English copy is a comma-separated sentence ending in "and …".
+ */
+export function getServiceScopeItems(desc: string, locale: Locale): string[] {
+  const separator = locale === "es" ? /\s+-\s+/ : /,\s*(?:and\s+)?/;
+
+  return desc
+    .split(separator)
+    .map((item) => item.trim().replace(/\.$/, ""))
+    .filter(Boolean)
+    .map((item) => item.charAt(0).toLocaleUpperCase(locale) + item.slice(1));
+}
