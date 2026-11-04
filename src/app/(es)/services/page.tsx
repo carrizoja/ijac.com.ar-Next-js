@@ -196,12 +196,7 @@ export default function ServicesPage() {
               </p>
             </div>
 
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-black transition hover:bg-emerald-300"
-            >
-              Hablar con iJac
-            </Link>
+            <PrimaryButton text="Hablar con iJac" href="/contact" colorVariant="green" />
           </div>
         </section>
       </main>

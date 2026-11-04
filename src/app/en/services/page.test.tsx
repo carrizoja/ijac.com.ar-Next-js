@@ -3,6 +3,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { getNavHref } from "@/i18n/routing";
 import { getServiceSlugsForLocale } from "@/i18n/services/catalog";
 import EnglishServicesPage, { metadata } from "./page";
 
@@ -92,5 +93,20 @@ describe("English services listing page", () => {
 
     expect(screen.getByTitle("Go to Home")).toBeInTheDocument();
     expect(screen.queryByTitle(/^Ir a /)).not.toBeInTheDocument();
+  });
+});
+
+describe("English services listing page CTA", () => {
+  it("renders 'Talk to iJac' with the same primary button as 'View service page'", () => {
+    render(<EnglishServicesPage />);
+
+    const cta = screen.getByRole("link", { name: "Talk to iJac" });
+    const [servicePageButton] = screen.getAllByRole("link", { name: "View service page" });
+
+    expect(cta).toHaveAttribute("href", getNavHref("contact", "/contact", "en"));
+    expect(cta.className).toBe(servicePageButton.className);
+    expect(cta.innerHTML.replace(/Talk to iJac/, "")).toBe(
+      servicePageButton.innerHTML.replace(/View service page/, ""),
+    );
   });
 });
