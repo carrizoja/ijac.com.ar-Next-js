@@ -1,16 +1,24 @@
 import { getServiceBySlug, getServiceSlugs } from "../../data/services.js";
 import type { Locale } from "../routing";
 
+export interface ServiceFaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface ServiceCopy {
   /** Locale-specific slug: the canonical Spanish slug for "es", the English slug for "en". */
   slug: string;
   /** Canonical Spanish slug — the stable identity shared across locales. */
   slugEs: string;
   title: string;
+  seoTitle?: string;
   desc: string;
   seoIntro: string;
   fullDescription: string;
   highlights: string[];
+  keywords?: string[];
+  faqs?: ServiceFaqItem[];
   ctaLabel: string;
   alt: string;
   src: string;
@@ -19,10 +27,13 @@ export interface ServiceCopy {
 interface EnglishServiceCopy {
   slugEn: string;
   title: string;
+  seoTitle?: string;
   desc: string;
   seoIntro: string;
   fullDescription: string;
   highlights: string[];
+  keywords?: string[];
+  faqs?: ServiceFaqItem[];
   ctaLabel: string;
   alt: string;
 }
@@ -42,6 +53,7 @@ const englishCatalog: Record<string, EnglishServiceCopy> = {
   "ciberseguridad-proteccion-datos": {
     slugEn: "cybersecurity-data-protection",
     title: "Cybersecurity and Data Protection for Businesses",
+    seoTitle: "Cybersecurity for Businesses in Almagro, CABA",
     desc: "Firewall control, local network monitoring, user administration, malware protection, and security cameras.",
     seoIntro:
       "We strengthen the operational security of small and midsize businesses and work teams with concrete measures to prevent unauthorized access, data loss, and service outages.",
@@ -57,19 +69,38 @@ const englishCatalog: Record<string, EnglishServiceCopy> = {
   },
   "armado-pcs-hardware": {
     slugEn: "pc-building-hardware-consulting",
-    title: "PC Building and Hardware Consulting",
-    desc: "Hardware assembly and configuration, operating system installation, performance optimization, and guidance on component purchases",
+    title: "Custom Gaming PC Building and Hardware Consulting in Almagro, Buenos Aires",
+    seoTitle: "Custom Gaming PC Building in Almagro, CABA",
+    desc: "Custom gaming PC assembly and configuration, operating system installation, FPS and thermal optimization, and guidance on component purchases",
     seoIntro:
-      "We build custom computers for work, study, design, or gaming, with compatible components and configurations built for real-world performance.",
+      "We build custom gaming PCs, workstations, and office computers in Almagro, CABA, with compatible components (AMD Ryzen, Intel Core, NVIDIA GeForce RTX, Radeon) and configurations built for real-world performance.",
     fullDescription:
-      "We advise on and build custom computers based on budget, intended use, and expected lifespan. We also optimize existing equipment, install operating systems, and help choose reliable components to avoid bottlenecks or unnecessary purchases.",
+      "At our lab in Almagro (Buenos Aires), we advise on and build custom gaming PCs and professional workstations based on budget, intended use, and expected lifespan. We also optimize existing equipment, perform cable management and BIOS updates, install operating systems, and help choose reliable components to avoid bottlenecks or unnecessary purchases.",
     highlights: [
-      "Component selection based on performance goals and budget.",
-      "Assembly, operating system installation, and initial setup.",
-      "Optimization and recommendations for future upgrades.",
+      "Component selection based on gaming or workstation performance goals and budget.",
+      "Professional assembly, cable management, BIOS tuning, and operating system installation in Almagro, CABA.",
+      "Thermal optimization and recommendations for future GPU, RAM, and SSD upgrades.",
+    ],
+    keywords: [
+      "custom gaming PC building Buenos Aires",
+      "PC builder Almagro CABA",
+      "hardware consulting Buenos Aires",
+      "workstation PC assembly Argentina",
+    ],
+    faqs: [
+      {
+        question: "Where do you build custom gaming PCs in Buenos Aires?",
+        answer:
+          "Our workshop is located at Colombres 195 in Almagro (CABA), close to Caballito, Boedo, Villa Crespo, and Palermo. You can bring your own components or ask us for full component selection and sourcing guidance.",
+      },
+      {
+        question: "Can I bring my own parts for you to assemble my gaming PC?",
+        answer:
+          "Yes. If you already purchased your components, we handle the complete assembly, clean cable management, thermal paste application, BIOS update, XMP/EXPO memory profile configuration, OS installation, and stress testing.",
+      },
     ],
     ctaLabel: "Request hardware guidance",
-    alt: "PC building and hardware consulting in Buenos Aires",
+    alt: "Custom gaming PC building and hardware consulting in Almagro, Buenos Aires",
   },
   "redes-wifi-cableado": {
     slugEn: "wifi-networks-structured-cabling",
@@ -201,10 +232,13 @@ export function getServiceCopyForLocale(
       slug: source.slug,
       slugEs: source.slug,
       title: source.title,
+      seoTitle: source.seoTitle,
       desc: source.desc,
       seoIntro: source.seoIntro,
       fullDescription: source.fullDescription,
       highlights: source.highlights,
+      keywords: source.keywords,
+      faqs: source.faqs,
       ctaLabel: source.ctaLabel,
       alt: source.alt,
       src: source.src,
@@ -218,10 +252,13 @@ export function getServiceCopyForLocale(
     slug: english.slugEn,
     slugEs: source.slug,
     title: english.title,
+    seoTitle: english.seoTitle,
     desc: english.desc,
     seoIntro: english.seoIntro,
     fullDescription: english.fullDescription,
     highlights: english.highlights,
+    keywords: english.keywords,
+    faqs: english.faqs,
     ctaLabel: english.ctaLabel,
     alt: english.alt,
     src: source.src,

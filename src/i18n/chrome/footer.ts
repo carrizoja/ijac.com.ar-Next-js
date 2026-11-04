@@ -6,6 +6,10 @@ interface FooterContent {
   portfolioTitle: string;
   instagramTitle: string;
   facebookTitle: string;
+  servicesHeading: string;
+  contactHeading: string;
+  locationLabel: string;
+  hoursLabel: string;
 }
 
 export const footerContent: Record<Locale, FooterContent> = {
@@ -15,6 +19,10 @@ export const footerContent: Record<Locale, FooterContent> = {
     portfolioTitle: "Visitar portafolio de José Carrizo",
     instagramTitle: "Seguinos en Instagram",
     facebookTitle: "Seguinos en Facebook",
+    servicesHeading: "Servicios en Almagro y CABA",
+    contactHeading: "Contacto y Ubicación",
+    locationLabel: "Colombres 195, Almagro, CABA (C1177)",
+    hoursLabel: "Lunes a viernes de 9:00 a 18:00",
   },
   en: {
     copyright: (year) => `© ${year} iJac. All rights reserved.`,
@@ -22,5 +30,9 @@ export const footerContent: Record<Locale, FooterContent> = {
     portfolioTitle: "Visit José Carrizo's portfolio",
     instagramTitle: "Follow us on Instagram",
     facebookTitle: "Follow us on Facebook",
+    servicesHeading: "Services in Almagro & Buenos Aires",
+    contactHeading: "Contact & Location",
+    locationLabel: "Colombres 195, Almagro, CABA (C1177)",
+    hoursLabel: "Monday to Friday, 9:00 AM to 6:00 PM",
   },
 };

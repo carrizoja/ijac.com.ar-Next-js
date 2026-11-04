@@ -5,6 +5,7 @@ export type FeaturedServiceSlug =
   | "ciberseguridad-proteccion-datos"
   | "desarrollo-web-apps"
   | "soporte-tecnico-pc-mac-apple"
+  | "armado-pcs-hardware"
   | "redes-wifi-cableado";
 
 interface ServiceCardCopy {
@@ -24,6 +25,7 @@ const featuredServiceSlugs: FeaturedServiceSlug[] = [
   "ciberseguridad-proteccion-datos",
   "desarrollo-web-apps",
   "soporte-tecnico-pc-mac-apple",
+  "armado-pcs-hardware",
   "redes-wifi-cableado",
 ];
 

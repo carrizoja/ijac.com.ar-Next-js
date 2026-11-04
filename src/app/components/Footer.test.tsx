@@ -44,4 +44,15 @@ describe("Footer", () => {
       screen.getByTitle("Visit José Carrizo's portfolio"),
     ).toBeInTheDocument();
   });
+
+  it("renders local NAP information and internal links to all services including PC Gamer", () => {
+    render(<Footer />);
+
+    expect(screen.getByText(/Colombres 195, Almagro, CABA/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", {
+        name: "Armado de PC Gamer y Consultoría de Hardware en Almagro - CABA",
+      }),
+    ).toHaveAttribute("href", "/services/armado-pcs-hardware");
+  });
 });

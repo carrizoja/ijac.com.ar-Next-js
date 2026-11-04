@@ -67,4 +67,25 @@ describe("StructuredData", () => {
       expect(schema).not.toHaveProperty("servesCuisine");
     }
   });
+
+  it("includes accurate Almagro streetAddress, geo coordinates, areaServed, and OfferCatalog in LocalBusiness", () => {
+    const localBusiness = typeOf(schemasFor(), "LocalBusiness") as {
+      address?: { streetAddress?: string; postalCode?: string };
+      geo?: { latitude?: string; longitude?: string };
+      areaServed?: Array<{ name?: string }>;
+      hasOfferCatalog?: { itemListElement?: Array<{ itemOffered?: { name?: string } }> };
+    };
+
+    expect(localBusiness?.address?.streetAddress).toBe("Colombres 195, Almagro");
+    expect(localBusiness?.address?.postalCode).toBe("C1177");
+    expect(localBusiness?.geo).toEqual({
+      "@type": "GeoCoordinates",
+      latitude: "-34.6119",
+      longitude: "-58.4206",
+    });
+    expect(localBusiness?.areaServed?.map((a) => a.name)).toContain("Almagro");
+    expect(
+      localBusiness?.hasOfferCatalog?.itemListElement?.map((o) => o.itemOffered?.name),
+    ).toContain("Armado de PC Gamer y Consultoría de Hardware en Almagro - CABA");
+  });
 });

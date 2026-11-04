@@ -1,9 +1,24 @@
-import { business } from "../../data/business";
+import { business, businessPostalAddress } from "../../data/business";
+import { getServiceCopyForLocale } from "@/i18n/services/catalog";
+import { getServiceSlugs } from "../../data/services";
 import { structuredDataContent } from "@/i18n/structured-data";
-import type { Locale } from "@/i18n/routing";
+import { getServiceDetailHref, type Locale } from "@/i18n/routing";
 
 export function StructuredData({ locale = "es" }: { locale?: Locale }) {
   const copy = structuredDataContent[locale];
+  const serviceOffers = getServiceSlugs()
+    .map((slugEs) => getServiceCopyForLocale(slugEs, locale))
+    .filter((service): service is NonNullable<typeof service> => Boolean(service))
+    .map((service) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: service.title,
+        description: service.seoIntro,
+        url: `https://ijac.com.ar${getServiceDetailHref(service.slugEs, locale)}`,
+      },
+    }));
+
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -18,14 +33,7 @@ export function StructuredData({ locale = "es" }: { locale?: Locale }) {
       "areaServed": ["AR", "US", "ES", "BR"],
       "availableLanguage": ["Spanish", "English"]
     },
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Almagro",
-      "addressLocality": "Buenos Aires",
-      "addressRegion": "CABA",
-      "postalCode": "1177",
-      "addressCountry": "AR"
-    },
+    "address": businessPostalAddress,
     "sameAs": [
       "https://www.facebook.com/ijacsolucionesinformaticas",
       "https://www.instagram.com/ijacsi/"
@@ -40,20 +48,26 @@ export function StructuredData({ locale = "es" }: { locale?: Locale }) {
   const localBusinessData = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
+    "additionalType": [
+      "https://schema.org/ComputerStore",
+      "https://schema.org/ProfessionalService"
+    ],
     "name": "iJac IT Solutions",
     "description": copy.localBusinessDescription,
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Almagro",
-      "addressLocality": "Buenos Aires",
-      "addressRegion": "CABA",
-      "postalCode": "1177",
-      "addressCountry": "AR"
-    },
+    "address": businessPostalAddress,
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": "-34.6037",
-      "longitude": "-58.3816"
+      "latitude": business.geo.latitude,
+      "longitude": business.geo.longitude
+    },
+    "areaServed": business.areasServed.map((area) => ({
+      "@type": "Place",
+      "name": area,
+    })),
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": copy.serviceType,
+      "itemListElement": serviceOffers,
     },
     "telephone": business.phoneDisplay,
     "url": "https://ijac.com.ar",

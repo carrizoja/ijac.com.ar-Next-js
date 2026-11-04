@@ -35,4 +35,15 @@ describe("service detail page metadata", () => {
 
     expect(String(metadata.title)).not.toContain("iJac IT Solutions");
   });
+
+  it("publishes local SEO title and keywords for armado-pcs-hardware targeting PC Gamer in Almagro", async () => {
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ slug: "armado-pcs-hardware" }),
+    });
+
+    expect(String(metadata.title)).toContain("Armado de PC Gamer en Almagro");
+    expect(metadata.keywords).toEqual(
+      expect.arrayContaining(["armado pc gamer en almagro", "armado pc gamer caba"]),
+    );
+  });
 });

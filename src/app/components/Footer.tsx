@@ -2,15 +2,22 @@
 import React from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getLocaleFromPath } from "@/i18n/routing";
+import { business } from "@/data/business";
+import { getServiceSlugs } from "@/data/services";
+import { getLocaleFromPath, getServiceDetailHref } from "@/i18n/routing";
 import { footerContent } from "@/i18n/chrome/footer";
+import { getServiceCopyForLocale } from "@/i18n/services/catalog";
 
 const Footer = () => {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
   const copy = footerContent[locale];
   const currentYear = new Date().getFullYear();
+  const footerServices = getServiceSlugs()
+    .map((slugEs) => getServiceCopyForLocale(slugEs, locale))
+    .filter((service): service is NonNullable<typeof service> => Boolean(service));
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
@@ -19,9 +26,9 @@ const Footer = () => {
 
       {/* Main footer content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:gap-12">
           {/* Logo and Company Info */}
-          <div className="flex flex-col items-center space-y-8">
+          <div className="flex flex-col items-center md:items-start space-y-6">
             <div className="flex items-center space-x-3">
               <Image
                 src="/ijac-logo.png"
@@ -32,6 +39,9 @@ const Footer = () => {
                 className="w-[50px] h-auto"
                 priority
               />
+              <span className="font-heading text-lg font-bold text-white">
+                {business.name}
+              </span>
             </div>
              {/* Social Media Links */}
             <div className="flex space-x-4">
@@ -68,6 +78,52 @@ const Footer = () => {
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
               </a>
             </div>
+          </div>
+
+          {/* Services Internal Links */}
+          <div className="text-center md:text-left">
+            <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-emerald-300 mb-4">
+              {copy.servicesHeading}
+            </h3>
+            <ul className="space-y-2 text-sm text-gray-300">
+              {footerServices.map((service) => (
+                <li key={service.slugEs}>
+                  <Link
+                    href={getServiceDetailHref(service.slugEs, locale)}
+                    className="hover:text-emerald-300 transition-colors"
+                  >
+                    {service.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* NAP (Name, Address, Phone) for Local SEO */}
+          <div className="text-center md:text-left">
+            <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-emerald-300 mb-4">
+              {copy.contactHeading}
+            </h3>
+            <address className="not-italic space-y-2 text-sm text-gray-300">
+              <p>{copy.locationLabel}</p>
+              <p>{copy.hoursLabel}</p>
+              <p>
+                <a
+                  href={`tel:${business.phoneHref}`}
+                  className="hover:text-emerald-300 transition-colors"
+                >
+                  {business.phoneDisplay}
+                </a>
+              </p>
+              <p>
+                <a
+                  href={`mailto:${business.email}`}
+                  className="hover:text-emerald-300 transition-colors"
+                >
+                  {business.email}
+                </a>
+              </p>
+            </address>
           </div>
         </div>
 

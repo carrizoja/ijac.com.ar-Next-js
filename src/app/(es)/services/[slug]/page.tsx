@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { PrimaryButton } from "../../../components/ui/PrimaryButton";
 import { getServiceBySlug, getServiceSlugs } from "../../../../data/services";
+import { businessPostalAddress } from "@/data/business";
 import { getSeoAlternates } from "@/i18n/seo";
+import { serviceDetailContent } from "@/i18n/services/detail";
 
 type ServicePageProps = {
   params: Promise<{ slug: string }>;
@@ -28,13 +30,15 @@ export async function generateMetadata({
   }
 
   const url = `https://ijac.com.ar/services/${service.slug}`;
+  const pageTitle = service.seoTitle ?? service.title;
 
   return {
-    title: service.title,
+    title: pageTitle,
     description: service.seoIntro,
+    keywords: service.keywords,
     alternates: getSeoAlternates(`/services/${service.slug}`, "es"),
     openGraph: {
-      title: service.title,
+      title: pageTitle,
       description: service.seoIntro,
       url,
       siteName: "iJac IT Solutions",
@@ -47,7 +51,7 @@ export async function generateMetadata({
       ],
     },
     twitter: {
-      title: service.title,
+      title: pageTitle,
       description: service.seoIntro,
       images: [service.src],
     },
@@ -75,13 +79,30 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
     description: service.fullDescription,
     image: service.src,
     url: `https://ijac.com.ar/services/${service.slug}`,
-    areaServed: "Buenos Aires, Argentina",
+    areaServed: ["Almagro", "CABA", "Buenos Aires, Argentina"],
     provider: {
-      "@type": "Organization",
+      "@type": "LocalBusiness",
       name: "iJac IT Solutions",
       url: "https://ijac.com.ar",
+      address: businessPostalAddress,
     },
   };
+
+  const faqJsonLd =
+    service.faqs && service.faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: service.faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }
+      : null;
 
   return (
     <>
@@ -89,6 +110,12 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
 
       <main className="min-h-screen bg-background text-neutral-900 dark:bg-black dark:text-white">
         <section className="px-4 pt-28 pb-12 sm:px-6 lg:px-8">
@@ -167,6 +194,31 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
             </div>
           </div>
         </section>
+
+        {service.faqs && service.faqs.length > 0 && (
+          <section className="px-4 pb-20 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-6xl rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-neutral-950/80 dark:shadow-xl sm:p-8 lg:p-10">
+              <h2 className="text-2xl font-bold font-heading text-neutral-900 dark:text-white sm:text-3xl">
+                {serviceDetailContent.es.faqHeading}: {service.title}
+              </h2>
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                {service.faqs.map((faq) => (
+                  <div
+                    key={faq.question}
+                    className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 dark:border-white/10 dark:bg-white/[0.03] sm:p-6"
+                  >
+                    <h3 className="text-lg font-semibold font-heading text-neutral-900 dark:text-white">
+                      {faq.question}
+                    </h3>
+                    <p className="mt-3 text-sm leading-7 text-neutral-700 dark:text-neutral-300 sm:text-base">
+                      {faq.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
     </>
   );

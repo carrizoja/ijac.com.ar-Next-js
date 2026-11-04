@@ -8,12 +8,16 @@ import { services } from "../../../data/services";
 import { getSeoAlternates } from "@/i18n/seo";
 
 export const metadata: Metadata = {
-  title: "Servicios IT, Desarrollo Web y Soporte Tecnico en CABA",
+  title: "Servicios IT, Desarrollo Web, Armado de PC Gamer y Soporte Técnico en Almagro, CABA",
   description:
-    "Conoce todos los servicios de iJac IT Solutions: soporte tecnico PC y Mac, desarrollo web, ciberseguridad, redes, UX UI, IA, branding y mas en Buenos Aires.",
+    "Conoce todos los servicios de iJac IT Solutions en Almagro, CABA: soporte técnico PC y Mac, armado de PC Gamer a medida, desarrollo web, ciberseguridad, redes WiFi, UX UI, IA y branding en Buenos Aires.",
   keywords: [
     "servicios IT Buenos Aires",
+    "armado pc gamer en almagro",
+    "armado de pc gamer caba",
     "soporte tecnico PC y Mac CABA",
+    "soporte tecnico pc en almagro",
+    "diseño web en almagro",
     "desarrollo web Buenos Aires",
     "ciberseguridad para empresas",
     "instalacion de redes wifi",
@@ -23,17 +27,17 @@ export const metadata: Metadata = {
   ],
   alternates: getSeoAlternates("/services", "es"),
   openGraph: {
-    title: "Servicios de iJac IT Solutions",
+    title: "Servicios de iJac IT Solutions en Almagro, CABA",
     description:
-      "Explora los servicios de tecnologia de iJac IT Solutions: soporte tecnico, desarrollo web, ciberseguridad, redes, UX UI, datos e IA.",
+      "Explora los servicios de tecnología de iJac IT Solutions: soporte técnico, armado de PC Gamer, desarrollo web, ciberseguridad, redes, UX UI, datos e IA.",
     url: "https://ijac.com.ar/services",
     siteName: "iJac IT Solutions",
     type: "website",
   },
   twitter: {
-    title: "Servicios de iJac IT Solutions",
+    title: "Servicios de iJac IT Solutions en Almagro, CABA",
     description:
-      "Descubre todos los servicios IT de iJac IT Solutions y encuentra la solucion adecuada para tu empresa o proyecto.",
+      "Descubre todos los servicios IT de iJac IT Solutions en Almagro y Buenos Aires: soporte técnico, armado de PC Gamer y desarrollo web.",
   },
 };
 

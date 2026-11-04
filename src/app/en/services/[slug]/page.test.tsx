@@ -12,6 +12,8 @@ vi.mock("next/navigation", () => ({
 import { notFound } from "next/navigation";
 import { getServiceSlugsForLocale } from "@/i18n/services/catalog";
 import ServiceDetailPage, { generateMetadata, generateStaticParams } from "./page";
+import { businessPostalAddress } from "@/data/business";
+import { serviceDetailContent } from "@/i18n/services/detail";
 
 describe("generateStaticParams", () => {
   it("emits one param per English service slug", async () => {
@@ -100,5 +102,28 @@ describe("ServiceDetailPage", () => {
       ServiceDetailPage({ params: Promise.resolve({ slug: "not-a-real-service" }) }),
     ).rejects.toThrow("NEXT_NOT_FOUND");
     expect(notFound).toHaveBeenCalled();
+  });
+});
+
+describe("ServiceDetailPage local SEO", () => {
+  it("renders the localized FAQ heading and the shared business address in the provider schema", async () => {
+    const { container } = render(
+      await ServiceDetailPage({
+        params: Promise.resolve({ slug: "pc-building-hardware-consulting" }),
+      }),
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: `${serviceDetailContent.en.faqHeading}: Custom Gaming PC Building and Hardware Consulting in Almagro, Buenos Aires`,
+      }),
+    ).toBeInTheDocument();
+
+    const schemas = Array.from(
+      container.querySelectorAll('script[type="application/ld+json"]'),
+    ).map((script) => JSON.parse(script.textContent ?? "{}"));
+    const serviceSchema = schemas.find((schema) => schema["@type"] === "Service");
+    expect(serviceSchema?.provider?.address).toEqual(businessPostalAddress);
   });
 });

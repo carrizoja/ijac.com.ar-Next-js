@@ -15,7 +15,7 @@ export const structuredDataContent: Record<Locale, StructuredDataContent> = {
       "Soluciones informáticas profesionales en Buenos Aires con alcance global",
     serviceType: "Soluciones Informáticas",
     offerDescription:
-      "Desarrollo web, Apps, WebApps, sistemas empresariales, consultoría IT, soporte técnico pc mac, ciberseguridad y data science",
+      "Desarrollo web, Apps, WebApps, sistemas empresariales, consultoría IT, armado de PC Gamer a medida en Almagro, soporte técnico pc mac, ciberseguridad y data science",
   },
   en: {
     organizationDescription:
@@ -24,6 +24,6 @@ export const structuredDataContent: Record<Locale, StructuredDataContent> = {
       "Professional IT solutions in Buenos Aires with global reach",
     serviceType: "IT Solutions",
     offerDescription:
-      "Web development, apps, web apps, enterprise systems, IT consulting, PC and Mac technical support, cybersecurity and data science",
+      "Web development, apps, web apps, enterprise systems, IT consulting, custom gaming PC building in Almagro, PC and Mac technical support, cybersecurity and data science",
   },
 };

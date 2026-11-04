@@ -35,17 +35,21 @@ export const siteViewport: Viewport = {
 
 export const spanishMetadata: Metadata = {
   title: {
-    default: "Desarrollo Web y Servicio Técnico en CABA | iJac IT Solutions",
+    default: "Soporte IT, Web y PC Gamer en Almagro | iJac IT Solutions",
     template: "%s | iJac IT Solutions"
   },
-  description: "iJac IT Solutions: Expertos en desarrollo web, soporte técnico pc mac y ciberseguridad en Almagro, CABA. Soluciones informáticas a medida para empresas. ¡Contáctanos!",
+  description: "iJac IT Solutions en Almagro, CABA: Expertos en desarrollo web, armado de PC Gamer a medida, soporte técnico PC/Mac y ciberseguridad. Soluciones informáticas en Buenos Aires.",
   keywords: [
     "soluciones informáticas",
     "desarrollo web",
+    "armado de pc gamer almagro",
+    "armado pc gamer caba",
+    "armado de pc a medida buenos aires",
     "computación", 
     "consultoría IT",
     "soporte técnico almagro",
     "servicio técnico almagro",
+    "pc gamer",
     "pc",
     "mac",
     "apple",

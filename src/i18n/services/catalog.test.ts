@@ -126,3 +126,21 @@ describe("getServiceByLocaleSlug", () => {
     expect(getServiceByLocaleSlug("not-a-real-service", "es")).toBeUndefined();
   });
 });
+
+describe("service SEO titles", () => {
+  // Leaves room for the " | iJac IT Solutions" suffix within Google's ~65-character display.
+  const MAX_SEO_TITLE_LENGTH = 45;
+
+  it.each(["es", "en"] as const)(
+    "keeps the page title of every %s service short",
+    (locale) => {
+      for (const slugEs of getServiceSlugs()) {
+        const service = getServiceCopyForLocale(slugEs, locale);
+        const pageTitle = service?.seoTitle ?? service?.title ?? "";
+        expect(pageTitle.length, `${locale}/${slugEs}: ${pageTitle}`).toBeLessThanOrEqual(
+          MAX_SEO_TITLE_LENGTH,
+        );
+      }
+    },
+  );
+});

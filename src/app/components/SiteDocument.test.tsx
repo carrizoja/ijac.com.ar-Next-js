@@ -18,6 +18,13 @@ describe("spanishMetadata", () => {
     expect(defaultTitle.split("iJac IT Solutions").length - 1).toBe(1);
   });
 
+  it("keeps the default home title within Google's ~60-character display", () => {
+    const title = spanishMetadata.title as { default: string };
+
+    expect(title.default.length).toBeLessThanOrEqual(60);
+    expect(title.default).toContain("Almagro");
+  });
+
   it("declares canonical and reciprocal hreflang alternates for the Spanish home", () => {
     expect(spanishMetadata.alternates).toEqual({
       canonical: "https://ijac.com.ar/",
