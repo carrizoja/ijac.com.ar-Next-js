@@ -33,24 +33,21 @@ const DARK_ONLY = new RegExp(
 /**
  * Text rendered directly over the photo scrim in the services pages
  * (`bg-gradient-to-t from-black via-black/45 to-transparent`, e.g.
- * `src/app/(es)/services/page.tsx:122`) is exempt from pairing. That scrim is
+ * `src/app/(es)/services/page.tsx`) is exempt from pairing. That scrim is
  * not part of the light/dark mapping table and stays dark in both themes, so
  * a "light-mode" colour on top of it would render dark-on-dark instead of
  * light-on-dark. The elements affected are the scrim itself, the service-card
- * caption heading and its hover colour, the caption eyebrow, and the caption
- * paragraph.
+ * caption heading and its hover colour, and the caption paragraph.
  */
 const SCRIM_CAPTION_EXEMPTIONS: Record<string, string[]> = {
   "src/app/(es)/services/page.tsx": [
     "from-black",
-    "text-emerald-300",
     "text-white",
     "hover:text-emerald-200",
     "text-neutral-200",
   ],
   "src/app/en/services/page.tsx": [
     "from-black",
-    "text-emerald-300",
     "text-white",
     "hover:text-emerald-200",
     "text-neutral-200",

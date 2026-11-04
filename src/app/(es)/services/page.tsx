@@ -5,6 +5,7 @@ import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { PrimaryButton } from "../../components/ui/PrimaryButton";
 import { SecondaryButton } from "../../components/ui/SecondaryButton";
 import { services } from "../../../data/services";
+import { businessPostalAddress } from "@/data/business";
 import { getSeoAlternates } from "@/i18n/seo";
 import { getServiceScopeItems } from "@/i18n/services/catalog";
 
@@ -57,11 +58,12 @@ export default function ServicesPage() {
       position: index + 1,
       name: service.title,
       description: service.fullDescription,
-      areaServed: "Buenos Aires, Argentina",
+      areaServed: ["Almagro", "CABA", "Buenos Aires, Argentina"],
       provider: {
-        "@type": "Organization",
+        "@type": "LocalBusiness",
         name: "iJac IT Solutions",
         url: "https://ijac.com.ar",
+        address: businessPostalAddress,
       },
       image: service.src,
       url: `https://ijac.com.ar/services/${service.slug}`,
@@ -81,10 +83,7 @@ export default function ServicesPage() {
             <Breadcrumbs items={breadcrumbItems} />
 
             <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-gradient-to-br from-white via-neutral-50 to-white shadow-2xl dark:border-white/10 dark:from-neutral-900 dark:via-neutral-950 dark:to-black px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
-              <p className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-sm text-emerald-700 dark:text-emerald-200">
-                Soluciones tecnológicas para empresas, profesionales y equipos
-              </p>
-              <h1 className="max-w-4xl text-4xl font-bold font-heading text-neutral-900 dark:text-white sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-4xl text-balance text-4xl font-bold font-heading text-neutral-900 dark:text-white sm:text-5xl lg:text-6xl">
                 Servicios IT pensados para mejorar tu operación y tu presencia digital
               </h1>
               <p className="mt-6 max-w-2xl text-pretty text-base leading-8 text-neutral-700 dark:text-neutral-300 sm:text-lg">
@@ -126,10 +125,7 @@ export default function ServicesPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
                   <div className="relative p-6 pt-28 lg:pt-6">
-                    <p className="mb-3 text-sm uppercase tracking-[0.22em] text-emerald-300">
-                      Servicio {String(index + 1).padStart(2, "0")}
-                    </p>
-                    <h2 className="text-2xl font-bold font-heading text-white sm:text-3xl">
+                    <h2 className="text-balance text-2xl font-bold font-heading text-white sm:text-3xl">
                       <Link href={`/services/${service.slug}`} className="transition hover:text-emerald-200">
                         {service.title}
                       </Link>

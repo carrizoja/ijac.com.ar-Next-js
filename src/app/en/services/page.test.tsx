@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { getNavHref } from "@/i18n/routing";
 import { getServiceSlugsForLocale } from "@/i18n/services/catalog";
+import { businessPostalAddress } from "@/data/business";
 import EnglishServicesPage, { metadata } from "./page";
 
 describe("English services listing page", () => {
@@ -113,5 +114,32 @@ describe("English services listing page CTA", () => {
     expect(cta.innerHTML.replace(/Talk to iJac/, "")).toBe(
       servicePageButton.innerHTML.replace(/View service page/, ""),
     );
+  });
+});
+
+describe("services listing page labels and structured data", () => {
+  it("renders no numbered labels or tagline chip above the headings", () => {
+    render(<EnglishServicesPage />);
+
+    expect(screen.queryByText(/^Service \d{2}$/)).toBeNull();
+    expect(screen.queryByText("Technology solutions for businesses, professionals, and teams")).toBeNull();
+  });
+
+  it("describes each listed service as provided by the Almagro LocalBusiness", () => {
+    const { container } = render(<EnglishServicesPage />);
+    const itemList = Array.from(container.querySelectorAll('script[type="application/ld+json"]'))
+      .map((script) => JSON.parse(script.textContent ?? "{}"))
+      .find((schema) => schema["@type"] === "ItemList");
+
+    expect(itemList.itemListElement).toHaveLength(8);
+    for (const service of itemList.itemListElement) {
+      expect(service.areaServed).toEqual(["Almagro", "CABA", "Buenos Aires, Argentina"]);
+      expect(service.provider).toEqual({
+        "@type": "LocalBusiness",
+        name: "iJac IT Solutions",
+        url: "https://ijac.com.ar",
+        address: businessPostalAddress,
+      });
+    }
   });
 });

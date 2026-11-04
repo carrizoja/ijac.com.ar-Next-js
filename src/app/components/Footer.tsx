@@ -85,7 +85,7 @@ const Footer = () => {
             <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-emerald-300 mb-4">
               {copy.servicesHeading}
             </h3>
-            <ul className="space-y-2 text-sm text-violet-100">
+            <ul className="space-y-2 text-pretty text-sm text-violet-100">
               {footerServices.map((service) => (
                 <li key={service.slugEs}>
                   <Link
