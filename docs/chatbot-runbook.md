@@ -116,6 +116,20 @@ An empty `503` on every path means configuration failed to load; check the envir
 Set `CHAT_API_ENABLED=true` on the API, then build and deploy the website with
 `NEXT_PUBLIC_CHAT_AI_ENABLED=true` and `NEXT_PUBLIC_CHAT_API_URL=https://api.ijac.com.ar`.
 
+## Upstash free-tier keep-alive
+
+Upstash deletes free databases after **14 days of inactivity**. While the website runs in
+deterministic-only mode, no visitor traffic reaches the API, so the database can look unused even
+though it is still required.
+
+`.github/workflows/chat-api-keepalive.yml` runs every Monday at 12:17 UTC and can also be run
+manually with **Run workflow**. It sends an off-topic question that exercises the KV gate and
+returns `UNKNOWN` before any Groq call, so it consumes no AI tokens. A `503`, an unexpected code,
+or a network error fails the workflow.
+
+The schedule runs only from the default branch. GitHub can also disable scheduled workflows after
+60 days of repository inactivity; if that happens, re-enable the workflow in the Actions tab.
+
 ## Kill switch
 
 Immediate stop, no redeploy, no build. Set the KV key:

@@ -26,8 +26,8 @@ Runbook: [`chatbot-runbook.md`](./chatbot-runbook.md). API reference:
 | 6 | Preview smoke evidence | Release owner | ✅ Met — full checklist passed 2026-09-13 |
 | 7 | Secret and log inspection in production | Release owner | ✅ Met — runtime logs inspected 2026-09-13 |
 
-Nothing ships until every row is met. Until then the website runs deterministically, which is
-its current production behaviour and is unaffected.
+Every row is met, and the website chatbot is enabled. Deterministic intents still resolve locally
+before the grounded API is consulted.
 
 ---
 
@@ -194,8 +194,8 @@ everyone. Raising the global ceiling is the lever if legitimate traffic is being
 It is a ceiling **our** code enforces; it does not cap Groq's billing, which is why gate 3 also
 requires a spend limit in the Groq console.
 
-`CHAT_API_KV_URL` and `CHAT_API_KV_TOKEN` are not yet set on any deployment — they go into the
-Vercel project environment during gate 5, never into the repository.
+`CHAT_API_KV_URL` and `CHAT_API_KV_TOKEN` were set on the `ijac-chat-api` Vercel project during
+gate 5, never into the repository.
 
 ### What the credential probe checked
 
@@ -225,8 +225,8 @@ misconfiguration surfaces as an outage rather than as an unmetered API.
 exhausting a client quota returns `RATE_LIMITED` (429).
 
 **No remaining code gap.** `chat-api/app.ts` wires config, KV, provider and retriever, and
-`chat-api/api/chat.ts` exposes it as a serverless function. The package is deployable as soon as
-gate 5 is met.
+`chat-api/api/chat.ts` exposes it as a serverless function. The package was deployed once gate 5
+was met.
 
 ## 5. DNS for `api.ijac.com.ar`
 
@@ -275,8 +275,8 @@ the documented `fetch` Web Standard export — `export default { fetch }` — re
 
 **Verify:** `dig +short api.ijac.com.ar` resolves, and a POST from an allowed origin returns a
 JSON body. A **bare** 503 with an empty body means configuration failed to load; a 503 carrying
-`{"code":"DISABLED"}` means configuration is valid and the API is parked, which is the expected
-state until gate 6.
+`{"code":"DISABLED"}` means configuration is valid and the API is parked, which was the expected
+state before gate 6.
 
 ## 6. Preview smoke evidence
 
@@ -370,8 +370,9 @@ gate 6 required reproducing the pipeline locally. That is the accepted trade, no
 
 Release requires all seven. Record who approved what and when.
 
-All seven are met. The rows below are the owner's record; fill in the approval column to sign
-the release off.
+All seven are met. The rows below are the owner's record, and the approval column is intentionally
+blank until the release owner signs. Fill in the approver and date to sign the release off; the
+technical evidence for every gate is already recorded above.
 
 | Gate | Approved by | Date | Evidence |
 |---|---|---|---|
@@ -388,11 +389,14 @@ the release off.
 The gates cover the API. Switching the chatbot on for visitors is a separate, reversible step,
 and it is the only one that changes what the public sees:
 
-1. Merge the change to `main`, then set the Vercel project's production branch back to `main` —
-   it currently tracks the feature branch so that gates 5 to 7 could be met before the merge.
-2. Rebuild the website with `NEXT_PUBLIC_CHAT_AI_ENABLED=true` and
-   `NEXT_PUBLIC_CHAT_API_URL=https://api.ijac.com.ar`, then upload `out/` to Hostinger.
-3. Archive the OpenSpec change.
+1. ✅ Merge the change to `main` — done; the chatbot work is on `main`. Confirm the Vercel
+   project's production branch still tracks `main` (it temporarily tracked the feature branch so
+   that gates 5 to 7 could be met before the merge).
+2. ✅ Rebuild the website with `NEXT_PUBLIC_CHAT_AI_ENABLED=true` and
+   `NEXT_PUBLIC_CHAT_API_URL=https://api.ijac.com.ar`, then upload `out/` to Hostinger — done on
+   2026-11-12. The live `/`, `/en/`, and `www` bundles contain the API client, and a grounded
+   cybersecurity answer with its service source was verified in the public widget.
+3. ✅ Archive the OpenSpec change — done.
 
-Until step 2, the widget answers deterministically and never calls the API — which is what makes
-every gate above safe to have verified against production.
+Before step 2, the widget answered deterministically and never called the API — which is what made
+every gate above safe to verify against production.
