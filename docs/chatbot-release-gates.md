@@ -370,19 +370,30 @@ gate 6 required reproducing the pipeline locally. That is the accepted trade, no
 
 Release requires all seven. Record who approved what and when.
 
-All seven are met. The rows below are the owner's record, and the approval column is intentionally
-blank until the release owner signs. Fill in the approver and date to sign the release off; the
-technical evidence for every gate is already recorded above.
+All seven are met and the release is signed off.
 
-| Gate | Approved by | Date | Evidence |
+**Signed off by `carrizoja` (release owner) on 2026-11-12.**
+
+The date column below records when each gate's evidence was gathered, not when it was approved;
+the approval is the single signature above. The evidence for every gate is recorded in the
+sections earlier in this document.
+
+| Gate | Approved by | Evidence date | Evidence |
 |---|---|---|---|
-| 1 Knowledge base | | 2026-08-27 | 8 entries approved, retrieval coverage pinned by tests |
-| 2 Localized copy | | 2026-08-27 | Handoff strings asserted character-for-character |
-| 3 Groq account and terms | | 2026-08-29 / 09-06 | Model probe; ZDR enabled; $25 spend limit |
-| 4 KV store and client | | 2026-09-06 | REST credentials exercised, read-write confirmed |
-| 5 DNS | | 2026-09-12 | `api.ijac.com.ar` over a Let's Encrypt certificate |
-| 6 Preview smoke | | 2026-09-13 | Full runbook checklist against the live API |
-| 7 Secrets and logs | | 2026-09-13 | Repo, Groq ZDR, and Vercel runtime logs all clean |
+| 1 Knowledge base | `carrizoja` | 2026-08-27 | 8 entries approved, retrieval coverage pinned by tests |
+| 2 Localized copy | `carrizoja` | 2026-08-27 | Handoff strings asserted character-for-character |
+| 3 Groq account and terms | `carrizoja` | 2026-08-29 / 09-06 | Model probe; ZDR enabled; $25 spend limit |
+| 4 KV store and client | `carrizoja` | 2026-09-06 | REST credentials exercised, read-write confirmed |
+| 5 DNS | `carrizoja` | 2026-09-12 | `api.ijac.com.ar` over a Let's Encrypt certificate |
+| 6 Preview smoke | `carrizoja` | 2026-09-13 | Full runbook checklist against the live API |
+| 7 Secrets and logs | `carrizoja` | 2026-09-13 | Repo, Groq ZDR, and Vercel runtime logs all clean |
+
+Gate 4 was re-exercised on 2026-11-12: the original free Upstash database had been deleted for
+inactivity, so a replacement was created, its REST credentials were set on the API project,
+the deployment was rebuilt, and the gate was verified by an off-topic request returning
+`UNKNOWN` and a grounded request returning `SUCCESS`. See
+[Upstash free-tier keep-alive](chatbot-runbook.md#upstash-free-tier-keep-alive) for the control
+that prevents a repeat.
 
 ## After sign-off
 
