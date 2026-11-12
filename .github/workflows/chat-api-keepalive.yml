@@ -1,0 +1,37 @@
+name: Chat API keep-alive
+
+on:
+  # Upstash deletes free databases after 14 days of inactivity.
+  # Run every Monday at 12:17 UTC; scheduled workflows only run on the default branch.
+  schedule:
+    - cron: "17 12 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Exercise the Upstash-backed gate without calling Groq
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # An off-topic question passes the KV gate and returns UNKNOWN before
+          # retrieval reaches the provider, so this performs no billable AI call.
+          response=$(curl --fail-with-body --silent --show-error \
+            --request POST "https://api.ijac.com.ar/v1/chat" \
+            --header "Origin: https://ijac.com.ar" \
+            --header "Content-Type: application/json" \
+            --data '{"apiVersion":"v1","question":"Do you cater weddings?","language":"en"}')
+
+          echo "$response"
+          node -e '
+            const result = JSON.parse(process.argv[1]);
+            if (result.code !== "UNKNOWN" || result.supported !== false) {
+              throw new Error(`Unexpected keep-alive response: ${process.argv[1]}`);
+            }
+            console.log("Keep-alive passed: the Upstash-backed gate is healthy.");
+          ' "$response"
