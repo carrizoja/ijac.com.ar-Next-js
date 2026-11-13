@@ -36,7 +36,7 @@ rules:
   proposal:
     - Include rollback plan for risky changes
     - Respect static-export constraints (no server runtime)
-    - Keep both locales in step: a new route needs its /en counterpart or an explicit reason it has none
+    - "Keep both locales in step: a new route needs its /en counterpart or an explicit reason it has none"
   specs:
     - Use Given/When/Then for scenarios
     - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
@@ -52,19 +52,15 @@ rules:
     - Keep tasks completable in one session
     - Update tests or add new ones before implementation when in TDD mode
   apply:
-    guidelines:
-      - Follow existing code patterns
-      - Keep components in src/app/components unless the surrounding style uses @/* aliases
-      - Maintain Spanish site copy and accessibility labels unless explicitly localizing
-      - Preserve existing uncommitted implementation work
-    tdd: true
-    test_command: "npm test"
+    - Follow existing code patterns
+    - Keep components in src/app/components unless the surrounding style uses @/* aliases
+    - Maintain Spanish site copy and accessibility labels unless explicitly localizing
+    - Preserve existing uncommitted implementation work
   verify:
-    test_command: "npm test"
-    build_command: "npm run build"
-    typecheck_command: "npx tsc --noEmit"
-    lint_command: "npm run lint"
-    coverage_threshold: 0
+    - Run `npm test`; all tests pass
+    - Run `npx tsc --noEmit`; no type errors
+    - Run `npm run lint`; no lint errors
+    - Run `npm run build`; the static export succeeds
   archive:
     - Warn before merging destructive deltas
     - Preserve existing domain specs when merging deltas
