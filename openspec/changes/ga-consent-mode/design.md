@@ -25,24 +25,29 @@ See proposal.md (Why). The relevant facts in the code today:
 ## Decisions
 
 ### D1. Consent Mode v2 "advanced" (load gtag, default denied) over "basic" (don't load until accepted)
-Keep loading `gtag/js` for everyone with storage denied. Google then receives cookieless pings and can model conversions, while no cookies are set without consent.
+The goal is cookie-level: no analytics cookies for a visitor who declined. Advanced mode satisfies it — with `analytics_storage` denied, gtag.js sets no `_ga`/`_ga_*` cookies — while keeping GA installed for visitors who have not answered yet. This is a deliberate product decision, not a data-minimization one: Google still receives cookieless pings for everyone. If the requirement ever becomes "no data leaves the browser before consent", that is a different change (basic mode below), not a tweak to this one.
 - *Alternative, basic mode:* inject `gtag/js` only after "accepted". This is stricter (no request to Google at all before consent) but needs a client component that loads the script conditionally, and it loses modeled data. Switching later only changes when the script is injected, so the spec still holds.
 
 ### D2. Synchronous inline `<head>` bootstrap, a sibling of the theme script
-Add `src/app/lib/consent.ts` that exports the storage key and values (`CONSENT_STORAGE_KEY = 'cookie-consent'`, `'accepted' | 'rejected'`) and `consentBootstrapScript`. The script:
-```js
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-window.gtag=window.gtag||gtag;
-gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',
-  ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});
-try{if(localStorage.getItem('cookie-consent')==='accepted')
-  gtag('consent','update',{analytics_storage:'granted'});}catch(e){}
+Add `src/app/lib/consent.ts` that exports `CONSENT_STORAGE_KEY = 'cookie-consent'`, `CONSENT_ACCEPTED = 'accepted'`, `CONSENT_REJECTED = 'rejected'`, a `ConsentChoice` union, and `consentBootstrapScript`, mirroring `theme.ts`. The script interpolates the constants, so the storage contract has one source:
+```ts
+const CONSENT_STORAGE_KEY = 'cookie-consent';
+const CONSENT_ACCEPTED = 'accepted';
+
+export const consentBootstrapScript =
+  `window.dataLayer=window.dataLayer||[];` +
+  `function gtag(){dataLayer.push(arguments);}` +
+  `window.gtag=window.gtag||gtag;` +
+  `gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',` +
+  `ad_user_data:'denied',ad_personalization:'denied'});` +
+  `try{if(localStorage.getItem('${CONSENT_STORAGE_KEY}')==='${CONSENT_ACCEPTED}')` +
+  `gtag('consent','update',{analytics_storage:'granted'});}catch(e){}`;
 ```
 Render it in `<head>` with `dangerouslySetInnerHTML`, right after `themeBootstrapScript`. The `lazyOnload` init then keeps only `gtag('js')` and `gtag('config')`.
 - *Why inline and synchronous:* it runs before any `lazyOnload` script and is in the exported HTML (spec: "in the static HTML"). A `next/script` `beforeInteractive` would also work, but this project already uses the inline-string pattern, and a plain string is unit-testable without a browser.
-- *Why define `window.gtag` early:* the banner's existing `if (window.gtag)` guard then always passes, so a click before GA loads is queued in `dataLayer` (spec: "Accept before GA has loaded"). `CookieConsent.tsx` needs no logic change, only the shared constants.
+- *Why define `window.gtag` early:* the banner's existing `if (window.gtag)` guard then always passes, so a click before GA loads is queued in `dataLayer` (spec: "Accept before GA has loaded"). `CookieConsent.tsx` needs no consent logic change — only the shared constants and the storage guards from task 3.3.
 - *Ads keys denied:* the site runs no ads. Declaring them anyway satisfies Consent Mode v2 and avoids surprises if Ads is linked later. Ads keys are never granted (only analytics).
+- *Fail-closed by construction:* the reduced `lazyOnload` init no longer defines `dataLayer` or `gtag`, so if the head bootstrap is blocked (CSP, extension, disabled inline scripts) it throws and GA never configures. Do not add a fallback there: a fallback would initialize GA with no consent default.
 
 ```
  HTML parse                       after load (lazyOnload)          click
@@ -58,12 +63,14 @@ It has no importers. Keeping it leaves a second, contradictory init path that so
 ## Risks / Trade-offs
 
 - [GA visit counts drop for denied visitors] → Expected and correct. Note it in `GOOGLE-ANALYTICS-SETUP.md` so the drop isn't misread as a bug.
-- [Inline script must stay first and synchronous] → A test asserts the consent default comes before `gtag('config'` in the rendered `SiteDocument` markup.
+- [Inline script must stay first and synchronous] → Tests assert the head contains the consent default and that the GA init no longer defines `dataLayer`/`gtag` (2.1). Real ordering is proven by the browser check (5.3), because the GA init is not emitted as a static `<script>` at all.
+- [`_ga` cookies set while the bug was live] → Consent Mode stops new writes but may not delete existing cookies. A pre-seeded `_ga` plus a stored `rejected` choice is verified in tasks 5.4; if the cookie survives, the bootstrap needs an explicit expiry for `_ga`/`_ga_*` before the spec's "present" wording can hold.
+- [Storage blocked] → both bootstraps fail closed (no stored choice, analytics denied, no cookies). The banner must not throw when storage is unavailable (tasks 3.3), or React unmounts the tree instead of leaving analytics denied.
 - [`PerformanceMonitor` events fire while denied] → They are sent as cookieless pings like any other event, which is allowed under advanced mode. No change.
 - [Hostinger CSP could later block inline scripts] → There's no CSP today, and the theme bootstrap has the same dependency. If a CSP is added, both need a hash.
 
 ## Migration Plan
 
 1. Ship as one commit and deploy with `npm run deploy -- --live`.
-2. Verify on production with DevTools: as a first visit (cleared storage), `dataLayer[0]` is the denied default and there's no `_ga` cookie. After "Aceptar Cookies", `_ga` appears. After "Rechazar" plus a reload, there's no `_ga`. GA4 Realtime still shows accepted sessions.
+2. Verify on production with DevTools: as a first visit (cleared storage), `dataLayer[0]` is the denied default and `document.cookie` has no `_ga`. After "Aceptar Cookies", `_ga` appears. After "Rechazar" plus a reload, there is no `_ga`. Repeat the reject case with a `_ga` cookie seeded by hand to confirm legacy cookies are handled (Risks, tasks 5.4). GA4 Realtime still shows accepted sessions.
 3. Rollback: revert the commit and redeploy. There's no stored-data migration; the localStorage keys are unchanged.
