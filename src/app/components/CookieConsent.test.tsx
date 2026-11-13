@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { pathnameRef } = vi.hoisted(() => ({ pathnameRef: { current: "/" } }));
@@ -37,6 +37,14 @@ import { CookieConsent } from "./CookieConsent";
 const LEGAL_PAGE = "/terminos-y-condiciones";
 const banner = () => screen.queryByText(/Uso de Cookies/);
 
+function showBanner() {
+  render(<CookieConsent />);
+
+  act(() => {
+    vi.advanceTimersByTime(1000);
+  });
+}
+
 describe("cookie consent banner", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -46,6 +54,8 @@ describe("cookie consent banner", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.restoreAllMocks();
+    delete (window as { gtag?: unknown }).gtag;
   });
 
   it("appears after the delay when no consent is stored", () => {
@@ -96,5 +106,51 @@ describe("cookie consent banner", () => {
     });
 
     expect(banner()).toBeNull();
+  });
+
+  it("stores an accepted choice and grants analytics storage", () => {
+    const gtag = vi.fn();
+    window.gtag = gtag;
+    showBanner();
+
+    fireEvent.click(screen.getByRole("button", { name: "Aceptar Cookies" }));
+
+    expect(localStorage.getItem("cookie-consent")).toBe("accepted");
+    expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "granted" });
+  });
+
+  it("stores a rejected choice and denies analytics storage", () => {
+    const gtag = vi.fn();
+    window.gtag = gtag;
+    showBanner();
+
+    fireEvent.click(screen.getByRole("button", { name: "Rechazar" }));
+
+    expect(localStorage.getItem("cookie-consent")).toBe("rejected");
+    expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "denied" });
+  });
+
+  it("shows the banner instead of throwing when storage cannot be read", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("storage blocked");
+    });
+
+    expect(() => showBanner()).not.toThrow();
+    expect(banner()).not.toBeNull();
+  });
+
+  it("keeps analytics denied instead of throwing when the choice cannot be persisted", () => {
+    const gtag = vi.fn();
+    window.gtag = gtag;
+    showBanner();
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("storage blocked");
+    });
+
+    expect(() => {
+      fireEvent.click(screen.getByRole("button", { name: "Aceptar Cookies" }));
+    }).not.toThrow();
+
+    expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "denied" });
   });
 });
