@@ -60,6 +60,62 @@ describe("cookie consent banner", () => {
     delete window.__ijacExpireAnalyticsCookies;
   });
 
+  it("keeps the Spanish copy unchanged on Spanish pages", () => {
+    showBanner();
+
+    expect(screen.getByRole("heading", { name: "🍪 Uso de Cookies" })).not.toBeNull();
+    expect(screen.getByText(/Este sitio web utiliza/).textContent).toBe(
+      "Este sitio web utiliza cookies propias y de terceros para mejorar su experiencia de navegación, " +
+        "analizar el tráfico del sitio y personalizar el contenido. Al continuar navegando, acepta nuestros " +
+        "Términos y Condiciones y nuestra Política de Privacidad.",
+    );
+    expect(screen.getByRole("button", { name: "Rechazar" })).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Aceptar Cookies" })).not.toBeNull();
+  });
+
+  it("shows English copy on English pages and keeps the Spanish legal links", () => {
+    pathnameRef.current = "/en/";
+    showBanner();
+
+    expect(screen.getByRole("heading", { name: "🍪 Use of Cookies" })).not.toBeNull();
+    expect(screen.queryByText(/Uso de Cookies/)).toBeNull();
+    expect(screen.getByRole("link", { name: "Terms and Conditions" }).getAttribute("href")).toBe(
+      "/terminos-y-condiciones",
+    );
+    expect(screen.getByRole("link", { name: "Privacy Policy" }).getAttribute("href")).toBe(
+      "/politica-de-privacidad",
+    );
+    expect(screen.getByRole("button", { name: "Reject" })).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Accept Cookies" })).not.toBeNull();
+  });
+
+  it("stores and applies an English accept", () => {
+    pathnameRef.current = "/en/services/";
+    const gtag = vi.fn();
+    window.gtag = gtag;
+    showBanner();
+
+    fireEvent.click(screen.getByRole("button", { name: "Accept Cookies" }));
+
+    expect(localStorage.getItem("cookie-consent")).toBe("accepted");
+    expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "granted" });
+  });
+
+  it("stores and applies an English reject", () => {
+    pathnameRef.current = "/en/";
+    const gtag = vi.fn();
+    const expire = vi.fn();
+    window.gtag = gtag;
+    window.__ijacExpireAnalyticsCookies = expire;
+    showBanner();
+
+    fireEvent.click(screen.getByRole("button", { name: "Reject" }));
+
+    expect(localStorage.getItem("cookie-consent")).toBe("rejected");
+    expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "denied" });
+    expect(expire).toHaveBeenCalledTimes(1);
+  });
+
   it("appears after the delay when no consent is stored", () => {
     render(<CookieConsent />);
     expect(banner()).toBeNull();
