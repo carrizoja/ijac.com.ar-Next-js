@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { CONSENT_ACCEPTED, CONSENT_REJECTED, CONSENT_STORAGE_KEY, type ConsentChoice } from '../lib/consent';
 
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
@@ -17,9 +18,14 @@ export function CookieConsent() {
   useEffect(() => {
     if (isLegalPage) return;
 
-    // Check if user has already given consent
-    const consent = localStorage.getItem('cookie-consent');
-    if (consent) return;
+    // Check if user has already given consent. Unreadable storage means no
+    // remembered choice: show the banner and let analytics stay denied,
+    // instead of letting the throw unmount the tree mid-render.
+    try {
+      if (localStorage.getItem(CONSENT_STORAGE_KEY)) return;
+    } catch {
+      // Fall through and ask again.
+    }
 
     // Delay showing banner slightly for better UX
     const timer = setTimeout(() => {
@@ -31,33 +37,33 @@ export function CookieConsent() {
     return () => clearTimeout(timer);
   }, [isLegalPage]);
 
-  const acceptCookies = () => {
-    localStorage.setItem('cookie-consent', 'accepted');
-    localStorage.setItem('cookie-consent-date', new Date().toISOString());
+  /**
+   * Persists the choice before applying it. If storage is blocked nothing is
+   * remembered, so the next page load starts denied again; granting analytics
+   * for a choice we could not store would be a consent the visitor cannot undo.
+   */
+  const applyChoice = (choice: ConsentChoice) => {
+    let persisted = false;
+    try {
+      localStorage.setItem(CONSENT_STORAGE_KEY, choice);
+      localStorage.setItem(`${CONSENT_STORAGE_KEY}-date`, new Date().toISOString());
+      persisted = true;
+    } catch {
+      // Analytics stays denied below.
+    }
+
     setIsVisible(false);
     setTimeout(() => setShowBanner(false), 300);
 
-    // Enable Google Analytics tracking
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('consent', 'update', {
-        'analytics_storage': 'granted'
+        'analytics_storage': persisted && choice === CONSENT_ACCEPTED ? 'granted' : 'denied'
       });
     }
   };
 
-  const rejectCookies = () => {
-    localStorage.setItem('cookie-consent', 'rejected');
-    localStorage.setItem('cookie-consent-date', new Date().toISOString());
-    setIsVisible(false);
-    setTimeout(() => setShowBanner(false), 300);
-
-    // Disable Google Analytics tracking
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('consent', 'update', {
-        'analytics_storage': 'denied'
-      });
-    }
-  };
+  const acceptCookies = () => applyChoice(CONSENT_ACCEPTED);
+  const rejectCookies = () => applyChoice(CONSENT_REJECTED);
 
   if (isLegalPage || !showBanner) return null;
 
