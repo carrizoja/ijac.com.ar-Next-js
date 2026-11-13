@@ -11,6 +11,7 @@ import { PerformanceMonitor } from "./PerformanceMonitor";
 import { CookieConsent } from "./CookieConsent";
 import { ClientRedirect } from "./ClientRedirect";
 import { themeBootstrapScript } from "../lib/theme";
+import { consentBootstrapScript } from "../lib/consent";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -127,6 +128,13 @@ export default function SiteDocument({
           inline and synchronous — a deferred script runs after the paint.
         */}
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+        {/*
+          Must run before the GA loader and before hydration: the consent
+          default has to be in dataLayer before gtag.js sends anything, and
+          window.gtag has to exist so a banner click can queue. Same rule as
+          the theme script — inline and synchronous, never deferred.
+        */}
+        <script dangerouslySetInnerHTML={{ __html: consentBootstrapScript }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -145,8 +153,6 @@ export default function SiteDocument({
         />
         <Script id="google-analytics" strategy="lazyOnload">
           {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-8NYPRQK16F', {
               page_title: document.title,
