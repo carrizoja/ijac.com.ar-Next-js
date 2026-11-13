@@ -10,6 +10,8 @@ import {
   CONSENT_WITHDRAW_EVENT,
   type ConsentChoice,
 } from '../lib/consent';
+import { getLocaleFromPath } from '@/i18n/routing';
+import { cookieConsentContent } from '@/i18n/chrome/cookie-consent';
 
 /**
  * Denies analytics and removes the `_ga`/`_ga_*` cookies a granted consent left
@@ -39,6 +41,7 @@ export function CookieConsent() {
   // suppression; a first visit there still shows nothing.
   const [requested, setRequested] = useState(false);
   const pathname = usePathname();
+  const copy = cookieConsentContent[getLocaleFromPath(pathname)];
 
   // Derived during render rather than pushed into state by an effect,
   // so navigating to a legal page hides the banner without a state update.
@@ -157,29 +160,28 @@ export function CookieConsent() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      🍪 Uso de Cookies
+                      {copy.heading}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base leading-relaxed">
-                      Este sitio web utiliza cookies propias y de terceros para mejorar su experiencia de navegación, 
-                      analizar el tráfico del sitio y personalizar el contenido. Al continuar navegando, acepta nuestros{' '}
+                      {copy.bodyIntro}{' '}
                       <a 
                         href="/terminos-y-condiciones" 
-                        title="Ver Términos y Condiciones"
+                        title={copy.termsTitle}
                         className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline font-medium"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Términos y Condiciones
+                        {copy.termsLabel}
                       </a>{' '}
-                      y nuestra{' '}
+                      {copy.bodyJoin}{' '}
                       <a 
                         href="/politica-de-privacidad" 
-                        title="Ver Política de Privacidad"
+                        title={copy.privacyTitle}
                         className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline font-medium"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Política de Privacidad
+                        {copy.privacyLabel}
                       </a>.
                     </p>
                   </div>
@@ -191,13 +193,13 @@ export function CookieConsent() {
                     onClick={rejectCookies}
                     className="px-6 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 font-medium"
                   >
-                    Rechazar
+                    {copy.rejectLabel}
                   </button>
                   <button
                     onClick={acceptCookies}
                     className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 font-medium shadow-lg hover:shadow-xl"
                   >
-                    Aceptar Cookies
+                    {copy.acceptLabel}
                   </button>
                 </div>
               </div>

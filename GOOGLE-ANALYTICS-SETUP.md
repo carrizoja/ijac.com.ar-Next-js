@@ -163,8 +163,9 @@ the literal-parts shape and re-check the built `out/index.html`.
 
 ## Known gaps
 
-- The banner copy and legal pages are Spanish-only, and the privacy policy has
-  no cookie section yet. Copy changes are out of scope for this setup.
+- The banner follows the page locale (copy in `src/i18n/chrome/cookie-consent.ts`),
+  but the legal pages it links to are Spanish-only, so English visitors land on
+  Spanish text. The privacy policy has no cookie section yet.
 - Withdrawal is a single action, not a preferences panel: the site has one
   optional category, so the restored banner is the whole preference UI.
 - If the head bootstrap is blocked, GA neither receives a consent default nor
