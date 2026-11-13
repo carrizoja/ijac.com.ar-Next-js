@@ -13,14 +13,14 @@ Every page in every locale (Spanish `/…`, English `/en/…`, and the 404 page)
 - **GIVEN** a visitor with no `cookie-consent` value in local storage
 - **WHEN** any page loads and Google Analytics finishes loading
 - **THEN** the first consent command in `dataLayer` is a `default` with all four storage types `denied`
-- **AND** no `_ga` or `_ga_*` cookie is set
+- **AND** no `_ga` or `_ga_*` cookie is present
 
 #### Scenario: Default is present in both locales
 - **WHEN** the exported HTML of `/`, `/en/`, and the 404 page is inspected
-- **THEN** each contains the consent default before the Google Analytics configuration
+- **THEN** each has a real inline `<script>` in the `<head>` whose text declares the consent default
 
 ### Requirement: A stored choice is restored before analytics loads
-When local storage holds `cookie-consent` = `accepted`, the page MUST grant `analytics_storage` before Google Analytics sends its first hit. Any other stored value, or none, MUST leave analytics denied. If local storage cannot be read, analytics MUST stay denied and the page MUST keep working.
+When local storage holds `cookie-consent` = `accepted`, the page MUST grant `analytics_storage` before Google Analytics sends its first hit. Any other stored value, or none, MUST leave analytics denied. A stored `rejected` choice MUST leave no `_ga` or `_ga_*` cookie present, including cookies left by an earlier visit. If local storage cannot be read, analytics MUST stay denied and the page MUST keep working.
 
 #### Scenario: Returning visitor who accepted
 - **GIVEN** `cookie-consent` = `accepted` in local storage
@@ -31,13 +31,20 @@ When local storage holds `cookie-consent` = `accepted`, the page MUST grant `ana
 #### Scenario: Returning visitor who rejected
 - **GIVEN** `cookie-consent` = `rejected` in local storage
 - **WHEN** a page loads
-- **THEN** `analytics_storage` stays `denied` and no `_ga` cookie is set
+- **THEN** `analytics_storage` stays `denied` and no `_ga` cookie is present
 - **AND** the banner is not shown
+
+#### Scenario: Legacy cookies from a visit before the fix
+- **GIVEN** `cookie-consent` = `rejected` in local storage
+- **AND** `_ga` or `_ga_*` cookies left behind by an earlier visit
+- **WHEN** a page loads
+- **THEN** `analytics_storage` stays `denied`
+- **AND** no `_ga` or `_ga_*` cookie is present afterwards
 
 #### Scenario: Storage unavailable
 - **GIVEN** local storage access throws (for example, blocked site data)
 - **WHEN** a page loads
-- **THEN** analytics stays denied, no script error stops the page, and the theme bootstrap still runs
+- **THEN** analytics stays denied, no script error stops the page, the theme bootstrap still runs, and the consent banner does not throw
 
 ### Requirement: Banner choices update consent immediately
 Choosing "Aceptar Cookies" MUST store `accepted` and grant `analytics_storage` without a reload. Choosing "Rechazar" MUST store `rejected` and keep `analytics_storage` denied. Both MUST work even when Google Analytics has not finished loading yet.
@@ -50,7 +57,7 @@ Choosing "Aceptar Cookies" MUST store `accepted` and grant `analytics_storage` w
 
 #### Scenario: Reject
 - **WHEN** a visitor clicks "Rechazar"
-- **THEN** `cookie-consent` = `rejected` is stored, `analytics_storage` remains denied, and no `_ga` cookie is set
+- **THEN** `cookie-consent` = `rejected` is stored, `analytics_storage` remains denied, and no `_ga` cookie is present
 
 ### Requirement: Locale surfaces are unaffected
 This change MUST NOT alter metadata, hreflang alternates, structured data, `sitemap.xml`, `robots.txt`, or routing in either locale, and MUST NOT change the visible banner copy.
