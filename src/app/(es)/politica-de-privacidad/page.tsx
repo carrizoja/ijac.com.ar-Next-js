@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import { getSeoAlternates } from '@/i18n/seo';
 import { BackButton } from '../../components/BackButton';
+import { CONSENT_ACCEPTED, CONSENT_REJECTED, CONSENT_STORAGE_KEY } from '../../lib/consent';
+import { footerContent } from '@/i18n/chrome/footer';
 
 export const metadata: Metadata = {
   title: 'Política de Privacidad',
@@ -96,9 +98,89 @@ export default function PoliticaDePrivacidad() {
               </p>
             </section>
 
+            {/*
+              Describes the shipped consent behavior (src/app/lib/consent.ts,
+              CookieConsent, the footer control). Keep it in step with that code.
+              Factual description, not legal advice: the final wording is for the
+              site owner to review.
+            */}
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                4. Sus Derechos
+                4. Cookies y Consentimiento
+              </h2>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
+                Este sitio utiliza Google Analytics 4 (ID de medición G-8NYPRQK16F) con el modo de
+                consentimiento de Google (Consent Mode v2) en su modalidad avanzada. La medición depende
+                de la elección que usted haga en el aviso de cookies.
+              </p>
+
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-3">Estado inicial y qué se habilita:</h3>
+              <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 mb-4">
+                <li>
+                  Al cargar cualquier página, todo el almacenamiento está denegado por defecto:{' '}
+                  <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">analytics_storage</code>, <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">ad_storage</code>, <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">ad_user_data</code> y <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">ad_personalization</code>.
+                </li>
+                <li>
+                  Si usted acepta, se habilita únicamente <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">analytics_storage</code>.{' '}
+                  <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">ad_storage</code>, <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">ad_user_data</code> y <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">ad_personalization</code> quedan
+                  declarados como denegados y nunca se habilitan.
+                </li>
+              </ul>
+
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-3">Cookies de análisis:</h3>
+              <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 mb-4">
+                <li>
+                  Las cookies <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">_ga</code> y <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">_ga_*</code> de Google Analytics se escriben solo después de que
+                  usted acepta.
+                </li>
+                <li>
+                  Si rechaza, o si retira un consentimiento que había dado, esas cookies se eliminan de su
+                  navegador.
+                </li>
+              </ul>
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg mb-4">
+                <p className="text-yellow-800 dark:text-yellow-300">
+                  <strong>Si rechaza:</strong> Google Analytics sigue recibiendo señales sin cookies
+                  (&quot;cookieless pings&quot;). Son avisos de que se visitó una página, con los datos técnicos
+                  que el navegador envía en cualquier conexión (como la dirección IP, el tipo de navegador y la
+                  página de origen), pero sin las cookies <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">_ga</code> que permiten reconocer al mismo navegador
+                  entre visitas.
+                </p>
+              </div>
+
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-3">Cómo cambiar su elección:</h3>
+              <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 mb-4">
+                <li>
+                  Mientras no haya elegido, el aviso de cookies aparece al navegar el sitio, con las opciones
+                  para aceptar o rechazar.
+                </li>
+                <li>
+                  En cualquier momento puede usar el control &quot;{footerContent.es.cookieSettingsLabel}&quot; al
+                  pie de cada página (&quot;{footerContent.en.cookieSettingsLabel}&quot; en las páginas en inglés).
+                  Retira el consentimiento, elimina las cookies de análisis y vuelve a mostrar el aviso para que
+                  elija de nuevo.
+                </li>
+              </ul>
+
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-3">Dónde se guarda su elección:</h3>
+              <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                <li>
+                  En el almacenamiento local (localStorage) de su navegador, con las claves{' '}
+                  <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">{CONSENT_STORAGE_KEY}</code> (valor <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">{CONSENT_ACCEPTED}</code> o <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">{CONSENT_REJECTED}</code>) y{' '}
+                  <code className="text-sm bg-gray-100 dark:bg-neutral-700 px-1 rounded">{`${CONSENT_STORAGE_KEY}-date`}</code> (fecha de la elección). Estos datos no se envían a
+                  nuestros servidores.
+                </li>
+                <li>
+                  Si borra los datos del sitio en su navegador, la elección se pierde y el aviso vuelve a
+                  aparecer.
+                </li>
+              </ul>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                5. Sus Derechos
               </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
                 Conforme a la Ley 25.326 de Protección de Datos Personales de Argentina, usted tiene derecho a:
@@ -114,7 +196,7 @@ export default function PoliticaDePrivacidad() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                5. Seguridad de los Datos
+                6. Seguridad de los Datos
               </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
                 Implementamos medidas de seguridad técnicas y organizativas apropiadas para proteger sus datos personales:
@@ -129,7 +211,7 @@ export default function PoliticaDePrivacidad() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                6. Retención de Datos
+                7. Retención de Datos
               </h2>
               <p className="text-gray-700 dark:text-gray-300">
                 Conservamos sus datos personales solo durante el tiempo necesario para cumplir con los fines 
@@ -139,7 +221,7 @@ export default function PoliticaDePrivacidad() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                7. Contacto para Asuntos de Privacidad
+                8. Contacto para Asuntos de Privacidad
               </h2>
               <div className="bg-gray-50 dark:bg-neutral-700 p-6 rounded-lg">
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
