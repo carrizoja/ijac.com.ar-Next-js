@@ -9,6 +9,7 @@ import { getServiceSlugs } from "@/data/services";
 import { getLocaleFromPath, getServiceDetailHref } from "@/i18n/routing";
 import { footerContent } from "@/i18n/chrome/footer";
 import { getServiceCopyForLocale } from "@/i18n/services/catalog";
+import { requestConsentWithdrawal } from "../lib/consent";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -147,6 +148,18 @@ const Footer = () => {
                   José Carrizo
                 </a>
               </p>
+              {/*
+                Withdrawal, not navigation: the same banner returns so the
+                visitor can accept again. A button keeps it out of the link
+                graph, so no route and no locale counterpart is implied.
+              */}
+              <button
+                type="button"
+                onClick={requestConsentWithdrawal}
+                className="mt-2 text-xs text-violet-200 underline underline-offset-4 transition-colors hover:text-emerald-300"
+              >
+                {copy.cookieSettingsLabel}
+              </button>
             </div>
           </div>
         </div>

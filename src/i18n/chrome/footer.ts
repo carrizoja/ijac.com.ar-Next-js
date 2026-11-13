@@ -10,6 +10,7 @@ interface FooterContent {
   contactHeading: string;
   locationLabel: string;
   hoursLabel: string;
+  cookieSettingsLabel: string;
 }
 
 export const footerContent: Record<Locale, FooterContent> = {
@@ -23,6 +24,7 @@ export const footerContent: Record<Locale, FooterContent> = {
     contactHeading: "Contacto y Ubicación",
     locationLabel: "Colombres 195, Almagro, CABA (C1177)",
     hoursLabel: "Lunes a viernes de 9:00 a 18:00",
+    cookieSettingsLabel: "Configurar cookies",
   },
   en: {
     copyright: (year) => `© ${year} iJac. All rights reserved.`,
@@ -34,5 +36,6 @@ export const footerContent: Record<Locale, FooterContent> = {
     contactHeading: "Contact & Location",
     locationLabel: "Colombres 195, Almagro, CABA (C1177)",
     hoursLabel: "Monday to Friday, 9:00 AM to 6:00 PM",
+    cookieSettingsLabel: "Cookie settings",
   },
 };

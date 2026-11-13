@@ -33,6 +33,7 @@ vi.mock("framer-motion", async () => {
 });
 
 import { CookieConsent } from "./CookieConsent";
+import { requestConsentWithdrawal } from "../lib/consent";
 
 const LEGAL_PAGE = "/terminos-y-condiciones";
 const banner = () => screen.queryByText(/Uso de Cookies/);
@@ -56,6 +57,7 @@ describe("cookie consent banner", () => {
     vi.useRealTimers();
     vi.restoreAllMocks();
     delete (window as { gtag?: unknown }).gtag;
+    delete window.__ijacExpireAnalyticsCookies;
   });
 
   it("appears after the delay when no consent is stored", () => {
@@ -152,5 +154,98 @@ describe("cookie consent banner", () => {
     }).not.toThrow();
 
     expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "denied" });
+  });
+
+  it("removes analytics cookies when a visitor rejects", () => {
+    const expire = vi.fn();
+    window.__ijacExpireAnalyticsCookies = expire;
+    showBanner();
+
+    fireEvent.click(screen.getByRole("button", { name: "Rechazar" }));
+
+    expect(expire).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaves analytics cookies alone when a visitor accepts", () => {
+    const expire = vi.fn();
+    window.__ijacExpireAnalyticsCookies = expire;
+    showBanner();
+
+    fireEvent.click(screen.getByRole("button", { name: "Aceptar Cookies" }));
+
+    expect(expire).not.toHaveBeenCalled();
+  });
+
+  it("withdraws consent and brings the banner back for an accepted visitor", () => {
+    localStorage.setItem("cookie-consent", "accepted");
+    localStorage.setItem("cookie-consent-date", "2026-11-13T15:00:00.000Z");
+    const gtag = vi.fn();
+    const expire = vi.fn();
+    window.gtag = gtag;
+    window.__ijacExpireAnalyticsCookies = expire;
+    render(<CookieConsent />);
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(banner()).toBeNull();
+
+    act(() => {
+      requestConsentWithdrawal();
+    });
+
+    expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "denied" });
+    expect(expire).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem("cookie-consent")).toBeNull();
+    expect(localStorage.getItem("cookie-consent-date")).toBeNull();
+    expect(banner()).not.toBeNull();
+
+    // The loop closes: the visitor can accept again from the restored banner.
+    fireEvent.click(screen.getByRole("button", { name: "Aceptar Cookies" }));
+
+    expect(localStorage.getItem("cookie-consent")).toBe("accepted");
+    expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "granted" });
+  });
+
+  it("shows the banner on a legal page when the visitor asks to withdraw", () => {
+    localStorage.setItem("cookie-consent", "accepted");
+    pathnameRef.current = LEGAL_PAGE;
+    render(<CookieConsent />);
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(banner()).toBeNull();
+
+    act(() => {
+      requestConsentWithdrawal();
+    });
+
+    expect(banner()).not.toBeNull();
+  });
+
+  it("withdraws without throwing when the stored choice cannot be removed", () => {
+    localStorage.setItem("cookie-consent", "accepted");
+    const gtag = vi.fn();
+    const expire = vi.fn();
+    window.gtag = gtag;
+    window.__ijacExpireAnalyticsCookies = expire;
+    render(<CookieConsent />);
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    vi.spyOn(Storage.prototype, "removeItem").mockImplementation(() => {
+      throw new Error("storage blocked");
+    });
+
+    expect(() => {
+      act(() => {
+        requestConsentWithdrawal();
+      });
+    }).not.toThrow();
+
+    expect(gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "denied" });
+    expect(expire).toHaveBeenCalledTimes(1);
+    expect(banner()).not.toBeNull();
   });
 });
