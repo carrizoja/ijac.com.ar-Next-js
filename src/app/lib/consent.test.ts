@@ -5,7 +5,9 @@ import {
   CONSENT_ACCEPTED,
   CONSENT_REJECTED,
   CONSENT_STORAGE_KEY,
+  CONSENT_WITHDRAW_EVENT,
   consentBootstrapScript,
+  requestConsentWithdrawal,
 } from "./consent";
 
 type GtagCommand = unknown[];
@@ -14,6 +16,7 @@ function resetGlobals() {
   vi.restoreAllMocks();
   delete (window as { dataLayer?: unknown }).dataLayer;
   delete (window as { gtag?: unknown }).gtag;
+  delete window.__ijacExpireAnalyticsCookies;
   localStorage.clear();
 }
 
@@ -80,6 +83,14 @@ describe("consentBootstrapScript", () => {
 
     expect(typeof window.gtag).toBe("function");
   });
+
+  it("exposes the cookie cleanup so a later withdrawal can reuse it", () => {
+    localStorage.setItem(CONSENT_STORAGE_KEY, CONSENT_ACCEPTED);
+
+    runBootstrap();
+
+    expect(typeof window.__ijacExpireAnalyticsCookies).toBe("function");
+  });
 });
 
 describe("legacy analytics cookies", () => {
@@ -138,5 +149,41 @@ describe("legacy analytics cookies", () => {
     runBootstrap();
 
     expect(gaCookies()).toHaveLength(1);
+  });
+
+  it("removes cookies written while consent was granted when a withdrawal calls the exposed cleanup", () => {
+    localStorage.setItem(CONSENT_STORAGE_KEY, CONSENT_ACCEPTED);
+    runBootstrap();
+
+    setCookie("_ga", "GA1.1.111111111.2222222222");
+    setCookie("_ga_8NYPRQK16F", "GS2.1.s1$o1$g0");
+    window.__ijacExpireAnalyticsCookies?.();
+
+    expect(gaCookies()).toEqual([]);
+  });
+});
+
+describe("requestConsentWithdrawal", () => {
+  beforeEach(resetGlobals);
+
+  it("asks every listener to withdraw exactly once per call", () => {
+    const listener = vi.fn();
+    window.addEventListener(CONSENT_WITHDRAW_EVENT, listener);
+
+    requestConsentWithdrawal();
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    requestConsentWithdrawal();
+    expect(listener).toHaveBeenCalledTimes(2);
+
+    window.removeEventListener(CONSENT_WITHDRAW_EVENT, listener);
+  });
+
+  it("is safe to call where no document exists", () => {
+    vi.stubGlobal("window", undefined);
+
+    expect(() => requestConsentWithdrawal()).not.toThrow();
+
+    vi.unstubAllGlobals();
   });
 });

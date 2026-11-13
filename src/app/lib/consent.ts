@@ -6,6 +6,32 @@ export const CONSENT_STORAGE_KEY = "cookie-consent";
 export const CONSENT_ACCEPTED: ConsentChoice = "accepted";
 export const CONSENT_REJECTED: ConsentChoice = "rejected";
 
+/** Dispatched on `window` when the visitor asks to withdraw a stored choice. */
+export const CONSENT_WITHDRAW_EVENT = "ijac:consent-withdraw";
+
+declare global {
+  interface Window {
+    /**
+     * Set by `consentBootstrapScript`, which owns the one implementation of
+     * the expiry loop. Optional by design: a blocked head script never defines
+     * it, and a withdrawal must not throw because of that.
+     */
+    __ijacExpireAnalyticsCookies?: () => void;
+  }
+}
+
+/**
+ * Asks the mounted banner to withdraw consent. Both the footer control and the
+ * banner are client components below a server component, so there is no shared
+ * parent to hold this signal; a named DOM event keeps the two independent and
+ * testable from either end. Safe where no document exists, and harmless when
+ * nothing is listening.
+ */
+export function requestConsentWithdrawal(): void {
+  if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
+  window.dispatchEvent(new Event(CONSENT_WITHDRAW_EVENT));
+}
+
 /** `_ga` and the per-stream `_ga_<id>` cookies, but not `_gid`. */
 const GA_COOKIE_NAME = "/^_ga(_|$)/";
 
@@ -24,10 +50,7 @@ const CONSENT_SCRIPT_PARTS = [
   "gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',",
   "ad_user_data:'denied',ad_personalization:'denied'});",
   "(function(){",
-  "var c=null;",
-  "try{c=localStorage.getItem('__CONSENT_KEY__')}catch(e){}",
-  "if(c==='__CONSENT_ACCEPTED__'){",
-  "gtag('consent','update',{analytics_storage:'granted'});return}",
+  "function expireGaCookies(){",
   "var h=location.hostname,ds=[h],p=h.split('.');",
   "if(!/^[\\d.]+$/.test(h)){",
   "for(var i=1;i<p.length-1;i++)ds.push(p.slice(i).join('.'))}",
@@ -38,7 +61,14 @@ const CONSENT_SCRIPT_PARTS = [
   "for(var k=0;k<ds.length;k++){",
   "document.cookie=n+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain='+ds[k]}",
   "document.cookie=n+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'}",
-  "}})();",
+  "}}",
+  "window.__ijacExpireAnalyticsCookies=expireGaCookies;",
+  "var c=null;",
+  "try{c=localStorage.getItem('__CONSENT_KEY__')}catch(e){}",
+  "if(c==='__CONSENT_ACCEPTED__'){",
+  "gtag('consent','update',{analytics_storage:'granted'});return}",
+  "expireGaCookies();",
+  "})();",
 ].join("");
 
 /**
@@ -58,6 +88,12 @@ const CONSENT_SCRIPT_PARTS = [
  * `_ga`/`_ga_*` expired here, before gtag.js loads. The cookie name is tried
  * against the current host and every parent suffix a browser will accept, so
  * a cookie shared across `www.example.com` and `example.com` is removed too.
+ *
+ * The expiry loop is defined once and exposed as
+ * `window.__ijacExpireAnalyticsCookies` for the same reason the banner reuses
+ * it: withdrawing after an acceptance must clear cookies this script only
+ * expires for non-accepted visitors. An inline script cannot import TypeScript,
+ * so the global is the shared entry point rather than a second implementation.
  *
  * Kept as a single-line string so it is testable without rendering the
  * document, mirroring `themeBootstrapScript`.

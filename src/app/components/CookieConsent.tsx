@@ -3,17 +3,48 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { CONSENT_ACCEPTED, CONSENT_REJECTED, CONSENT_STORAGE_KEY, type ConsentChoice } from '../lib/consent';
+import {
+  CONSENT_ACCEPTED,
+  CONSENT_REJECTED,
+  CONSENT_STORAGE_KEY,
+  CONSENT_WITHDRAW_EVENT,
+  type ConsentChoice,
+} from '../lib/consent';
+
+/**
+ * Denies analytics and removes the `_ga`/`_ga_*` cookies a granted consent left
+ * behind. The expiry loop lives in the head bootstrap, which exposes it as a
+ * global because an inline script cannot import this module; the optional call
+ * keeps a blocked head script from turning a click into a script error.
+ */
+function denyAnalytics() {
+  window.gtag?.('consent', 'update', { analytics_storage: 'denied' });
+  window.__ijacExpireAnalyticsCookies?.();
+}
+
+function forgetStoredChoice() {
+  try {
+    localStorage.removeItem(CONSENT_STORAGE_KEY);
+    localStorage.removeItem(`${CONSENT_STORAGE_KEY}-date`);
+  } catch {
+    // Blocked storage keeps whatever could not be removed, and analytics stays
+    // denied either way.
+  }
+}
 
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  // A withdrawal is an explicit request, so it overrides the legal-page
+  // suppression; a first visit there still shows nothing.
+  const [requested, setRequested] = useState(false);
   const pathname = usePathname();
 
   // Derived during render rather than pushed into state by an effect,
   // so navigating to a legal page hides the banner without a state update.
   const isLegalPage = pathname === '/terminos-y-condiciones' ||
                       pathname === '/politica-de-privacidad';
+  const isSuppressed = isLegalPage && !requested;
 
   useEffect(() => {
     if (isLegalPage) return;
@@ -38,6 +69,28 @@ export function CookieConsent() {
   }, [isLegalPage]);
 
   /**
+   * The footer control withdraws through this event rather than through a
+   * shared parent: both components are client components under a server
+   * component, and the banner is always mounted, so its listener is always
+   * there. Withdrawing ends where a first visit starts — no stored choice,
+   * analytics denied, banner asking again.
+   */
+  useEffect(() => {
+    const withdraw = () => {
+      // Deny before expiring: a hit processed while storage is still granted
+      // would write the cookies straight back.
+      denyAnalytics();
+      forgetStoredChoice();
+      setRequested(true);
+      setShowBanner(true);
+      setIsVisible(true);
+    };
+
+    window.addEventListener(CONSENT_WITHDRAW_EVENT, withdraw);
+    return () => window.removeEventListener(CONSENT_WITHDRAW_EVENT, withdraw);
+  }, []);
+
+  /**
    * Persists the choice before applying it. If storage is blocked nothing is
    * remembered, so the next page load starts denied again; granting analytics
    * for a choice we could not store would be a consent the visitor cannot undo.
@@ -55,17 +108,23 @@ export function CookieConsent() {
     setIsVisible(false);
     setTimeout(() => setShowBanner(false), 300);
 
+    const granted = persisted && choice === CONSENT_ACCEPTED;
+
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('consent', 'update', {
-        'analytics_storage': persisted && choice === CONSENT_ACCEPTED ? 'granted' : 'denied'
+        'analytics_storage': granted ? 'granted' : 'denied'
       });
     }
+
+    // Rejecting must undo what an earlier acceptance wrote, not just stop new
+    // writes; the expiry runs after the deny so nothing recreates the cookies.
+    if (!granted) window.__ijacExpireAnalyticsCookies?.();
   };
 
   const acceptCookies = () => applyChoice(CONSENT_ACCEPTED);
   const rejectCookies = () => applyChoice(CONSENT_REJECTED);
 
-  if (isLegalPage || !showBanner) return null;
+  if (isSuppressed || !showBanner) return null;
 
   return (
     <AnimatePresence>

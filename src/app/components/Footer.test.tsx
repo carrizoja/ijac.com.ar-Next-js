@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { render, screen } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const navigation = vi.hoisted(() => ({ pathname: "/" }));
@@ -10,6 +11,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 import Footer from "./Footer";
+import { CONSENT_WITHDRAW_EVENT } from "../lib/consent";
 
 describe("Footer", () => {
   beforeEach(() => {
@@ -54,5 +56,38 @@ describe("Footer", () => {
         name: "Armado de PC Gamer y Consultoría de Hardware en Almagro - CABA",
       }),
     ).toHaveAttribute("href", "/services/armado-pcs-hardware");
+  });
+
+  it("offers the cookie settings control in Spanish", () => {
+    render(<Footer />);
+
+    const control = screen.getByRole("button", { name: "Configurar cookies" });
+    expect(control).toBeInTheDocument();
+  });
+
+  it("offers the cookie settings control in English", () => {
+    navigation.pathname = "/en";
+    render(<Footer />);
+
+    expect(
+      screen.getByRole("button", { name: "Cookie settings" }),
+    ).toBeInTheDocument();
+  });
+
+  it("withdraws consent from a button rather than navigating to a route", () => {
+    const withdrawal = vi.fn();
+    window.addEventListener(CONSENT_WITHDRAW_EVENT, withdrawal);
+    render(<Footer />);
+
+    const control = screen.getByRole("button", { name: "Configurar cookies" });
+    expect(control.tagName).toBe("BUTTON");
+    expect(control).toHaveAttribute("type", "button");
+
+    fireEvent.click(control);
+
+    expect(withdrawal).toHaveBeenCalledTimes(1);
+    expect(window.location.pathname).toBe("/");
+
+    window.removeEventListener(CONSENT_WITHDRAW_EVENT, withdrawal);
   });
 });
